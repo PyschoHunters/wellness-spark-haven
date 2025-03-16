@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';
 import BodyProgress from '@/components/BodyProgress';
 import DailyTips from '@/components/DailyTips';
+import PersonalRecommendations from '@/components/PersonalRecommendations';
 import { showActionToast } from '@/utils/toast-utils';
 
 const Profile = () => {
@@ -15,6 +16,16 @@ const Profile = () => {
 
   const handleBellClick = () => {
     showActionToast("No new notifications");
+  };
+
+  // User data for personalized recommendations
+  const userData = {
+    name: "Manumohan",
+    level: "Intermediate",
+    caloriesPerWeek: 1250,
+    weight: 74.0,
+    bodyFatPercentage: 20.8,
+    recentWorkouts: ["Morning Workout", "Full Body", "HIIT Session"]
   };
 
   return (
@@ -54,6 +65,8 @@ const Profile = () => {
             </div>
           </div>
         </div>
+        
+        <PersonalRecommendations userData={userData} />
         
         <DietTracker />
         
