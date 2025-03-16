@@ -4,6 +4,8 @@ import { Settings, ChevronRight, Activity, Award, BarChart2, Heart } from 'lucid
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
+import { showActionToast } from '@/utils/toast-utils';
 
 // Define these components before they're used
 const Flame = () => <span className="text-fitness-secondary">🔥</span>;
@@ -16,19 +18,43 @@ const profileStats = [
 ];
 
 const menuItems = [
-  { icon: Award, label: 'Achievements', color: 'bg-purple-100 text-purple-600' },
-  { icon: Activity, label: 'Activity History', color: 'bg-blue-100 text-blue-600' },
-  { icon: BarChart2, label: 'Workout Stats', color: 'bg-green-100 text-green-600' },
-  { icon: Settings, label: 'Settings', color: 'bg-gray-100 text-gray-600' },
+  { id: 'achievements', icon: Award, label: 'Achievements', color: 'bg-purple-100 text-purple-600' },
+  { id: 'activity-history', icon: Activity, label: 'Activity History', color: 'bg-blue-100 text-blue-600', path: '/activity' },
+  { id: 'workout-stats', icon: BarChart2, label: 'Workout Stats', color: 'bg-green-100 text-green-600' },
+  { id: 'settings', icon: Settings, label: 'Settings', color: 'bg-gray-100 text-gray-600' },
 ];
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
+
+  const handleMenuItemClick = (itemId: string, path?: string) => {
+    if (path) {
+      navigate(path);
+    } else {
+      showActionToast(`${itemId} feature coming soon!`);
+    }
+  };
+
+  const handleLogout = () => {
+    showActionToast("Logged out successfully");
+    setTimeout(() => {
+      navigate('/');
+    }, 1500);
+  };
+
+  const handleSettingsClick = () => {
+    showActionToast("Settings feature coming soon!");
+  };
+
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
       <Header 
         title="Profile" 
         action={
-          <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm">
+          <button 
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
+            onClick={handleSettingsClick}
+          >
             <Settings size={20} className="text-fitness-dark" />
           </button>
         } 
@@ -63,6 +89,7 @@ const ProfilePage = () => {
           <div 
             key={index} 
             className="flex items-center justify-between bg-white p-4 rounded-2xl cursor-pointer hover:shadow-sm transition-all duration-300"
+            onClick={() => handleMenuItemClick(item.id, item.path)}
           >
             <div className="flex items-center">
               <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", item.color)}>
@@ -76,7 +103,12 @@ const ProfilePage = () => {
       </div>
       
       <div className="mt-8 text-center animate-fade-up" style={{ animationDelay: '300ms' }}>
-        <button className="text-fitness-secondary font-medium">Log Out</button>
+        <button 
+          className="text-fitness-secondary font-medium"
+          onClick={handleLogout}
+        >
+          Log Out
+        </button>
       </div>
       
       <Navigation />

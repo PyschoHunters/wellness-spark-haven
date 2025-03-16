@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { CalendarDays, Clock, Dumbbell, TrendingUp } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import { cn } from '@/lib/utils';
+import { showActionToast } from '@/utils/toast-utils';
 
 const activityTypes = [
   { name: 'All', icon: TrendingUp, active: true },
@@ -67,9 +68,53 @@ const getActivityIcon = (type: string) => {
 };
 
 const ActivityPage = () => {
+  const [selectedType, setSelectedType] = useState('All');
+  const [filteredActivities, setFilteredActivities] = useState(activityHistory);
+
+  const handleFilterChange = (type: string) => {
+    setSelectedType(type);
+    
+    if (type === 'All') {
+      setFilteredActivities(activityHistory);
+    } else {
+      const typeMap: Record<string, string> = {
+        'Workout': 'workout',
+        'Running': 'running',
+        'Timer': 'timer'
+      };
+      
+      const filtered = activityHistory.filter(activity => 
+        activity.type === typeMap[type]
+      );
+      
+      setFilteredActivities(filtered);
+    }
+    
+    showActionToast(`Showing ${type} activities`);
+  };
+
+  const handleActivityClick = (activityId: number) => {
+    const activity = activityHistory.find(a => a.id === activityId);
+    showActionToast(`Viewing details for ${activity?.title}`);
+  };
+  
+  const handleBellClick = () => {
+    showActionToast("No new notifications");
+  };
+
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
-      <Header title="Activity" />
+      <Header 
+        title="Activity" 
+        action={
+          <button 
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
+            onClick={handleBellClick}
+          >
+            <Clock size={20} className="text-fitness-dark" />
+          </button>
+        }
+      />
       
       <div className="flex gap-3 overflow-x-auto pb-2 mb-6 no-scrollbar">
         {activityTypes.map((type, index) => (
@@ -77,11 +122,12 @@ const ActivityPage = () => {
             key={index}
             className={cn(
               "flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 animate-fade-up",
-              type.active
+              selectedType === type.name
                 ? "bg-fitness-primary text-white"
                 : "bg-white text-fitness-gray hover:bg-fitness-gray-light"
             )}
             style={{ animationDelay: `${index * 50}ms` }}
+            onClick={() => handleFilterChange(type.name)}
           >
             <type.icon size={18} />
             <span className="font-medium">{type.name}</span>
@@ -93,11 +139,12 @@ const ActivityPage = () => {
         <h2 className="text-lg font-semibold mb-4">History</h2>
         
         <div className="space-y-4">
-          {activityHistory.map((activity, index) => (
+          {filteredActivities.map((activity, index) => (
             <div 
               key={activity.id}
-              className="bg-white rounded-2xl p-4 animate-fade-up"
+              className="bg-white rounded-2xl p-4 animate-fade-up cursor-pointer hover:shadow-md transition-all"
               style={{ animationDelay: `${index * 100}ms` }}
+              onClick={() => handleActivityClick(activity.id)}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">

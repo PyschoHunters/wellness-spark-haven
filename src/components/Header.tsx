@@ -2,6 +2,7 @@
 import React from 'react';
 import { Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { showActionToast } from '@/utils/toast-utils';
 
 interface HeaderProps {
   title: string;
@@ -16,6 +17,10 @@ const Header: React.FC<HeaderProps> = ({
   action,
   className 
 }) => {
+  const handleBellClick = () => {
+    showActionToast("No new notifications");
+  };
+
   return (
     <header className={cn("pt-6 pb-4 animate-fade-in", className)}>
       <div className="flex justify-between items-start mb-2">
@@ -24,7 +29,10 @@ const Header: React.FC<HeaderProps> = ({
           {subtitle && <p className="text-sm text-fitness-gray mt-1">{subtitle}</p>}
         </div>
         {action || (
-          <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm">
+          <button 
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
+            onClick={handleBellClick}
+          >
             <Bell size={20} className="text-fitness-dark" />
           </button>
         )}

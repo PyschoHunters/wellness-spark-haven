@@ -6,6 +6,8 @@ import WorkoutCard from '@/components/WorkoutCard';
 import StatsCard from '@/components/StatsCard';
 import ActivityChart from '@/components/ActivityChart';
 import Navigation from '@/components/Navigation';
+import { useNavigate } from 'react-router-dom';
+import { showActionToast } from '@/utils/toast-utils';
 
 // Sample data
 const weeklyActivity = [
@@ -46,11 +48,37 @@ const workouts = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleSeeAllActivity = () => {
+    navigate('/activity');
+  };
+
+  const handleSeeAllWorkouts = () => {
+    showActionToast("Showing all available workouts");
+  };
+
+  const handleWorkoutClick = (workoutId: number) => {
+    showActionToast(`Starting workout: ${workouts.find(w => w.id === workoutId)?.title}`);
+  };
+
+  const handleBellClick = () => {
+    showActionToast("No new notifications");
+  };
+
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
       <Header 
         title="Hi, Alex" 
         subtitle="Let's check your activity" 
+        action={
+          <button 
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
+            onClick={handleBellClick}
+          >
+            <Flame size={20} className="text-fitness-dark" />
+          </button>
+        }
       />
       
       <div className="grid grid-cols-2 gap-4 mb-6">
@@ -77,7 +105,12 @@ const Home = () => {
       <section className="mb-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Today Activity</h2>
-          <button className="text-sm font-medium text-fitness-primary">See All</button>
+          <button 
+            className="text-sm font-medium text-fitness-primary"
+            onClick={handleSeeAllActivity}
+          >
+            See All
+          </button>
         </div>
         <ActivityChart data={weeklyActivity} />
       </section>
@@ -85,7 +118,12 @@ const Home = () => {
       <section>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Recommended Workouts</h2>
-          <button className="text-sm font-medium text-fitness-primary">See All</button>
+          <button 
+            className="text-sm font-medium text-fitness-primary"
+            onClick={handleSeeAllWorkouts}
+          >
+            See All
+          </button>
         </div>
         <div className="grid grid-cols-1 gap-4">
           {workouts.map((workout, index) => (
@@ -98,6 +136,7 @@ const Home = () => {
               duration={workout.duration}
               className="delay-100"
               style={{ animationDelay: `${index * 100}ms` }}
+              onClick={() => handleWorkoutClick(workout.id)}
             />
           ))}
         </div>

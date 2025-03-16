@@ -8,8 +8,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { showActionToast } from '@/utils/toast-utils';
 
-const scheduledWorkouts = [
+const initialWorkouts = [
   {
     id: 1,
     title: 'Morning Yoga',
@@ -35,10 +36,55 @@ const scheduledWorkouts = [
 
 const SchedulePage = () => {
   const [date, setDate] = useState<Date>(new Date());
+  const [scheduledWorkouts, setScheduledWorkouts] = useState(initialWorkouts);
+
+  const handleDateChange = (newDate: Date | undefined) => {
+    if (newDate) {
+      setDate(newDate);
+      showActionToast(`Showing schedule for ${format(newDate, 'MMMM d, yyyy')}`);
+    }
+  };
+
+  const handleWorkoutClick = (workoutId: number) => {
+    setScheduledWorkouts(prev => 
+      prev.map(workout => 
+        workout.id === workoutId 
+          ? { ...workout, completed: !workout.completed } 
+          : workout
+      )
+    );
+    
+    const workout = scheduledWorkouts.find(w => w.id === workoutId);
+    if (workout) {
+      if (!workout.completed) {
+        showActionToast(`Completed: ${workout.title}`);
+      } else {
+        showActionToast(`Marked as incomplete: ${workout.title}`);
+      }
+    }
+  };
+
+  const handleAddNewWorkout = () => {
+    showActionToast("Add new workout feature coming soon!");
+  };
+
+  const handleBellClick = () => {
+    showActionToast("No new notifications");
+  };
 
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
-      <Header title="Schedule" />
+      <Header 
+        title="Schedule" 
+        action={
+          <button 
+            className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
+            onClick={handleBellClick}
+          >
+            <Clock size={20} className="text-fitness-dark" />
+          </button>
+        }
+      />
       
       <div className="mb-6 bg-white rounded-2xl p-4 animate-fade-up">
         <Popover>
@@ -58,7 +104,7 @@ const SchedulePage = () => {
             <Calendar
               mode="single"
               selected={date}
-              onSelect={(date) => date && setDate(date)}
+              onSelect={handleDateChange}
               initialFocus
               className="p-3 pointer-events-auto"
             />
@@ -77,10 +123,11 @@ const SchedulePage = () => {
             <div 
               key={workout.id}
               className={cn(
-                "bg-white rounded-2xl p-4 border-l-4 animate-fade-up flex items-center",
+                "bg-white rounded-2xl p-4 border-l-4 animate-fade-up flex items-center cursor-pointer hover:shadow-md transition-all",
                 workout.completed ? "border-green-500" : "border-fitness-primary"
               )}
               style={{ animationDelay: `${index * 100}ms` }}
+              onClick={() => handleWorkoutClick(workout.id)}
             >
               <div className="flex-1">
                 <h3 className="font-medium">{workout.title}</h3>
@@ -110,7 +157,10 @@ const SchedulePage = () => {
       </div>
       
       <div className="flex justify-center animate-fade-up" style={{ animationDelay: '300ms' }}>
-        <button className="bg-fitness-primary text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-2px]">
+        <button 
+          className="bg-fitness-primary text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-[-2px]"
+          onClick={handleAddNewWorkout}
+        >
           + Add New Workout
         </button>
       </div>
