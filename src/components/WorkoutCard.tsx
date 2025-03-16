@@ -9,6 +9,7 @@ interface WorkoutCardProps {
   difficulty: 'easy' | 'medium' | 'hard';
   duration: string;
   className?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
 }
 
@@ -25,6 +26,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({
   difficulty,
   duration,
   className,
+  style,
   onClick
 }) => {
   return (
@@ -33,6 +35,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({
         "fitness-card flex flex-col h-[280px] animate-fade-up", 
         className
       )}
+      style={style}
       onClick={onClick}
     >
       <div className="relative h-[180px] overflow-hidden rounded-t-2xl">

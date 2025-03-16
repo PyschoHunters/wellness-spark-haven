@@ -5,6 +5,10 @@ import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import { cn } from '@/lib/utils';
 
+// Define these components before they're used
+const Flame = () => <span className="text-fitness-secondary">🔥</span>;
+const Clock = () => <span className="text-fitness-gray">⏱️</span>;
+
 const profileStats = [
   { label: 'Workouts', value: '32', icon: Activity, color: 'text-fitness-primary' },
   { label: 'Calories', value: '12,400', icon: Flame, color: 'text-fitness-secondary' },
@@ -17,10 +21,6 @@ const menuItems = [
   { icon: BarChart2, label: 'Workout Stats', color: 'bg-green-100 text-green-600' },
   { icon: Settings, label: 'Settings', color: 'bg-gray-100 text-gray-600' },
 ];
-
-// These are missing from the imports, so we need to add them
-const Flame = () => <span className="text-fitness-secondary">🔥</span>;
-const Clock = () => <span className="text-fitness-gray">⏱️</span>;
 
 const ProfilePage = () => {
   return (
