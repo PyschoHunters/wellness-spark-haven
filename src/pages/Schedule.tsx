@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Clock, Check } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
+import EmailForm from '@/components/EmailForm';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,8 @@ const initialWorkouts = [
 const SchedulePage = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [scheduledWorkouts, setScheduledWorkouts] = useState(initialWorkouts);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [selectedWorkout, setSelectedWorkout] = useState<typeof initialWorkouts[0] | null>(null);
 
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
@@ -70,6 +73,11 @@ const SchedulePage = () => {
 
   const handleBellClick = () => {
     showActionToast("No new notifications");
+  };
+  
+  const handleScheduleReminder = (workout: typeof initialWorkouts[0]) => {
+    setSelectedWorkout(workout);
+    setShowEmailForm(true);
   };
 
   return (
@@ -123,33 +131,52 @@ const SchedulePage = () => {
             <div 
               key={workout.id}
               className={cn(
-                "bg-white rounded-2xl p-4 border-l-4 animate-fade-up flex items-center cursor-pointer hover:shadow-md transition-all",
+                "bg-white rounded-2xl p-4 border-l-4 animate-fade-up relative",
                 workout.completed ? "border-green-500" : "border-fitness-primary"
               )}
               style={{ animationDelay: `${index * 100}ms` }}
-              onClick={() => handleWorkoutClick(workout.id)}
             >
-              <div className="flex-1">
-                <h3 className="font-medium">{workout.title}</h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <Clock size={14} className="text-fitness-gray" />
-                  <span className="text-xs text-fitness-gray">{workout.time}</span>
-                  <span className="text-xs text-fitness-gray">•</span>
-                  <span className="text-xs text-fitness-gray">{workout.duration}</span>
+              <div className="flex items-center mb-3">
+                <div className="flex-1">
+                  <h3 className="font-medium">{workout.title}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Clock size={14} className="text-fitness-gray" />
+                    <span className="text-xs text-fitness-gray">{workout.time}</span>
+                    <span className="text-xs text-fitness-gray">•</span>
+                    <span className="text-xs text-fitness-gray">{workout.duration}</span>
+                  </div>
+                </div>
+                
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center cursor-pointer",
+                  workout.completed 
+                    ? "bg-green-100 text-green-500" 
+                    : "bg-fitness-gray-light text-fitness-primary"
+                )}
+                onClick={() => handleWorkoutClick(workout.id)}
+                >
+                  {workout.completed ? (
+                    <Check size={16} />
+                  ) : (
+                    <Clock size={16} />
+                  )}
                 </div>
               </div>
               
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center",
-                workout.completed 
-                  ? "bg-green-100 text-green-500" 
-                  : "bg-fitness-gray-light text-fitness-primary"
-              )}>
-                {workout.completed ? (
-                  <Check size={16} />
-                ) : (
-                  <Clock size={16} />
-                )}
+              <div className="flex gap-2">
+                <button 
+                  className="flex-1 bg-fitness-gray-light text-fitness-dark py-2 rounded-lg text-sm font-medium hover:bg-fitness-gray-light/80 transition-colors"
+                  onClick={() => handleWorkoutClick(workout.id)}
+                >
+                  {workout.completed ? 'Mark as Undone' : 'Mark as Done'}
+                </button>
+                
+                <button 
+                  className="flex-1 bg-fitness-primary text-white py-2 rounded-lg text-sm font-medium hover:bg-fitness-primary/90 transition-colors"
+                  onClick={() => handleScheduleReminder(workout)}
+                >
+                  Get Reminder
+                </button>
               </div>
             </div>
           ))}
@@ -164,6 +191,17 @@ const SchedulePage = () => {
           + Add New Workout
         </button>
       </div>
+      
+      {showEmailForm && selectedWorkout && (
+        <EmailForm 
+          workoutTitle={selectedWorkout.title}
+          workoutTime={selectedWorkout.time}
+          onClose={() => setShowEmailForm(false)}
+          onSubmit={() => {
+            showActionToast(`Email reminder scheduled for ${selectedWorkout.title}`);
+          }}
+        />
+      )}
       
       <Navigation />
     </div>

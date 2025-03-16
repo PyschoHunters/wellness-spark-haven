@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { CalendarDays, Clock, Dumbbell, TrendingUp } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
+import ActivityDetail from '@/components/ActivityDetail';
 import { cn } from '@/lib/utils';
 import { showActionToast } from '@/utils/toast-utils';
 
@@ -20,7 +21,13 @@ const activityHistory = [
     type: 'workout',
     duration: '32 min',
     calories: 350,
-    date: 'Today • 08:30 AM'
+    date: 'Today • 08:30 AM',
+    stats: [
+      { label: 'Average Heart Rate', value: '132 bpm' },
+      { label: 'Max Heart Rate', value: '156 bpm' },
+      { label: 'Steps', value: '4,567' },
+      { label: 'Distance', value: '0 km' }
+    ]
   },
   { 
     id: 2, 
@@ -28,7 +35,13 @@ const activityHistory = [
     type: 'running',
     duration: '45 min',
     calories: 480,
-    date: 'Today • 06:15 PM'
+    date: 'Today • 06:15 PM',
+    stats: [
+      { label: 'Distance', value: '5.2 km' },
+      { label: 'Pace', value: '8:39 min/km' },
+      { label: 'Average Heart Rate', value: '145 bpm' },
+      { label: 'Elevation Gain', value: '32 m' }
+    ]
   },
   { 
     id: 3, 
@@ -36,7 +49,13 @@ const activityHistory = [
     type: 'workout',
     duration: '50 min',
     calories: 520,
-    date: 'Yesterday • 07:45 AM'
+    date: 'Yesterday • 07:45 AM',
+    stats: [
+      { label: 'Average Heart Rate', value: '128 bpm' },
+      { label: 'Max Heart Rate', value: '152 bpm' },
+      { label: 'Steps', value: '5,823' },
+      { label: 'Distance', value: '0 km' }
+    ]
   },
   { 
     id: 4, 
@@ -44,7 +63,13 @@ const activityHistory = [
     type: 'workout',
     duration: '25 min',
     calories: 320,
-    date: 'Yesterday • 05:30 PM'
+    date: 'Yesterday • 05:30 PM',
+    stats: [
+      { label: 'Average Heart Rate', value: '148 bpm' },
+      { label: 'Max Heart Rate', value: '172 bpm' },
+      { label: 'Steps', value: '3,256' },
+      { label: 'Distance', value: '0 km' }
+    ]
   },
   { 
     id: 5, 
@@ -52,7 +77,13 @@ const activityHistory = [
     type: 'running',
     duration: '30 min',
     calories: 360,
-    date: '2 days ago • 06:30 AM'
+    date: '2 days ago • 06:30 AM',
+    stats: [
+      { label: 'Distance', value: '3.8 km' },
+      { label: 'Pace', value: '7:54 min/km' },
+      { label: 'Average Heart Rate', value: '142 bpm' },
+      { label: 'Elevation Gain', value: '18 m' }
+    ]
   },
 ];
 
@@ -70,6 +101,7 @@ const getActivityIcon = (type: string) => {
 const ActivityPage = () => {
   const [selectedType, setSelectedType] = useState('All');
   const [filteredActivities, setFilteredActivities] = useState(activityHistory);
+  const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
 
   const handleFilterChange = (type: string) => {
     setSelectedType(type);
@@ -94,13 +126,16 @@ const ActivityPage = () => {
   };
 
   const handleActivityClick = (activityId: number) => {
-    const activity = activityHistory.find(a => a.id === activityId);
-    showActionToast(`Viewing details for ${activity?.title}`);
+    setSelectedActivity(activityId);
   };
   
   const handleBellClick = () => {
     showActionToast("No new notifications");
   };
+
+  const getActivityDetails = (id: number) => {
+    return activityHistory.find(activity => activity.id === id);
+  }
 
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
@@ -171,6 +206,13 @@ const ActivityPage = () => {
           ))}
         </div>
       </div>
+      
+      {selectedActivity !== null && (
+        <ActivityDetail 
+          {...getActivityDetails(selectedActivity)!}
+          onClose={() => setSelectedActivity(null)}
+        />
+      )}
       
       <Navigation />
     </div>

@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Settings, ChevronRight, Activity, Award, BarChart2, Heart } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
+import Achievements from '@/components/Achievements';
+import WorkoutStats from '@/components/WorkoutStats';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
@@ -26,10 +28,16 @@ const menuItems = [
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [showWorkoutStats, setShowWorkoutStats] = useState(false);
 
   const handleMenuItemClick = (itemId: string, path?: string) => {
     if (path) {
       navigate(path);
+    } else if (itemId === 'achievements') {
+      setShowAchievements(true);
+    } else if (itemId === 'workout-stats') {
+      setShowWorkoutStats(true);
     } else {
       showActionToast(`${itemId} feature coming soon!`);
     }
@@ -63,13 +71,13 @@ const ProfilePage = () => {
       <div className="flex flex-col items-center mb-8 animate-fade-up">
         <div className="w-24 h-24 rounded-full bg-fitness-gray-light overflow-hidden mb-4">
           <img 
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780&auto=format&fit=crop" 
+            src="/lovable-uploads/21f1cb59-c5f4-4268-9bf0-8f45deac3592.png" 
             alt="Profile" 
             className="w-full h-full object-cover"
           />
         </div>
-        <h2 className="text-xl font-bold">Alex Johnson</h2>
-        <p className="text-sm text-fitness-gray">@alexjohnson • Premium Member</p>
+        <h2 className="text-xl font-bold">Manumohan</h2>
+        <p className="text-sm text-fitness-gray">@manumohan • Premium Member</p>
         
         <div className="w-full flex justify-between mt-6 bg-white rounded-2xl p-4">
           {profileStats.map((stat, index) => (
@@ -110,6 +118,14 @@ const ProfilePage = () => {
           Log Out
         </button>
       </div>
+      
+      {showAchievements && (
+        <Achievements onClose={() => setShowAchievements(false)} />
+      )}
+      
+      {showWorkoutStats && (
+        <WorkoutStats onClose={() => setShowWorkoutStats(false)} />
+      )}
       
       <Navigation />
     </div>

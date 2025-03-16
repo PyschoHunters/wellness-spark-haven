@@ -32,7 +32,7 @@ const WorkoutCard: React.FC<WorkoutCardProps> = ({
   return (
     <div 
       className={cn(
-        "fitness-card flex flex-col h-[280px] animate-fade-up", 
+        "fitness-card flex flex-col h-[280px] animate-fade-up cursor-pointer hover:shadow-md transition-all", 
         className
       )}
       style={style}

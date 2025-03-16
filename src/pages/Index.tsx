@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
 import WorkoutCard from '@/components/WorkoutCard';
+import WorkoutDetail from '@/components/WorkoutDetail';
 import StatsCard from '@/components/StatsCard';
 import ActivityChart from '@/components/ActivityChart';
 import Navigation from '@/components/Navigation';
@@ -26,29 +27,70 @@ const workouts = [
     title: 'Full Body Workout',
     subtitle: 'Improve your strength and energy',
     image: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=2070&auto=format&fit=crop',
+    description: 'A comprehensive workout targeting all major muscle groups. This balanced routine helps improve overall strength, endurance, and flexibility while boosting your energy levels throughout the day.',
     difficulty: 'medium',
-    duration: '30 min'
+    duration: '30 min',
+    calories: 320,
+    exercises: [
+      { name: 'Jumping Jacks', duration: '60 sec' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12 },
+      { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
+      { name: 'Plank', duration: '30 sec', sets: 3 },
+      { name: 'Mountain Climbers', duration: '45 sec' },
+      { name: 'Lunges', duration: '45 sec', sets: 3, reps: 10 },
+      { name: 'Burpees', duration: '30 sec' },
+      { name: 'Cool Down Stretching', duration: '2 min' }
+    ]
   },
   {
     id: 2,
     title: 'HIIT Training',
     subtitle: 'Burn calories efficiently',
     image: 'https://images.unsplash.com/photo-1549060279-7e168fcee0c2?q=80&w=2070&auto=format&fit=crop',
+    description: 'High-Intensity Interval Training (HIIT) alternates between intense bursts of activity and fixed periods of less-intense activity or rest. This type of training keeps your heart rate up and burns more calories in less time.',
     difficulty: 'hard',
-    duration: '25 min'
+    duration: '25 min',
+    calories: 380,
+    exercises: [
+      { name: 'Warm Up', duration: '2 min' },
+      { name: 'High Knees', duration: '40 sec', sets: 4 },
+      { name: 'Rest', duration: '20 sec', sets: 4 },
+      { name: 'Burpees', duration: '40 sec', sets: 4 },
+      { name: 'Rest', duration: '20 sec', sets: 4 },
+      { name: 'Jump Squats', duration: '40 sec', sets: 4 },
+      { name: 'Rest', duration: '20 sec', sets: 4 },
+      { name: 'Mountain Climbers', duration: '40 sec', sets: 4 },
+      { name: 'Rest', duration: '20 sec', sets: 4 },
+      { name: 'Cool Down', duration: '3 min' }
+    ]
   },
   {
     id: 3,
     title: 'Yoga Basics',
     subtitle: 'Improve flexibility and mindfulness',
     image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1920&auto=format&fit=crop',
+    description: 'This beginner-friendly yoga session focuses on basic poses and breathing techniques to enhance flexibility, balance, and mental clarity. Perfect for stress reduction and improving overall body awareness.',
     difficulty: 'easy',
-    duration: '40 min'
+    duration: '40 min',
+    calories: 180,
+    exercises: [
+      { name: 'Deep Breathing', duration: '3 min' },
+      { name: 'Child\'s Pose', duration: '2 min' },
+      { name: 'Downward Dog', duration: '2 min' },
+      { name: 'Warrior I', duration: '3 min' },
+      { name: 'Warrior II', duration: '3 min' },
+      { name: 'Triangle Pose', duration: '2 min' },
+      { name: 'Tree Pose', duration: '2 min' },
+      { name: 'Seated Forward Bend', duration: '2 min' },
+      { name: 'Bridge Pose', duration: '2 min' },
+      { name: 'Corpse Pose', duration: '5 min' }
+    ]
   }
 ];
 
 const Home = () => {
   const navigate = useNavigate();
+  const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
 
   const handleSeeAllActivity = () => {
     navigate('/activity');
@@ -59,17 +101,21 @@ const Home = () => {
   };
 
   const handleWorkoutClick = (workoutId: number) => {
-    showActionToast(`Starting workout: ${workouts.find(w => w.id === workoutId)?.title}`);
+    setSelectedWorkout(workoutId);
   };
 
   const handleBellClick = () => {
     showActionToast("No new notifications");
   };
 
+  const getWorkoutDetails = (id: number) => {
+    return workouts.find(w => w.id === id);
+  }
+
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
       <Header 
-        title="Hi, Alex" 
+        title="Hi, Manumohan" 
         subtitle="Let's check your activity" 
         action={
           <button 
@@ -141,6 +187,13 @@ const Home = () => {
           ))}
         </div>
       </section>
+      
+      {selectedWorkout !== null && (
+        <WorkoutDetail
+          {...getWorkoutDetails(selectedWorkout)!}
+          onClose={() => setSelectedWorkout(null)}
+        />
+      )}
       
       <Navigation />
     </div>
