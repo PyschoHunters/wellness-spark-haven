@@ -102,8 +102,17 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
           <button 
             className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium"
             onClick={() => {
+              // Send email reminder
+              const email = "manumohan.ai21@gmail.com";
+              const reminderTime = new Date();
+              reminderTime.setHours(reminderTime.getHours() + 1);
+              const formattedTime = `${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}`;
+              
+              import('@/utils/toast-utils').then(({ sendEmailReminder }) => {
+                sendEmailReminder(email, title, formattedTime);
+              });
+              
               onClose();
-              // Would normally start the workout here
             }}
           >
             Start Workout

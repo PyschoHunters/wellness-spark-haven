@@ -22,7 +22,17 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
   console.log(`Sending reminder to ${email} for ${workoutTitle} at ${workoutTime}`);
   showToast(
     "Reminder Email Sent", 
-    `A reminder has been sent to ${email} for your ${workoutTitle} workout`
+    `A reminder has been sent to ${email} for your ${workoutTitle} workout at ${workoutTime}`
+  );
+  
+  return true;
+};
+
+export const sendDietReminder = (email: string, mealType: string) => {
+  console.log(`Sending diet reminder to ${email} for ${mealType}`);
+  showToast(
+    "Diet Reminder Sent", 
+    `A meal plan reminder has been sent to ${email} for your ${mealType}`
   );
   
   return true;

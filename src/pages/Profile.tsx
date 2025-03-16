@@ -1,135 +1,70 @@
 
-import React, { useState } from 'react';
-import { Settings, ChevronRight, Activity, Award, BarChart2, Heart } from 'lucide-react';
-import Header from '@/components/Header';
+import React from 'react';
+import { Flame, Clock, Heart, Activity } from 'lucide-react';
 import Navigation from '@/components/Navigation';
-import Achievements from '@/components/Achievements';
-import WorkoutStats from '@/components/WorkoutStats';
-import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import Header from '@/components/Header';
+import DietTracker from '@/components/DietTracker';
+import BodyProgress from '@/components/BodyProgress';
+import DailyTips from '@/components/DailyTips';
 import { showActionToast } from '@/utils/toast-utils';
 
-// Define these components before they're used
-const Flame = () => <span className="text-fitness-secondary">🔥</span>;
-const Clock = () => <span className="text-fitness-gray">⏱️</span>;
-
-const profileStats = [
-  { label: 'Workouts', value: '32', icon: Activity, color: 'text-fitness-primary' },
-  { label: 'Calories', value: '12,400', icon: Flame, color: 'text-fitness-secondary' },
-  { label: 'Hours', value: '26', icon: Clock, color: 'text-fitness-gray' },
-];
-
-const menuItems = [
-  { id: 'achievements', icon: Award, label: 'Achievements', color: 'bg-purple-100 text-purple-600' },
-  { id: 'activity-history', icon: Activity, label: 'Activity History', color: 'bg-blue-100 text-blue-600', path: '/activity' },
-  { id: 'workout-stats', icon: BarChart2, label: 'Workout Stats', color: 'bg-green-100 text-green-600' },
-  { id: 'settings', icon: Settings, label: 'Settings', color: 'bg-gray-100 text-gray-600' },
-];
-
-const ProfilePage = () => {
-  const navigate = useNavigate();
-  const [showAchievements, setShowAchievements] = useState(false);
-  const [showWorkoutStats, setShowWorkoutStats] = useState(false);
-
-  const handleMenuItemClick = (itemId: string, path?: string) => {
-    if (path) {
-      navigate(path);
-    } else if (itemId === 'achievements') {
-      setShowAchievements(true);
-    } else if (itemId === 'workout-stats') {
-      setShowWorkoutStats(true);
-    } else {
-      showActionToast(`${itemId} feature coming soon!`);
-    }
+const Profile = () => {
+  const handleSeeAllAchievements = () => {
+    showActionToast("Viewing all achievements");
   };
 
-  const handleLogout = () => {
-    showActionToast("Logged out successfully");
-    setTimeout(() => {
-      navigate('/');
-    }, 1500);
-  };
-
-  const handleSettingsClick = () => {
-    showActionToast("Settings feature coming soon!");
+  const handleBellClick = () => {
+    showActionToast("No new notifications");
   };
 
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
       <Header 
-        title="Profile" 
+        title="Hi, Manumohan" 
+        subtitle="Check your fitness profile" 
         action={
           <button 
             className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
-            onClick={handleSettingsClick}
+            onClick={handleBellClick}
           >
-            <Settings size={20} className="text-fitness-dark" />
+            <Flame size={20} className="text-fitness-dark" />
           </button>
-        } 
+        }
       />
       
-      <div className="flex flex-col items-center mb-8 animate-fade-up">
-        <div className="w-24 h-24 rounded-full bg-fitness-gray-light overflow-hidden mb-4">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center bg-white rounded-2xl p-4 shadow-sm">
           <img 
-            src="/lovable-uploads/21f1cb59-c5f4-4268-9bf0-8f45deac3592.png" 
+            src="/lovable-uploads/11f24990-5ac1-4930-8ca7-eaea332a39ee.png" 
             alt="Profile" 
-            className="w-full h-full object-cover"
+            className="w-20 h-20 rounded-full object-cover"
           />
-        </div>
-        <h2 className="text-xl font-bold">Manumohan</h2>
-        <p className="text-sm text-fitness-gray">@manumohan • Premium Member</p>
-        
-        <div className="w-full flex justify-between mt-6 bg-white rounded-2xl p-4">
-          {profileStats.map((stat, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className={cn("mb-1", stat.color)}>
-                <stat.icon size={20} />
+          <div className="ml-4 flex-1">
+            <h2 className="font-bold text-xl">Manumohan</h2>
+            <p className="text-fitness-gray text-sm">manumohan.ai21@gmail.com</p>
+            <div className="flex gap-4 mt-2">
+              <div className="flex items-center gap-1">
+                <Activity size={14} className="text-fitness-primary" />
+                <span className="text-xs font-medium">Intermediate</span>
               </div>
-              <span className="font-bold">{stat.value}</span>
-              <span className="text-xs text-fitness-gray">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      <div className="space-y-3 animate-fade-up" style={{ animationDelay: '100ms' }}>
-        {menuItems.map((item, index) => (
-          <div 
-            key={index} 
-            className="flex items-center justify-between bg-white p-4 rounded-2xl cursor-pointer hover:shadow-sm transition-all duration-300"
-            onClick={() => handleMenuItemClick(item.id, item.path)}
-          >
-            <div className="flex items-center">
-              <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", item.color)}>
-                <item.icon size={20} />
+              <div className="flex items-center gap-1">
+                <Flame size={14} className="text-fitness-secondary" />
+                <span className="text-xs font-medium">1250 kcal/week</span>
               </div>
-              <span className="ml-3 font-medium">{item.label}</span>
             </div>
-            <ChevronRight size={20} className="text-fitness-gray" />
           </div>
-        ))}
+        </div>
+        
+        <DietTracker />
+        
+        <BodyProgress />
+        
+        <DailyTips />
       </div>
-      
-      <div className="mt-8 text-center animate-fade-up" style={{ animationDelay: '300ms' }}>
-        <button 
-          className="text-fitness-secondary font-medium"
-          onClick={handleLogout}
-        >
-          Log Out
-        </button>
-      </div>
-      
-      {showAchievements && (
-        <Achievements onClose={() => setShowAchievements(false)} />
-      )}
-      
-      {showWorkoutStats && (
-        <WorkoutStats onClose={() => setShowWorkoutStats(false)} />
-      )}
       
       <Navigation />
     </div>
   );
 };
 
-export default ProfilePage;
+export default Profile;

@@ -9,6 +9,7 @@ import ActivityChart from '@/components/ActivityChart';
 import Navigation from '@/components/Navigation';
 import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
+import ExerciseTimer from '@/components/ExerciseTimer';
 
 // Sample data
 const weeklyActivity = [
@@ -28,7 +29,7 @@ const workouts = [
     subtitle: 'Improve your strength and energy',
     image: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=2070&auto=format&fit=crop',
     description: 'A comprehensive workout targeting all major muscle groups. This balanced routine helps improve overall strength, endurance, and flexibility while boosting your energy levels throughout the day.',
-    difficulty: 'medium',
+    difficulty: 'medium' as const,
     duration: '30 min',
     calories: 320,
     exercises: [
@@ -48,7 +49,7 @@ const workouts = [
     subtitle: 'Burn calories efficiently',
     image: 'https://images.unsplash.com/photo-1549060279-7e168fcee0c2?q=80&w=2070&auto=format&fit=crop',
     description: 'High-Intensity Interval Training (HIIT) alternates between intense bursts of activity and fixed periods of less-intense activity or rest. This type of training keeps your heart rate up and burns more calories in less time.',
-    difficulty: 'hard',
+    difficulty: 'hard' as const,
     duration: '25 min',
     calories: 380,
     exercises: [
@@ -70,7 +71,7 @@ const workouts = [
     subtitle: 'Improve flexibility and mindfulness',
     image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1920&auto=format&fit=crop',
     description: 'This beginner-friendly yoga session focuses on basic poses and breathing techniques to enhance flexibility, balance, and mental clarity. Perfect for stress reduction and improving overall body awareness.',
-    difficulty: 'easy',
+    difficulty: 'easy' as const,
     duration: '40 min',
     calories: 180,
     exercises: [
@@ -91,6 +92,12 @@ const workouts = [
 const Home = () => {
   const navigate = useNavigate();
   const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
+  const [activeExercise, setActiveExercise] = useState<{
+    name: string;
+    duration: number;
+    index: number;
+    workoutId: number;
+  } | null>(null);
 
   const handleSeeAllActivity = () => {
     navigate('/activity');
@@ -111,6 +118,42 @@ const Home = () => {
   const getWorkoutDetails = (id: number) => {
     return workouts.find(w => w.id === id);
   }
+
+  const handleStartWorkout = (workoutId: number) => {
+    const workout = getWorkoutDetails(workoutId);
+    if (workout && workout.exercises.length > 0) {
+      // Start with the first exercise
+      setActiveExercise({
+        name: workout.exercises[0].name,
+        duration: parseInt(workout.exercises[0].duration) || 60,
+        index: 0,
+        workoutId
+      });
+      setSelectedWorkout(null);
+    }
+  };
+
+  const handleExerciseComplete = () => {
+    if (activeExercise) {
+      const workout = getWorkoutDetails(activeExercise.workoutId);
+      if (workout) {
+        const nextIndex = activeExercise.index + 1;
+        if (nextIndex < workout.exercises.length) {
+          // Move to next exercise
+          setActiveExercise({
+            name: workout.exercises[nextIndex].name,
+            duration: parseInt(workout.exercises[nextIndex].duration) || 60,
+            index: nextIndex,
+            workoutId: activeExercise.workoutId
+          });
+        } else {
+          // Workout complete
+          setActiveExercise(null);
+          showActionToast("Workout Complete! Great job!");
+        }
+      }
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
@@ -178,7 +221,7 @@ const Home = () => {
               title={workout.title}
               subtitle={workout.subtitle}
               image={workout.image}
-              difficulty={workout.difficulty as 'easy' | 'medium' | 'hard'}
+              difficulty={workout.difficulty}
               duration={workout.duration}
               className="delay-100"
               style={{ animationDelay: `${index * 100}ms` }}
@@ -192,6 +235,20 @@ const Home = () => {
         <WorkoutDetail
           {...getWorkoutDetails(selectedWorkout)!}
           onClose={() => setSelectedWorkout(null)}
+        />
+      )}
+      
+      {activeExercise && (
+        <ExerciseTimer
+          exercise={activeExercise.name}
+          nextExercise={
+            activeExercise.index < getWorkoutDetails(activeExercise.workoutId)!.exercises.length - 1
+              ? getWorkoutDetails(activeExercise.workoutId)!.exercises[activeExercise.index + 1].name
+              : undefined
+          }
+          duration={activeExercise.duration}
+          onComplete={handleExerciseComplete}
+          onClose={() => setActiveExercise(null)}
         />
       )}
       
