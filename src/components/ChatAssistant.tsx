@@ -32,6 +32,14 @@ const faqs: FAQ[] = [
   {
     question: "Who can I contact for support?",
     answer: "For any questions or support, please email us at manumohan.ai21@gmail.com"
+  },
+  {
+    question: "app features",
+    answer: "Our fitness app includes: 1) Workout tracking to log your exercises, 2) Custom timers for your workouts, 3) Scheduling with email reminders, 4) Progress statistics and charts, and 5) Personalized workout recommendations."
+  },
+  {
+    question: "email reminders",
+    answer: "This app sends email reminders for your scheduled workouts. To get a reminder, go to the Schedule tab, click on a workout, and select 'Get Reminder'. Enter your email (manumohan.ai21@gmail.com) and we'll send you a notification before your workout starts."
   }
 ];
 
@@ -49,6 +57,46 @@ const ChatAssistant: React.FC = () => {
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+  
+  const findMatchingFaq = (userQuery: string): FAQ | undefined => {
+    const normalizedQuery = userQuery.toLowerCase().trim();
+    
+    // First try exact match
+    const exactMatch = faqs.find(faq => 
+      faq.question.toLowerCase() === normalizedQuery
+    );
+    
+    if (exactMatch) return exactMatch;
+    
+    // Then try partial matches
+    const partialMatches = faqs.filter(faq => {
+      // Check if query contains key terms from FAQ question
+      return faq.question.toLowerCase().includes(normalizedQuery) || 
+        normalizedQuery.includes(faq.question.toLowerCase());
+    });
+    
+    // If we have a partial match, return the best one (shortest question for relevance)
+    if (partialMatches.length > 0) {
+      return partialMatches.sort((a, b) => a.question.length - b.question.length)[0];
+    }
+    
+    // Check for keyword matches
+    const keywords = normalizedQuery.split(' ');
+    for (const keyword of keywords) {
+      if (keyword.length < 3) continue; // Skip very short words
+      
+      const keywordMatches = faqs.filter(faq => 
+        faq.question.toLowerCase().includes(keyword) || 
+        faq.answer.toLowerCase().includes(keyword)
+      );
+      
+      if (keywordMatches.length > 0) {
+        return keywordMatches[0];
+      }
+    }
+    
+    return undefined;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,11 +107,8 @@ const ChatAssistant: React.FC = () => {
     const newMessages = [...messages, {type: 'user' as const, content: query}];
     setMessages(newMessages);
     
-    // Find matching FAQ or provide default response
-    const matchingFaq = faqs.find(faq => 
-      faq.question.toLowerCase().includes(query.toLowerCase()) || 
-      query.toLowerCase().includes(faq.question.toLowerCase().split(' ').filter(word => word.length > 3).join(' '))
-    );
+    // Find matching FAQ using improved matching
+    const matchingFaq = findMatchingFaq(query);
     
     setTimeout(() => {
       if (matchingFaq) {
@@ -71,7 +116,7 @@ const ChatAssistant: React.FC = () => {
       } else {
         setMessages([
           ...newMessages, 
-          {type: 'bot' as const, content: "I'm not sure about that. You can email manumohan.ai21@gmail.com for more specific questions."}
+          {type: 'bot' as const, content: "I don't have information about that specific topic. For our app features, try asking 'What features does this app offer?' or for support, please email manumohan.ai21@gmail.com for more details."}
         ]);
       }
     }, 500);

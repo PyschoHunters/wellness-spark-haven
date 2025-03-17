@@ -17,27 +17,28 @@ export const showActionToast = (message: string) => {
 };
 
 export const sendEmailReminder = (email: string, workoutTitle: string, workoutTime: string) => {
-  // This would ideally connect to a backend service
-  // For now, we'll simulate it with a toast notification
-  console.log(`Sending reminder to ${email} for ${workoutTitle} at ${workoutTime}`);
+  // NOTE: This is a demo app, so no actual emails are sent
+  // In a production environment, this would connect to a backend email service
+  console.log(`[DEMO] Email would be sent to ${email} for ${workoutTitle} at ${workoutTime}`);
   
   // Show more detailed information
   showToast(
-    "Reminder Email Sent", 
-    `A reminder has been sent to ${email} for your ${workoutTitle} workout at ${workoutTime}. Please check your email inbox or spam folder.`
+    "Reminder Email Configured", 
+    `In a real app, a reminder email would be sent to ${email} for your "${workoutTitle}" workout at ${workoutTime}. This is a demo version, so no actual email is sent.`
   );
   
   // Also show a more immediate notification
-  showActionToast(`Email reminder sent to ${email}`);
+  showActionToast(`Email reminder configured for ${email}`);
   
   return true;
 };
 
 export const sendDietReminder = (email: string, mealType: string) => {
-  console.log(`Sending diet reminder to ${email} for ${mealType}`);
+  console.log(`[DEMO] Diet reminder would be sent to ${email} for ${mealType}`);
+  
   showToast(
-    "Diet Reminder Sent", 
-    `A meal plan reminder has been sent to ${email} for your ${mealType}`
+    "Diet Reminder Configured", 
+    `In a real app, a meal plan reminder would be sent to ${email} for your ${mealType}. This is a demo version, so no actual email is sent.`
   );
   
   return true;
