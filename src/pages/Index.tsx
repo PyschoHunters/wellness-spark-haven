@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -89,6 +88,16 @@ const workouts = [
   }
 ];
 
+const getExerciseImage = (name: string): string => {
+  const exerciseImages: Record<string, string> = {
+    'Plank': '/lovable-uploads/aef82357-db4d-4b21-a448-5255c62690db.png',
+    'Push-ups': '/lovable-uploads/0993405e-8d31-415d-a879-e39436efe870.png',
+    'Jumping Jacks': '/lovable-uploads/1a22edd2-d4e5-48dd-a654-165662bbc27a.png',
+  };
+  
+  return exerciseImages[name] || '';
+};
+
 const Home = () => {
   const navigate = useNavigate();
   const [selectedWorkout, setSelectedWorkout] = useState<number | null>(null);
@@ -123,14 +132,18 @@ const Home = () => {
   const handleStartWorkout = (workoutId: number) => {
     const workout = getWorkoutDetails(workoutId);
     if (workout && workout.exercises.length > 0) {
-      // Start with the first exercise
       const firstExercise = workout.exercises[0];
+      
+      const exerciseImage = 'image' in firstExercise && firstExercise.image 
+        ? firstExercise.image 
+        : getExerciseImage(firstExercise.name);
+      
       setActiveExercise({
         name: firstExercise.name,
         duration: parseInt(firstExercise.duration) || 60,
         index: 0,
         workoutId,
-        image: firstExercise.image || undefined // Handle undefined properly
+        image: exerciseImage || undefined
       });
       setSelectedWorkout(null);
     }
@@ -142,17 +155,20 @@ const Home = () => {
       if (workout) {
         const nextIndex = activeExercise.index + 1;
         if (nextIndex < workout.exercises.length) {
-          // Move to next exercise
           const nextExercise = workout.exercises[nextIndex];
+          
+          const exerciseImage = 'image' in nextExercise && nextExercise.image
+            ? nextExercise.image
+            : getExerciseImage(nextExercise.name);
+          
           setActiveExercise({
             name: nextExercise.name,
             duration: parseInt(nextExercise.duration) || 60,
             index: nextIndex,
             workoutId: activeExercise.workoutId,
-            image: nextExercise.image || undefined // Handle undefined properly
+            image: exerciseImage || undefined
           });
         } else {
-          // Workout complete
           setActiveExercise(null);
           showActionToast("Workout Complete! Great job!");
         }
