@@ -7,6 +7,11 @@ interface FAQ {
   answer: string;
 }
 
+interface ChatMessage {
+  type: 'user' | 'bot';
+  content: string;
+}
+
 const faqs: FAQ[] = [
   {
     question: "What features does this app offer?",
@@ -33,7 +38,7 @@ const faqs: FAQ[] = [
 const ChatAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [messages, setMessages] = useState<{type: 'user' | 'bot', content: string}[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {type: 'bot', content: 'Hi there! How can I help you today? You can ask me about our app features, schedules, or how to track your progress.'}
   ]);
 
@@ -51,7 +56,7 @@ const ChatAssistant: React.FC = () => {
     if (query.trim() === '') return;
     
     // Add user message
-    const newMessages = [...messages, {type: 'user', content: query}];
+    const newMessages = [...messages, {type: 'user' as const, content: query}];
     setMessages(newMessages);
     
     // Find matching FAQ or provide default response
@@ -62,11 +67,11 @@ const ChatAssistant: React.FC = () => {
     
     setTimeout(() => {
       if (matchingFaq) {
-        setMessages([...newMessages, {type: 'bot', content: matchingFaq.answer}]);
+        setMessages([...newMessages, {type: 'bot' as const, content: matchingFaq.answer}]);
       } else {
         setMessages([
           ...newMessages, 
-          {type: 'bot', content: "I'm not sure about that. You can email manumohan.ai21@gmail.com for more specific questions."}
+          {type: 'bot' as const, content: "I'm not sure about that. You can email manumohan.ai21@gmail.com for more specific questions."}
         ]);
       }
     }, 500);
