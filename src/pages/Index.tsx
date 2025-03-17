@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -33,10 +32,10 @@ const workouts = [
     duration: '30 min',
     calories: 320,
     exercises: [
-      { name: 'Jumping Jacks', duration: '60 sec' },
-      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12 },
+      { name: 'Jumping Jacks', duration: '60 sec', image: '/lovable-uploads/1a22edd2-d4e5-48dd-a654-165662bbc27a.png' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: '/lovable-uploads/0993405e-8d31-415d-a879-e39436efe870.png' },
       { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
-      { name: 'Plank', duration: '30 sec', sets: 3 },
+      { name: 'Plank', duration: '30 sec', sets: 3, image: '/lovable-uploads/aef82357-db4d-4b21-a448-5255c62690db.png' },
       { name: 'Mountain Climbers', duration: '45 sec' },
       { name: 'Lunges', duration: '45 sec', sets: 3, reps: 10 },
       { name: 'Burpees', duration: '30 sec' },
@@ -97,6 +96,7 @@ const Home = () => {
     duration: number;
     index: number;
     workoutId: number;
+    image?: string;
   } | null>(null);
 
   const handleSeeAllActivity = () => {
@@ -123,11 +123,13 @@ const Home = () => {
     const workout = getWorkoutDetails(workoutId);
     if (workout && workout.exercises.length > 0) {
       // Start with the first exercise
+      const firstExercise = workout.exercises[0];
       setActiveExercise({
-        name: workout.exercises[0].name,
-        duration: parseInt(workout.exercises[0].duration) || 60,
+        name: firstExercise.name,
+        duration: parseInt(firstExercise.duration) || 60,
         index: 0,
-        workoutId
+        workoutId,
+        image: firstExercise.image
       });
       setSelectedWorkout(null);
     }
@@ -140,11 +142,13 @@ const Home = () => {
         const nextIndex = activeExercise.index + 1;
         if (nextIndex < workout.exercises.length) {
           // Move to next exercise
+          const nextExercise = workout.exercises[nextIndex];
           setActiveExercise({
-            name: workout.exercises[nextIndex].name,
-            duration: parseInt(workout.exercises[nextIndex].duration) || 60,
+            name: nextExercise.name,
+            duration: parseInt(nextExercise.duration) || 60,
             index: nextIndex,
-            workoutId: activeExercise.workoutId
+            workoutId: activeExercise.workoutId,
+            image: nextExercise.image
           });
         } else {
           // Workout complete
@@ -231,7 +235,7 @@ const Home = () => {
         </div>
       </section>
       
-      {selectedWorkout !== null && (
+      {selectedWorkout !== null && getWorkoutDetails(selectedWorkout) && (
         <WorkoutDetail
           {...getWorkoutDetails(selectedWorkout)!}
           onClose={() => setSelectedWorkout(null)}
@@ -249,6 +253,7 @@ const Home = () => {
           duration={activeExercise.duration}
           onComplete={handleExerciseComplete}
           onClose={() => setActiveExercise(null)}
+          image={activeExercise.image}
         />
       )}
       
