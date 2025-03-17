@@ -9,7 +9,7 @@ export interface Exercise {
   duration: string;
   sets?: number;
   reps?: number;
-  image?: string;
+  image?: string; // Make sure image is explicitly optional
 }
 
 interface WorkoutDetailProps {

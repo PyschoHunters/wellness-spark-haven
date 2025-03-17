@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -129,7 +130,7 @@ const Home = () => {
         duration: parseInt(firstExercise.duration) || 60,
         index: 0,
         workoutId,
-        image: firstExercise.image
+        image: firstExercise.image || undefined // Handle undefined properly
       });
       setSelectedWorkout(null);
     }
@@ -148,7 +149,7 @@ const Home = () => {
             duration: parseInt(nextExercise.duration) || 60,
             index: nextIndex,
             workoutId: activeExercise.workoutId,
-            image: nextExercise.image
+            image: nextExercise.image || undefined // Handle undefined properly
           });
         } else {
           // Workout complete
