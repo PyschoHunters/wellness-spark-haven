@@ -24,6 +24,12 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
   const [isRunning, setIsRunning] = useState(true);
   const progress = (timeLeft / duration) * 100;
   
+  // Debug the image prop when component mounts
+  useEffect(() => {
+    console.log('ExerciseTimer mounted with exercise:', exercise);
+    console.log('Image path:', image);
+  }, [exercise, image]);
+  
   useEffect(() => {
     let timer: NodeJS.Timeout;
     
@@ -44,13 +50,13 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     setIsRunning(prev => !prev);
   };
   
-  // Determine which layout to show based on whether an image is provided
+  // Show image layout if there's an image
   const showImageLayout = !!image;
   
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
       {showImageLayout ? (
-        // Image layout (horizontal layout like in screenshot)
+        // Image layout
         <>
           <div className="absolute top-4 right-4 z-10">
             <button 
@@ -71,7 +77,17 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
             
             <div className="flex-1 relative">
               {image ? (
-                <img src={image} alt={exercise} className="w-full h-full object-cover" />
+                <div className="w-full h-full overflow-hidden">
+                  <img 
+                    src={image} 
+                    alt={exercise} 
+                    className="w-full h-full object-contain" 
+                    onError={(e) => {
+                      console.error('Image failed to load:', image);
+                      e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Exercise+Image+Not+Found';
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                   <p className="text-gray-500">No image available</p>

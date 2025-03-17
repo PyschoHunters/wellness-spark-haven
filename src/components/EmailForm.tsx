@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Mail, Info } from 'lucide-react';
 import { showActionToast, sendEmailReminder } from '@/utils/toast-utils';
 
 interface EmailFormProps {
@@ -17,6 +17,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
   onSubmit
 }) => {
   const [email, setEmail] = useState('manumohan.ai21@gmail.com');
+  const [isSending, setIsSending] = useState(false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,12 +27,17 @@ const EmailForm: React.FC<EmailFormProps> = ({
       return;
     }
     
-    // Send reminder email
-    sendEmailReminder(email, workoutTitle, workoutTime);
+    setIsSending(true);
     
-    // Close modal and notify parent
-    onSubmit();
-    onClose();
+    // Send reminder email
+    setTimeout(() => {
+      sendEmailReminder(email, workoutTitle, workoutTime);
+      
+      // Close modal and notify parent
+      onSubmit();
+      onClose();
+      setIsSending(false);
+    }, 1000);
   };
   
   return (
@@ -71,13 +77,28 @@ const EmailForm: React.FC<EmailFormProps> = ({
               placeholder="your@email.com"
               required
             />
+            <div className="mt-2 flex items-start gap-2 text-xs text-fitness-gray">
+              <Info size={14} className="shrink-0 mt-0.5" />
+              <p>Since this is a demo app, no actual emails are sent. In a production app, you would receive an email reminder.</p>
+            </div>
           </div>
           
           <button 
             type="submit"
-            className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium"
+            className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2"
+            disabled={isSending}
           >
-            Send Reminder
+            {isSending ? (
+              <>
+                <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                Sending...
+              </>
+            ) : (
+              <>
+                <Mail size={18} />
+                Send Reminder
+              </>
+            )}
           </button>
         </form>
       </div>

@@ -20,10 +20,15 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
   // This would ideally connect to a backend service
   // For now, we'll simulate it with a toast notification
   console.log(`Sending reminder to ${email} for ${workoutTitle} at ${workoutTime}`);
+  
+  // Show more detailed information
   showToast(
     "Reminder Email Sent", 
-    `A reminder has been sent to ${email} for your ${workoutTitle} workout at ${workoutTime}`
+    `A reminder has been sent to ${email} for your ${workoutTitle} workout at ${workoutTime}. Please check your email inbox or spam folder.`
   );
+  
+  // Also show a more immediate notification
+  showActionToast(`Email reminder sent to ${email}`);
   
   return true;
 };

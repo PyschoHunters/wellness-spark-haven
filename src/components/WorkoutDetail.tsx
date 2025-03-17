@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Clock, Flame, Dumbbell } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -47,15 +46,32 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
     hard: 'bg-fitness-secondary'
   };
 
+  const getExerciseImage = (name: string): string => {
+    const exerciseImages: Record<string, string> = {
+      'Plank': '/lovable-uploads/aef82357-db4d-4b21-a448-5255c62690db.png',
+      'Push-ups': '/lovable-uploads/0993405e-8d31-415d-a879-e39436efe870.png',
+      'Jumping Jacks': '/lovable-uploads/1a22edd2-d4e5-48dd-a654-165662bbc27a.png',
+    };
+    
+    console.log(`Looking up image for: ${name}`, exerciseImages[name] || 'No image found');
+    
+    return exerciseImages[name] || '';
+  };
+
   const handleExerciseClick = (exercise: Exercise, index: number) => {
-    // Extract numeric duration (default to 60 seconds if parsing fails)
     const seconds = parseInt(exercise.duration) || 60;
+    
+    console.log('Starting exercise:', exercise.name);
+    console.log('Exercise details:', exercise);
+    
+    const exerciseImage = exercise.image || getExerciseImage(exercise.name);
+    console.log('Using image:', exerciseImage);
     
     setActiveExercise({
       name: exercise.name,
       duration: seconds,
       index,
-      image: exercise.image || getExerciseImage(exercise.name)
+      image: exerciseImage
     });
   };
 
@@ -63,7 +79,6 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
     if (activeExercise) {
       const nextIndex = activeExercise.index + 1;
       if (nextIndex < exercises.length) {
-        // Move to next exercise
         const nextExercise = exercises[nextIndex];
         const seconds = parseInt(nextExercise.duration) || 60;
         
@@ -74,26 +89,12 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
           image: nextExercise.image || getExerciseImage(nextExercise.name)
         });
       } else {
-        // Workout complete
         setActiveExercise(null);
         import('@/utils/toast-utils').then(({ showActionToast }) => {
           showActionToast("Workout Complete! Great job!");
         });
       }
     }
-  };
-
-  // Helper function to get exercise images based on name
-  const getExerciseImage = (name: string): string => {
-    // Map common exercises to uploaded images
-    const exerciseImages: Record<string, string> = {
-      'Plank': '/lovable-uploads/aef82357-db4d-4b21-a448-5255c62690db.png',
-      'Push-ups': '/lovable-uploads/0993405e-8d31-415d-a879-e39436efe870.png',
-      'Jumping Jacks': '/lovable-uploads/1a22edd2-d4e5-48dd-a654-165662bbc27a.png',
-    };
-    
-    // Return image URL if exists, otherwise return empty string
-    return exerciseImages[name] || '';
   };
 
   return (
@@ -167,7 +168,6 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
               if (exercises.length > 0) {
                 handleExerciseClick(exercises[0], 0);
               } else {
-                // Send email reminder
                 const email = "manumohan.ai21@gmail.com";
                 const reminderTime = new Date();
                 reminderTime.setHours(reminderTime.getHours() + 1);
