@@ -40,6 +40,30 @@ const faqs: FAQ[] = [
   {
     question: "email reminders",
     answer: "This app sends email reminders for your scheduled workouts. To get a reminder, go to the Schedule tab, click on a workout, and select 'Get Reminder'. Enter your email (manumohan.ai21@gmail.com) and we'll send you a notification before your workout starts."
+  },
+  {
+    question: "workout types",
+    answer: "We offer various workout types including: Full Body Workout, HIIT Training, Yoga Basics, Cardio, Strength Training, and more. Each workout comes with detailed instructions and timers."
+  },
+  {
+    question: "exercise routines",
+    answer: "Our exercise routines include jumping jacks, push-ups, squats, planks, mountain climbers, lunges, burpees, yoga poses and many more. Each exercise comes with an image and timer to help you perform it correctly."
+  },
+  {
+    question: "how to use timers",
+    answer: "When you start a workout, each exercise has its own timer. Follow the countdown to complete each exercise for the recommended duration. You can pause or skip exercises as needed."
+  },
+  {
+    question: "diet plans",
+    answer: "We offer customized diet plans based on your fitness goals. You can also receive email reminders for your meal schedules to help you stay on track with your nutrition."
+  },
+  {
+    question: "beginner tips",
+    answer: "For beginners, we recommend starting with our 'Yoga Basics' or 'Full Body Workout' at a slower pace. Focus on proper form rather than speed, and gradually increase intensity as you build strength and endurance."
+  },
+  {
+    question: "advanced workouts",
+    answer: "For advanced users, try our HIIT Training or create custom workout routines with higher intensity exercises. You can also increase the number of sets or reduce rest time between exercises."
   }
 ];
 

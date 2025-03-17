@@ -50,6 +50,13 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     setIsRunning(prev => !prev);
   };
   
+  // Format time display (MM:SS)
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+  
   // Show image layout if there's an image
   const showImageLayout = !!image;
   
@@ -75,13 +82,13 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
               )}
             </div>
             
-            <div className="flex-1 relative">
+            <div className="flex-1 relative overflow-hidden">
               {image ? (
-                <div className="w-full h-full overflow-hidden">
+                <div className="w-full h-3/4 max-h-[400px] overflow-hidden flex items-center justify-center">
                   <img 
                     src={image} 
                     alt={exercise} 
-                    className="w-full h-full object-contain" 
+                    className="object-contain max-w-full max-h-full" 
                     onError={(e) => {
                       console.error('Image failed to load:', image);
                       e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Exercise+Image+Not+Found';
@@ -94,13 +101,15 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
                 </div>
               )}
               
-              <div className="absolute bottom-4 left-4 text-5xl font-bold text-gray-400">
-                {timeLeft}
+              <div className="absolute bottom-24 left-0 right-0 flex justify-center">
+                <div className="bg-gray-800 text-white text-5xl font-bold py-4 px-8 rounded-xl">
+                  {formatTime(timeLeft)}
+                </div>
               </div>
               
-              <div className="absolute bottom-4 right-4 flex gap-2">
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
                 <button
-                  className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center"
+                  className="w-16 h-16 bg-white shadow-lg rounded-full flex items-center justify-center"
                   onClick={toggleTimer}
                 >
                   {isRunning ? (
@@ -114,7 +123,7 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
                   className="bg-white px-6 py-3 rounded-full shadow-lg font-semibold"
                   onClick={onComplete}
                 >
-                  Next
+                  Skip
                 </button>
               </div>
             </div>

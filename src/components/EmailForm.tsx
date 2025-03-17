@@ -29,11 +29,11 @@ const EmailForm: React.FC<EmailFormProps> = ({
     
     setIsSending(true);
     
-    // Send actual email reminder
+    // Send actual email reminder immediately
+    sendEmailReminder(email, workoutTitle, workoutTime);
+    
+    // Close modal and notify parent
     setTimeout(() => {
-      sendEmailReminder(email, workoutTitle, workoutTime);
-      
-      // Close modal and notify parent
       onSubmit();
       onClose();
       setIsSending(false);
@@ -79,7 +79,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
             />
             <div className="mt-2 flex items-start gap-2 text-xs text-fitness-gray">
               <Info size={14} className="shrink-0 mt-0.5" />
-              <p>An email will be sent to this address with workout details and time information.</p>
+              <p>An email will be sent immediately to this address with workout details.</p>
             </div>
           </div>
           
