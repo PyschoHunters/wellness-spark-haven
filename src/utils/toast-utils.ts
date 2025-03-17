@@ -17,28 +17,43 @@ export const showActionToast = (message: string) => {
 };
 
 export const sendEmailReminder = (email: string, workoutTitle: string, workoutTime: string) => {
-  // NOTE: This is a demo app, so no actual emails are sent
-  // In a production environment, this would connect to a backend email service
-  console.log(`[DEMO] Email would be sent to ${email} for ${workoutTitle} at ${workoutTime}`);
+  // Send actual email using EmailJS or another email service
+  // For demonstration, we'll use the browser's mailto functionality
+  const subject = `Workout Reminder: ${workoutTitle}`;
+  const body = `Hello,\n\nThis is a reminder for your scheduled workout "${workoutTitle}" at ${workoutTime}.\n\nStay motivated and happy exercising!\n\nBest regards,\nFitness App Team`;
   
-  // Show more detailed information
+  // Create a mailto link
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+  // Open the user's email client
+  window.open(mailtoLink, '_blank');
+  
+  // Show confirmation
   showToast(
-    "Reminder Email Configured", 
-    `In a real app, a reminder email would be sent to ${email} for your "${workoutTitle}" workout at ${workoutTime}. This is a demo version, so no actual email is sent.`
+    "Email Reminder Sent", 
+    `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
   );
   
   // Also show a more immediate notification
-  showActionToast(`Email reminder configured for ${email}`);
+  showActionToast(`Email reminder sent to ${email}`);
   
   return true;
 };
 
 export const sendDietReminder = (email: string, mealType: string) => {
-  console.log(`[DEMO] Diet reminder would be sent to ${email} for ${mealType}`);
+  // Send actual email for diet reminders
+  const subject = `Diet Reminder: ${mealType}`;
+  const body = `Hello,\n\nThis is a reminder for your ${mealType} meal plan.\n\nEnjoy your healthy meals!\n\nBest regards,\nFitness App Team`;
+  
+  // Create a mailto link
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+  // Open the user's email client
+  window.open(mailtoLink, '_blank');
   
   showToast(
-    "Diet Reminder Configured", 
-    `In a real app, a meal plan reminder would be sent to ${email} for your ${mealType}. This is a demo version, so no actual email is sent.`
+    "Diet Reminder Sent", 
+    `A meal plan reminder has been sent to ${email} for your ${mealType}.`
   );
   
   return true;

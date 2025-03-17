@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -6,6 +7,8 @@ import WorkoutDetail from '@/components/WorkoutDetail';
 import StatsCard from '@/components/StatsCard';
 import ActivityChart from '@/components/ActivityChart';
 import Navigation from '@/components/Navigation';
+import DailyTips from '@/components/DailyTips';
+import ChatAssistant from '@/components/ChatAssistant';
 import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
@@ -225,6 +228,11 @@ const Home = () => {
         <ActivityChart data={weeklyActivity} />
       </section>
       
+      {/* Daily Tips Section */}
+      <section className="mb-6">
+        <DailyTips />
+      </section>
+      
       <section>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Recommended Workouts</h2>
@@ -275,6 +283,7 @@ const Home = () => {
       )}
       
       <Navigation />
+      <ChatAssistant />
     </div>
   );
 };

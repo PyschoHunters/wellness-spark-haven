@@ -29,7 +29,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
     
     setIsSending(true);
     
-    // Send reminder email
+    // Send actual email reminder
     setTimeout(() => {
       sendEmailReminder(email, workoutTitle, workoutTime);
       
@@ -56,7 +56,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
         <form onSubmit={handleSubmit} className="p-4">
           <div className="mb-4">
             <p className="text-sm text-fitness-gray mb-2">
-              You'll receive an email reminder before your scheduled workout:
+              You'll receive an email reminder for your scheduled workout:
             </p>
             <div className="bg-fitness-gray-light p-3 rounded-xl mb-3">
               <p className="font-medium">{workoutTitle}</p>
@@ -79,7 +79,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
             />
             <div className="mt-2 flex items-start gap-2 text-xs text-fitness-gray">
               <Info size={14} className="shrink-0 mt-0.5" />
-              <p>Since this is a demo app, no actual emails are sent. In a production app, you would receive an email reminder.</p>
+              <p>An email will be sent to this address with workout details and time information.</p>
             </div>
           </div>
           

@@ -1,14 +1,16 @@
+
 import React, { useState } from 'react';
 import { X, Clock, Flame, Dumbbell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ExerciseTimer from './ExerciseTimer';
+import EmailForm from './EmailForm';
 
 export interface Exercise {
   name: string;
   duration: string;
   sets?: number;
   reps?: number;
-  image?: string; // Make sure image is explicitly optional
+  image?: string;
 }
 
 interface WorkoutDetailProps {
@@ -39,6 +41,8 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
     index: number;
     image?: string;
   } | null>(null);
+  
+  const [showEmailForm, setShowEmailForm] = useState(false);
 
   const difficultyColors = {
     easy: 'bg-green-500',
@@ -51,11 +55,29 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
       'Plank': '/lovable-uploads/aef82357-db4d-4b21-a448-5255c62690db.png',
       'Push-ups': '/lovable-uploads/0993405e-8d31-415d-a879-e39436efe870.png',
       'Jumping Jacks': '/lovable-uploads/1a22edd2-d4e5-48dd-a654-165662bbc27a.png',
+      'Squats': 'https://images.unsplash.com/photo-1584863231364-2edc166de576?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Mountain Climbers': 'https://images.unsplash.com/photo-1597347316205-36f6c451902a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Lunges': 'https://images.unsplash.com/photo-1603287681836-b174ce5074c2?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Burpees': 'https://images.unsplash.com/photo-1593476087123-36d1de271f08?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'High Knees': 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Jump Squats': 'https://images.unsplash.com/photo-1434608519344-49d77a699e1d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Warm Up': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Cool Down': 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Deep Breathing': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Child\'s Pose': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Downward Dog': 'https://images.unsplash.com/photo-1588286840104-8957b019727f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Warrior I': 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Warrior II': 'https://images.unsplash.com/photo-1599447494230-61a253204a76?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Triangle Pose': 'https://images.unsplash.com/photo-1617049885637-9e9343685150?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Tree Pose': 'https://images.unsplash.com/photo-1562088287-bde35a1ea917?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Seated Forward Bend': 'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Bridge Pose': 'https://images.unsplash.com/photo-1581122584612-713f89b6c4f8?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Corpse Pose': 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Rest': 'https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Cool Down Stretching': 'https://images.unsplash.com/photo-1518609571773-39b7d303a87b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3'
     };
     
-    console.log(`Looking up image for: ${name}`, exerciseImages[name] || 'No image found');
-    
-    return exerciseImages[name] || '';
+    return exerciseImages[name] || 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3';
   };
 
   const handleExerciseClick = (exercise: Exercise, index: number) => {
@@ -95,6 +117,10 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
         });
       }
     }
+  };
+
+  const handleSetupEmailReminder = () => {
+    setShowEmailForm(true);
   };
 
   return (
@@ -161,24 +187,19 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
           </div>
         </div>
         
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 flex gap-2">
           <button 
-            className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium"
+            className="flex-1 border border-fitness-primary text-fitness-primary py-3 rounded-xl font-medium"
+            onClick={handleSetupEmailReminder}
+          >
+            Get Reminder
+          </button>
+          <button 
+            className="flex-1 bg-fitness-primary text-white py-3 rounded-xl font-medium"
             onClick={() => {
               if (exercises.length > 0) {
                 handleExerciseClick(exercises[0], 0);
-              } else {
-                const email = "manumohan.ai21@gmail.com";
-                const reminderTime = new Date();
-                reminderTime.setHours(reminderTime.getHours() + 1);
-                const formattedTime = `${reminderTime.getHours()}:${reminderTime.getMinutes().toString().padStart(2, '0')}`;
-                
-                import('@/utils/toast-utils').then(({ sendEmailReminder }) => {
-                  sendEmailReminder(email, title, formattedTime);
-                });
-                
-                onClose();
-              }
+              } 
             }}
           >
             Start Workout
@@ -198,6 +219,15 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
           onComplete={handleExerciseComplete}
           onClose={() => setActiveExercise(null)}
           image={activeExercise.image}
+        />
+      )}
+      
+      {showEmailForm && (
+        <EmailForm
+          workoutTitle={title}
+          workoutTime={new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          onClose={() => setShowEmailForm(false)}
+          onSubmit={() => {}}
         />
       )}
     </div>
