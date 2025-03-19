@@ -5,7 +5,6 @@ import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';
 import BodyProgress from '@/components/BodyProgress';
-import DailyTips from '@/components/DailyTips';
 import PersonalRecommendations from '@/components/PersonalRecommendations';
 import { showActionToast } from '@/utils/toast-utils';
 import { Progress } from '@/components/ui/progress';
@@ -165,8 +164,6 @@ const Profile = () => {
         <DietTracker />
         
         <BodyProgress />
-        
-        <DailyTips />
       </div>
       
       <Dialog open={showAchievements} onOpenChange={setShowAchievements}>

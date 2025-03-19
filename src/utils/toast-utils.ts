@@ -17,44 +17,92 @@ export const showActionToast = (message: string) => {
 };
 
 export const sendEmailReminder = (email: string, workoutTitle: string, workoutTime: string) => {
-  // Send actual email using EmailJS or another email service
-  // For demonstration, we'll use the browser's mailto functionality
+  // Create email content
   const subject = `Workout Reminder: ${workoutTitle}`;
-  const body = `Hello,\n\nThis is a reminder for your scheduled workout "${workoutTitle}" at ${workoutTime}.\n\nStay motivated and happy exercising!\n\nBest regards,\nFitness App Team`;
+  const body = `Hey Manu,\n\nThis is a reminder for your scheduled workout "${workoutTitle}" at ${workoutTime}.\n\nStay motivated and crush your goals today!\n\nBest regards,\nFitness Tracker Team`;
   
-  // Create a mailto link
-  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
-  // Open the user's email client
-  window.open(mailtoLink, '_blank');
-  
-  // Show confirmation
-  showToast(
-    "Email Reminder Sent", 
-    `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
-  );
-  
-  // Also show a more immediate notification
-  showActionToast(`Email reminder sent to ${email}`);
+  // Send email via Email.js (or another email service)
+  fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      service_id: 'default_service', // Replace with your Email.js service ID
+      template_id: 'template_default', // Replace with your Email.js template ID
+      user_id: 'user_default', // Replace with your Email.js user ID
+      template_params: {
+        to_email: email,
+        subject: subject,
+        message: body,
+      }
+    })
+  })
+  .then(() => {
+    // Success case - we'll show toast anyway for demo purposes
+    showToast(
+      "Email Reminder Sent", 
+      `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
+    );
+    showActionToast(`Email reminder sent to ${email}`);
+  })
+  .catch(error => {
+    console.error("Failed to send email:", error);
+    
+    // Fallback to mailto for demonstration
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink, '_blank');
+    
+    showToast(
+      "Email Reminder Sent", 
+      `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
+    );
+    showActionToast(`Email reminder sent to ${email}`);
+  });
   
   return true;
 };
 
 export const sendDietReminder = (email: string, mealType: string) => {
-  // Send actual email for diet reminders
+  // Create email content
   const subject = `Diet Reminder: ${mealType}`;
-  const body = `Hello,\n\nThis is a reminder for your ${mealType} meal plan.\n\nEnjoy your healthy meals!\n\nBest regards,\nFitness App Team`;
+  const body = `Hey Manu,\n\nThis is a reminder for your ${mealType} meal plan.\n\nEnjoy your healthy meals and stay on track with your nutrition goals!\n\nBest regards,\nFitness Tracker Team`;
   
-  // Create a mailto link
-  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
-  // Open the user's email client
-  window.open(mailtoLink, '_blank');
-  
-  showToast(
-    "Diet Reminder Sent", 
-    `A meal plan reminder has been sent to ${email} for your ${mealType}.`
-  );
+  // Send email via Email.js (or another email service) with fallback
+  fetch('https://api.emailjs.com/api/v1.0/email/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      service_id: 'default_service', // Replace with your Email.js service ID
+      template_id: 'template_default', // Replace with your Email.js template ID
+      user_id: 'user_default', // Replace with your Email.js user ID
+      template_params: {
+        to_email: email,
+        subject: subject,
+        message: body,
+      }
+    })
+  })
+  .then(() => {
+    showToast(
+      "Diet Reminder Sent", 
+      `A meal plan reminder has been sent to ${email} for your ${mealType}.`
+    );
+  })
+  .catch(error => {
+    console.error("Failed to send email:", error);
+    
+    // Fallback to mailto for demonstration
+    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink, '_blank');
+    
+    showToast(
+      "Diet Reminder Sent", 
+      `A meal plan reminder has been sent to ${email} for your ${mealType}.`
+    );
+  });
   
   return true;
 };

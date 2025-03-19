@@ -52,6 +52,36 @@ const meals: Record<string, MealItem[]> = {
         fats: 5,
         fiber: 6
       }
+    },
+    {
+      id: 7,
+      name: 'Masala Dosa',
+      calories: 235,
+      prepTime: '30 min',
+      image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop',
+      description: 'Thin crispy rice and lentil crepe filled with spiced potato filling, served with coconut chutney and sambar.',
+      ingredients: ['Rice flour', 'Urad dal', 'Potatoes', 'Mustard seeds', 'Curry leaves', 'Turmeric', 'Green chilies', 'Onions'],
+      nutritionalInfo: {
+        protein: 6,
+        carbs: 45,
+        fats: 4,
+        fiber: 3
+      }
+    },
+    {
+      id: 8,
+      name: 'Poha',
+      calories: 170,
+      prepTime: '15 min',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      description: 'Flattened rice flakes tempered with mustard seeds, curry leaves, and mild spices, topped with fresh coriander and lemon juice.',
+      ingredients: ['Flattened rice (poha)', 'Mustard seeds', 'Curry leaves', 'Onions', 'Green chilies', 'Turmeric', 'Lemon', 'Coriander'],
+      nutritionalInfo: {
+        protein: 4,
+        carbs: 35,
+        fats: 2,
+        fiber: 2
+      }
     }
   ],
   lunch: [
@@ -84,6 +114,36 @@ const meals: Record<string, MealItem[]> = {
         fats: 58,
         fiber: 22
       }
+    },
+    {
+      id: 9,
+      name: 'Rajma Chawal',
+      calories: 350,
+      prepTime: '45 min',
+      image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&auto=format&fit=crop',
+      description: 'Protein-rich kidney bean curry cooked with aromatic spices, served with steamed rice.',
+      ingredients: ['Kidney beans', 'Onions', 'Tomatoes', 'Garlic', 'Ginger', 'Garam masala', 'Cumin', 'Rice'],
+      nutritionalInfo: {
+        protein: 15,
+        carbs: 60,
+        fats: 5,
+        fiber: 15
+      }
+    },
+    {
+      id: 10,
+      name: 'Paneer Tikka Wrap',
+      calories: 420,
+      prepTime: '30 min',
+      image: 'https://images.unsplash.com/photo-1651534986345-2a47162f7647?w=800&auto=format&fit=crop',
+      description: 'Tandoori-style grilled cottage cheese with vegetables wrapped in a whole wheat roti.',
+      ingredients: ['Paneer', 'Bell peppers', 'Onions', 'Yogurt', 'Tandoori masala', 'Whole wheat roti', 'Mint chutney'],
+      nutritionalInfo: {
+        protein: 20,
+        carbs: 40,
+        fats: 18,
+        fiber: 6
+      }
     }
   ],
   dinner: [
@@ -101,6 +161,36 @@ const meals: Record<string, MealItem[]> = {
         fats: 25,
         fiber: 8
       }
+    },
+    {
+      id: 11,
+      name: 'Dal Tadka with Roti',
+      calories: 320,
+      prepTime: '35 min',
+      image: 'https://images.unsplash.com/photo-1613292443291-9f06c2a5a549?w=800&auto=format&fit=crop',
+      description: 'Yellow lentils tempered with cumin, garlic, and dried red chilies, served with whole wheat flatbread.',
+      ingredients: ['Yellow lentils', 'Cumin seeds', 'Garlic', 'Dried red chilies', 'Turmeric', 'Ghee', 'Whole wheat flour', 'Coriander'],
+      nutritionalInfo: {
+        protein: 14,
+        carbs: 50,
+        fats: 7,
+        fiber: 12
+      }
+    },
+    {
+      id: 12,
+      name: 'Vegetable Biryani',
+      calories: 380,
+      prepTime: '60 min',
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800&auto=format&fit=crop',
+      description: 'Fragrant basmati rice cooked with mixed vegetables and aromatic spices, garnished with fried onions.',
+      ingredients: ['Basmati rice', 'Mixed vegetables', 'Biryani masala', 'Saffron', 'Mint leaves', 'Fried onions', 'Yogurt', 'Ghee'],
+      nutritionalInfo: {
+        protein: 9,
+        carbs: 65,
+        fats: 10,
+        fiber: 7
+      }
     }
   ],
   snacks: [
@@ -117,6 +207,36 @@ const meals: Record<string, MealItem[]> = {
         carbs: 20,
         fats: 5,
         fiber: 3
+      }
+    },
+    {
+      id: 13,
+      name: 'Samosa',
+      calories: 180,
+      prepTime: '45 min',
+      image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop',
+      description: 'Crispy pastry filled with spiced potatoes and peas, served with mint and tamarind chutneys.',
+      ingredients: ['All-purpose flour', 'Potatoes', 'Peas', 'Cumin seeds', 'Garam masala', 'Green chilies', 'Mint chutney', 'Tamarind chutney'],
+      nutritionalInfo: {
+        protein: 3,
+        carbs: 25,
+        fats: 8,
+        fiber: 2
+      }
+    },
+    {
+      id: 14,
+      name: 'Masala Chai with Mathri',
+      calories: 160,
+      prepTime: '15 min',
+      image: 'https://images.unsplash.com/photo-1561336313-0bd5e0b27ec8?w=800&auto=format&fit=crop',
+      description: 'Spiced Indian tea served with savory flaky biscuits.',
+      ingredients: ['Black tea', 'Milk', 'Cardamom', 'Ginger', 'Cloves', 'All-purpose flour', 'Carom seeds', 'Black pepper'],
+      nutritionalInfo: {
+        protein: 4,
+        carbs: 22,
+        fats: 7,
+        fiber: 1
       }
     }
   ]

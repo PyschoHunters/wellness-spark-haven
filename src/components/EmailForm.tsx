@@ -37,7 +37,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
       onSubmit();
       onClose();
       setIsSending(false);
-    }, 1000);
+    }, 1500);
   };
   
   return (

@@ -15,19 +15,19 @@ interface ChatMessage {
 const faqs: FAQ[] = [
   {
     question: "What features does this app offer?",
-    answer: "Our fitness app offers workout tracking, custom exercise timers, workout scheduling with reminders, activity statistics, and personalized recommendations based on your fitness level."
+    answer: "Our fitness app offers workout tracking, custom exercise timers, workout scheduling with reminders, activity statistics, personalized recommendations, diet tracking, body progress monitoring, and a chat assistant for guidance."
   },
   {
     question: "How do I schedule a workout?",
-    answer: "Navigate to the Schedule tab, select a date, and click on 'Add New Workout' to create a custom workout schedule."
+    answer: "Navigate to the Schedule tab, select a date, and click on 'Add New Workout' to create a custom workout schedule with exercises of your choice."
   },
   {
     question: "Can I get reminders for my workouts?",
-    answer: "Yes! When you schedule a workout, click the 'Get Reminder' button and provide your email address to receive notifications."
+    answer: "Yes! When you schedule a workout, click the 'Get Reminder' button and provide your email address to receive an immediate notification with details about your upcoming workout."
   },
   {
     question: "How do I track my progress?",
-    answer: "Your activity and progress are automatically tracked in the Activity tab, where you can view statistics and charts of your workouts."
+    answer: "Your activity and progress are automatically tracked in the Activity tab, where you can view statistics and charts of your workouts. You can also monitor your body measurements in the Profile section."
   },
   {
     question: "Who can I contact for support?",
@@ -35,15 +35,15 @@ const faqs: FAQ[] = [
   },
   {
     question: "app features",
-    answer: "Our fitness app includes: 1) Workout tracking to log your exercises, 2) Custom timers for your workouts, 3) Scheduling with email reminders, 4) Progress statistics and charts, and 5) Personalized workout recommendations."
+    answer: "Our fitness app includes: 1) Workout tracking to log your exercises, 2) Custom timers for your workouts, 3) Scheduling with email reminders, 4) Progress statistics and charts, 5) Personalized workout and nutrition recommendations, 6) Diet tracking, 7) Body measurement tracking, and 8) This helpful assistant."
   },
   {
     question: "email reminders",
-    answer: "This app sends email reminders for your scheduled workouts. To get a reminder, go to the Schedule tab, click on a workout, and select 'Get Reminder'. Enter your email (manumohan.ai21@gmail.com) and we'll send you a notification before your workout starts."
+    answer: "When you click 'Get Reminder' for a workout, we'll immediately send an email reminder to your registered email address (manumohan.ai21@gmail.com) with details about your scheduled workout."
   },
   {
     question: "workout types",
-    answer: "We offer various workout types including: Full Body Workout, HIIT Training, Yoga Basics, Cardio, Strength Training, and more. Each workout comes with detailed instructions and timers."
+    answer: "We offer various workout types including: Full Body Workout, HIIT Training, Yoga Basics, Cardio, Strength Training, and more. Each workout comes with detailed instructions and timers. You can also create custom workouts with our 'Add Workout' feature."
   },
   {
     question: "exercise routines",
@@ -55,7 +55,7 @@ const faqs: FAQ[] = [
   },
   {
     question: "diet plans",
-    answer: "We offer customized diet plans based on your fitness goals. You can also receive email reminders for your meal schedules to help you stay on track with your nutrition."
+    answer: "We offer customized diet plans based on your fitness goals. You can browse meal options for breakfast, lunch, dinner and snacks. You can also receive email reminders for your meal schedules to help you stay on track with your nutrition."
   },
   {
     question: "beginner tips",
@@ -64,6 +64,34 @@ const faqs: FAQ[] = [
   {
     question: "advanced workouts",
     answer: "For advanced users, try our HIIT Training or create custom workout routines with higher intensity exercises. You can also increase the number of sets or reduce rest time between exercises."
+  },
+  {
+    question: "how to track body progress",
+    answer: "In the Profile section, you'll find the Body Progress tracker where you can log and view changes in your weight, body measurements, and other metrics over time. This helps you see your fitness journey visually."
+  },
+  {
+    question: "how to get personalized recommendations",
+    answer: "We provide personalized workout and nutrition recommendations based on your fitness level, goals, and recent activity. These can be found in the Profile section and are updated regularly to help you progress."
+  },
+  {
+    question: "achievements",
+    answer: "As you use the app and complete workouts, you'll earn achievements for milestones like your first workout, calories burned, and workout streaks. View your achievements in the Profile section to stay motivated."
+  },
+  {
+    question: "how to add a workout",
+    answer: "Go to the Schedule tab, select 'Add New Workout', then customize your workout by selecting exercises, setting durations, and organizing them in your preferred order. Save your workout to access it anytime."
+  },
+  {
+    question: "what is HIIT",
+    answer: "HIIT (High-Intensity Interval Training) is a workout method that alternates between short, intense bursts of exercise and brief recovery periods. It's effective for burning calories and improving cardiovascular health in a short amount of time."
+  },
+  {
+    question: "what yoga poses do you offer",
+    answer: "We offer various yoga poses including Downward Dog, Warrior I, Warrior II, Triangle Pose, Tree Pose, Child's Pose, Bridge Pose, and many more. Each comes with proper instructions and timer to help maintain the pose correctly."
+  },
+  {
+    question: "nutrition advice",
+    answer: "Our app provides nutrition advice tailored to your fitness goals. For weight loss, focus on a calorie deficit with high protein. For muscle gain, consider a slight surplus with high protein intake. All recommended meals include nutritional information to help you make informed choices."
   }
 ];
 

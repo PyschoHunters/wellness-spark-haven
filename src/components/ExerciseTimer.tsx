@@ -177,7 +177,7 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
                 </defs>
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-5xl font-bold">{timeLeft}</span>
+                <span className="text-5xl font-bold">{formatTime(timeLeft)}</span>
               </div>
             </div>
             
