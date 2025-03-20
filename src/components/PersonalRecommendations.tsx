@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Trophy, Timer, Calendar, Zap, RefreshCw } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
@@ -63,7 +62,6 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
     setIsLoading(true);
     
     try {
-      // Create prompt for Gemini API
       const prompt = `
         Generate personalized fitness and nutrition recommendations for a user with the following details:
         
@@ -82,8 +80,7 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips. Focus on Indian context if possible.
       `;
       
-      // Call Gemini API
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
+      const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,13 +102,17 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         })
       });
       
+      console.log('Gemini API response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to get response from Gemini API');
+        const errorData = await response.json();
+        console.error('Gemini API error:', errorData);
+        throw new Error(`Failed to get response from Gemini API: ${errorData?.error?.message || response.statusText}`);
       }
       
       const data = await response.json();
+      console.log('Gemini API response data:', data);
       
-      // Extract recommendation text from response
       let recommendationText = 'Unable to generate recommendation.';
       
       if (data.candidates && 
@@ -131,6 +132,21 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
       console.error("Error fetching AI recommendation:", error);
       setIsLoading(false);
       showActionToast("Failed to generate recommendations");
+      
+      const fallbackRecommendation = getFallbackRecommendation(userHealthDetails.goal);
+      setAiRecommendation(fallbackRecommendation);
+    }
+  };
+
+  const getFallbackRecommendation = (goal: string): string => {
+    if (goal === "Weight loss") {
+      return "Based on your profile, I recommend incorporating 3-4 HIIT sessions (20-30 mins) weekly, complemented by 2 strength training sessions focusing on compound movements. Maintain a 500 calorie daily deficit through a high-protein diet (1.6g/kg bodyweight) with complex carbs before workouts. Include 2 rest days weekly for recovery, aim for 7000 steps daily, and prioritize 7-8 hours of sleep.";
+    } else if (goal === "Muscle gain") {
+      return "For your muscle-building goals, focus on progressive overload with 4 strength training sessions weekly, emphasizing different muscle groups each day. Incorporate compound movements (squats, deadlifts, bench press) with 6-12 rep ranges at 70-85% of your 1RM. Maintain a 300-calorie surplus with 1.8-2.2g protein per kg of bodyweight. Include 1-2 light cardio sessions (20-30 mins) for heart health.";
+    } else if (goal === "Endurance") {
+      return "For endurance building, implement 3-4 cardio sessions weekly (running, cycling, swimming) with progressive duration increases. Mix 2 long steady-state sessions and 2 interval training sessions. Include 1-2 strength training days focusing on muscular endurance with higher reps. Eat plenty of complex carbs (60% of diet) with moderate protein (20%) and healthy fats (20%).";
+    } else {
+      return "To improve general fitness, I recommend a balanced approach with 2 strength training sessions, 2 cardio sessions (mix of steady-state and HIIT), and 1 flexibility-focused workout (yoga/Pilates) weekly. Maintain calories at maintenance level with a balanced macronutrient profile (30% protein, 40% carbs, 30% fats). Stay hydrated with at least 3 liters of water daily.";
     }
   };
 
