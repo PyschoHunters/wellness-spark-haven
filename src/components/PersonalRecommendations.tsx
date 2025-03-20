@@ -63,7 +63,7 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
     setIsLoading(true);
     
     try {
-      // Using Google's Gemini API
+      // Create prompt for Gemini API
       const prompt = `
         Generate personalized fitness and nutrition recommendations for a user with the following details:
         
@@ -79,33 +79,58 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         BMI: ${userHealthDetails.bmi}
         Health Issues: ${userHealthDetails.healthIssues.length > 0 ? userHealthDetails.healthIssues.join(', ') : 'None'}
         
-        Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips.
+        Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips. Focus on Indian context if possible.
       `;
       
-      // For now, we'll use a mock response instead of actual API call
-      // In a real implementation, you would use the actual Gemini API
-      setTimeout(() => {
-        const mockResponse = getMockAIResponse(userHealthDetails.goal);
-        setAiRecommendation(mockResponse);
-        setIsLoading(false);
-        setShowHealthForm(false);
-        showActionToast("Generated new AI recommendations");
-      }, 2000);
+      // Call Gemini API
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500,
+          }
+        })
+      });
       
+      if (!response.ok) {
+        throw new Error('Failed to get response from Gemini API');
+      }
+      
+      const data = await response.json();
+      
+      // Extract recommendation text from response
+      let recommendationText = 'Unable to generate recommendation.';
+      
+      if (data.candidates && 
+          data.candidates[0] && 
+          data.candidates[0].content && 
+          data.candidates[0].content.parts && 
+          data.candidates[0].content.parts[0] && 
+          data.candidates[0].content.parts[0].text) {
+        recommendationText = data.candidates[0].content.parts[0].text;
+      }
+      
+      setAiRecommendation(recommendationText);
+      setIsLoading(false);
+      setShowHealthForm(false);
+      showActionToast("Generated new AI recommendations");
     } catch (error) {
       console.error("Error fetching AI recommendation:", error);
       setIsLoading(false);
       showActionToast("Failed to generate recommendations");
-    }
-  };
-  
-  const getMockAIResponse = (goal: string): string => {
-    if (goal === "Weight loss") {
-      return "Based on your profile, I recommend incorporating 3-4 HIIT sessions (20-30 mins) weekly, complemented by 2 strength training sessions focusing on compound movements. Maintain a 500 calorie daily deficit through a high-protein diet (1.6g/kg bodyweight) with complex carbs before workouts. Include 2 rest days weekly for recovery, aim for 7000 steps daily, and prioritize 7-8 hours of sleep. Start with a 5-minute dynamic warm-up before workouts and finish with 5-10 minutes of static stretching. Track progress weekly through measurements and photos rather than daily weigh-ins.";
-    } else if (goal === "Muscle gain") {
-      return "For your muscle-building goals, focus on progressive overload with 4 strength training sessions weekly, emphasizing different muscle groups each day. Incorporate compound movements (squats, deadlifts, bench press) with 6-12 rep ranges at 70-85% of your 1RM. Maintain a 300-calorie surplus with 1.8-2.2g protein per kg of bodyweight. Include 1-2 light cardio sessions (20-30 mins) for heart health without hampering recovery. Ensure 48 hours rest between training the same muscle groups and prioritize 8 hours of sleep. Track your strength gains through a workout journal.";
-    } else {
-      return "To improve overall fitness, I recommend a balanced approach with 2 strength training sessions, 2 cardio sessions (mix of steady-state and HIIT), and 1 flexibility-focused workout (yoga/Pilates) weekly. Maintain calories at maintenance level with a balanced macronutrient profile (30% protein, 40% carbs, 30% fats). Stay hydrated with at least 3 liters of water daily and prioritize whole foods over processed options. Incorporate active recovery days with walking or light swimming. Track improvements in performance metrics (endurance, strength, flexibility) rather than aesthetic changes to stay motivated.";
     }
   };
 
