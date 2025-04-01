@@ -95,7 +95,7 @@ const Profile = () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center bg-white rounded-2xl p-4 shadow-sm">
           <img 
-            src="/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png" 
+            src="https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
             alt="Profile" 
             className="w-20 h-20 rounded-full object-cover"
           />
