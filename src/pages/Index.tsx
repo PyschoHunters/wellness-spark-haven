@@ -35,8 +35,8 @@ const workouts = [
     duration: '30 min',
     calories: 320,
     exercises: [
-      { name: 'Jumping Jacks', duration: '60 sec', image: 'https://thumbs.gfycat.com/DistantTangibleChevrotain-max-1mb.gif' },
-      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: 'https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' },
+      { name: 'Jumping Jacks', duration: '60 sec', image: '/lovable-uploads/101fe1dc-18d6-4c17-bc17-0b48fb29a098.png' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png' },
       { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
       { name: 'Plank', duration: '30 sec', sets: 3, image: 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif' },
       { name: 'Mountain Climbers', duration: '45 sec' },
@@ -94,8 +94,8 @@ const workouts = [
 const getExerciseImage = (name: string): string => {
   const exerciseImages: Record<string, string> = {
     'Plank': 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif',
-    'Push-ups': 'https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    'Jumping Jacks': 'https://thumbs.gfycat.com/DistantTangibleChevrotain-max-1mb.gif',
+    'Push-ups': '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png',
+    'Jumping Jacks': '/lovable-uploads/101fe1dc-18d6-4c17-bc17-0b48fb29a098.png',
   };
   
   return exerciseImages[name] || '';
