@@ -93,7 +93,7 @@ const faqs: FAQ[] = [
     question: "nutrition advice",
     answer: "Our app provides nutrition advice tailored to your fitness goals. For weight loss, focus on a calorie deficit with high protein. For muscle gain, consider a slight surplus with high protein intake. All recommended meals include nutritional information to help you make informed choices."
   },
-  // Adding 10 more questions related to the app
+  // Previously added questions
   {
     question: "how accurate are the calorie counts",
     answer: "Our calorie counting is based on standardized metabolic calculations that consider exercise type, duration, intensity, and your personal metrics like weight. While not exact, they provide a reliable estimate to track your progress and energy expenditure."
@@ -133,6 +133,47 @@ const faqs: FAQ[] = [
   {
     question: "how to customize my profile",
     answer: "To customize your profile, go to the Profile section where you can update your personal information, fitness level, goals, and preferences. The more accurate your profile information, the better our system can tailor workouts and nutrition recommendations to your specific needs. Don't forget to update your measurements regularly to track your progress!"
+  },
+  // New questions added as requested
+  {
+    question: "can i connect this app with google fit",
+    answer: "Currently, we don't have a direct integration with Google Fit, but it's on our roadmap for future updates. We plan to implement synchronization with Google Fit to automatically import your activity data, steps, and other metrics to provide a more comprehensive fitness tracking experience. We'll notify all users when this feature becomes available."
+  },
+  {
+    question: "What are some good exercises for beginners",
+    answer: "For beginners, we recommend starting with bodyweight exercises like walking, modified push-ups (on knees), wall sits, chair squats, assisted lunges, gentle yoga poses, and low-impact cardio like swimming or cycling. Our app includes dedicated beginner-friendly workout routines that gradually increase in intensity as your fitness improves."
+  },
+  {
+    question: "How do I set fitness goals",
+    answer: "To set fitness goals in our app, go to the Profile section and select 'My Goals.' You can create SMART goals (Specific, Measurable, Achievable, Relevant, Time-bound) such as weight targets, workout frequency, strength milestones, or cardiovascular improvements. Our app will help track your progress and provide recommendations based on your personal goals."
+  },
+  {
+    question: "Why is daily physical activity important",
+    answer: "Daily physical activity is crucial because it improves cardiovascular health, maintains healthy weight, boosts mood through endorphin release, improves sleep quality, reduces chronic disease risk, increases energy levels, enhances cognitive function, and promotes longevity. Even 30 minutes of moderate activity daily can provide significant health benefits."
+  },
+  {
+    question: "How do I improve my stamina and endurance",
+    answer: "To improve stamina and endurance: 1) Start with a consistent cardio routine (running, cycling, swimming), 2) Gradually increase workout duration or intensity each week, 3) Incorporate interval training (alternating between high and low intensity), 4) Practice tempo training, 5) Ensure proper nutrition and hydration, 6) Get adequate rest between workouts, and 7) Monitor your progress regularly."
+  },
+  {
+    question: "How much water should I drink daily",
+    answer: "The general recommendation is to drink 8-10 glasses (2-2.5 liters) of water daily, but individual needs vary based on activity level, climate, body weight, and overall health. A good rule is to drink enough so your urine remains pale yellow. During workouts, drink 200-300ml every 15-20 minutes, and monitor your hydration levels using our app's water tracking feature."
+  },
+  {
+    question: "What are the benefits of getting enough sleep",
+    answer: "Adequate sleep (7-9 hours for adults) is essential for fitness because it: 1) Facilitates muscle recovery and growth, 2) Balances hormones that regulate hunger and metabolism, 3) Improves athletic performance, 4) Enhances cognitive function and motivation, 5) Boosts immune function, 6) Helps regulate blood sugar, and 7) Reduces injury risk. Our app can help you track sleep patterns for optimal fitness results."
+  },
+  {
+    question: "How do I maintain a balanced diet",
+    answer: "A balanced diet should include: 1) Lean proteins (chicken, fish, beans, tofu) for muscle repair, 2) Complex carbohydrates (whole grains, vegetables) for energy, 3) Healthy fats (avocados, nuts, olive oil) for hormone production, 4) Plenty of fruits and vegetables for vitamins and minerals, 5) Adequate hydration, and 6) Portion control. Our nutrition section provides personalized meal plans based on your fitness goals."
+  },
+  {
+    question: "What's the ideal heart rate for exercise",
+    answer: "The ideal exercise heart rate varies by age and fitness goals. For moderate-intensity workouts, aim for 50-70% of your maximum heart rate (220 minus your age). For vigorous exercise, target 70-85%. Beginners should start in the lower ranges and gradually increase intensity. Our app can help you calculate your target zones and track your heart rate during workouts."
+  },
+  {
+    question: "How can I recover faster after workouts",
+    answer: "To speed up recovery: 1) Stay hydrated before, during, and after exercise, 2) Consume protein and carbs within 30-45 minutes post-workout, 3) Get 7-9 hours of quality sleep, 4) Try active recovery like light walking or swimming on rest days, 5) Consider foam rolling or stretching for muscle tension, 6) Use contrast therapy (alternating hot/cold), and 7) Listen to your body and avoid overtraining."
   }
 ];
 

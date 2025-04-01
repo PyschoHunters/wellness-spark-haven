@@ -52,9 +52,9 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
 
   const getExerciseImage = (name: string): string => {
     const exerciseImages: Record<string, string> = {
-      'Plank': 'https://images.unsplash.com/photo-1566241142888-11afbbf0afc5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
-      'Push-ups': 'https://images.unsplash.com/photo-1598971639058-bb1962a12a8e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
-      'Jumping Jacks': 'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Plank': '/lovable-uploads/b09f16e8-1531-4633-a1c9-5c92a73b9c00.png',
+      'Push-ups': '/lovable-uploads/fa036ab9-d05c-45ac-ba81-78272141fb54.png',
+      'Jumping Jacks': '/lovable-uploads/d55c9fdc-5140-4b3d-a01b-8baa687b32f6.png',
       'Squats': 'https://images.unsplash.com/photo-1584863231364-2edc166de576?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Mountain Climbers': 'https://images.unsplash.com/photo-1597347316205-36f6c451902a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Lunges': 'https://images.unsplash.com/photo-1603287681836-b174ce5074c2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
