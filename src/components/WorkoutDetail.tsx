@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Clock, Flame, Dumbbell } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -52,9 +51,9 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
 
   const getExerciseImage = (name: string): string => {
     const exerciseImages: Record<string, string> = {
-      'Plank': '/lovable-uploads/b09f16e8-1531-4633-a1c9-5c92a73b9c00.png',
-      'Push-ups': '/lovable-uploads/fa036ab9-d05c-45ac-ba81-78272141fb54.png',
-      'Jumping Jacks': '/lovable-uploads/d55c9fdc-5140-4b3d-a01b-8baa687b32f6.png',
+      'Plank': 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif',
+      'Push-ups': '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png',
+      'Jumping Jacks': '/lovable-uploads/101fe1dc-18d6-4c17-bc17-0b48fb29a098.png',
       'Squats': 'https://images.unsplash.com/photo-1584863231364-2edc166de576?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Mountain Climbers': 'https://images.unsplash.com/photo-1597347316205-36f6c451902a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Lunges': 'https://images.unsplash.com/photo-1603287681836-b174ce5074c2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
@@ -67,11 +66,11 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
       'Child\'s Pose': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Downward Dog': 'https://images.unsplash.com/photo-1588286840104-8957b019727f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Warrior I': 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
-      'Warrior II': 'https://images.unsplash.com/photo-1599447494230-61a253204a76?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
-      'Triangle Pose': 'https://images.unsplash.com/photo-1617049885637-9e9343685150?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Warrior II': 'https://images.pexels.com/photos/4498155/pexels-photo-4498155.jpeg?auto=compress&cs=tinysrgb&w=600',
+      'Triangle Pose': 'https://images.pexels.com/photos/6453396/pexels-photo-6453396.jpeg?auto=compress&cs=tinysrgb&w=600',
       'Tree Pose': 'https://images.unsplash.com/photo-1562088287-bde35a1ea917?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Seated Forward Bend': 'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
-      'Bridge Pose': 'https://images.unsplash.com/photo-1581122584612-713f89b6c4f8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+      'Bridge Pose': 'https://images.pexels.com/photos/5384538/pexels-photo-5384538.jpeg?auto=compress&cs=tinysrgb&w=600',
       'Corpse Pose': 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Rest': 'https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Cool Down Stretching': 'https://images.unsplash.com/photo-1518609571773-39b7d303a87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3'
@@ -81,8 +80,7 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
   };
 
   const handleExerciseClick = (exercise: Exercise, index: number) => {
-    // Convert duration like "45 sec" or "2 min" to seconds
-    let seconds = 60; // Default to 60 seconds
+    let seconds = 60;
     const durationStr = exercise.duration.toLowerCase();
     
     if (durationStr.includes('sec')) {
@@ -111,8 +109,7 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
       const nextIndex = activeExercise.index + 1;
       if (nextIndex < exercises.length) {
         const nextExercise = exercises[nextIndex];
-        // Convert duration to seconds
-        let seconds = 60; // Default
+        let seconds = 60;
         const durationStr = nextExercise.duration.toLowerCase();
         
         if (durationStr.includes('sec')) {

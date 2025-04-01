@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
 
@@ -93,7 +92,6 @@ const faqs: FAQ[] = [
     question: "nutrition advice",
     answer: "Our app provides nutrition advice tailored to your fitness goals. For weight loss, focus on a calorie deficit with high protein. For muscle gain, consider a slight surplus with high protein intake. All recommended meals include nutritional information to help you make informed choices."
   },
-  // Previously added questions
   {
     question: "how accurate are the calorie counts",
     answer: "Our calorie counting is based on standardized metabolic calculations that consider exercise type, duration, intensity, and your personal metrics like weight. While not exact, they provide a reliable estimate to track your progress and energy expenditure."
@@ -134,7 +132,6 @@ const faqs: FAQ[] = [
     question: "how to customize my profile",
     answer: "To customize your profile, go to the Profile section where you can update your personal information, fitness level, goals, and preferences. The more accurate your profile information, the better our system can tailor workouts and nutrition recommendations to your specific needs. Don't forget to update your measurements regularly to track your progress!"
   },
-  // New questions added as requested
   {
     question: "can i connect this app with google fit",
     answer: "Currently, we don't have a direct integration with Google Fit, but it's on our roadmap for future updates. We plan to implement synchronization with Google Fit to automatically import your activity data, steps, and other metrics to provide a more comprehensive fitness tracking experience. We'll notify all users when this feature becomes available."
