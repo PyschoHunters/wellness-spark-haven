@@ -92,6 +92,47 @@ const faqs: FAQ[] = [
   {
     question: "nutrition advice",
     answer: "Our app provides nutrition advice tailored to your fitness goals. For weight loss, focus on a calorie deficit with high protein. For muscle gain, consider a slight surplus with high protein intake. All recommended meals include nutritional information to help you make informed choices."
+  },
+  // Adding 10 more questions related to the app
+  {
+    question: "how accurate are the calorie counts",
+    answer: "Our calorie counting is based on standardized metabolic calculations that consider exercise type, duration, intensity, and your personal metrics like weight. While not exact, they provide a reliable estimate to track your progress and energy expenditure."
+  },
+  {
+    question: "can I sync with fitness trackers",
+    answer: "Currently, our app doesn't directly integrate with fitness trackers, but you can manually enter activity data from your devices. We're working on adding integrations with popular fitness wearables in future updates."
+  },
+  {
+    question: "Indian diet options",
+    answer: "Yes, we offer numerous Indian diet options tailored for fitness goals! Our meal suggestions include protein-rich dal preparations, roti with vegetables, paneer dishes, raita, khichdi, oats idli, vegetable upma, sprouts salad, and more - all with complete nutritional information."
+  },
+  {
+    question: "vegetarian protein sources",
+    answer: "Our app recommends many vegetarian protein sources including paneer, tofu, legumes (lentils, chickpeas, beans), dairy products (Greek yogurt, cottage cheese), quinoa, nuts and seeds (almonds, chia seeds), soy products, and protein-enriched plant milk. All our vegetarian meal plans ensure adequate protein intake."
+  },
+  {
+    question: "how to use AI recommendations",
+    answer: "To get personalized AI recommendations, go to the Profile section and look for the 'AI Personalized Plan' option. Click on it, fill in your health details including fitness goals, BMI, and any health issues. Our AI will then generate tailored workout and nutrition recommendations specific to your profile."
+  },
+  {
+    question: "workout frequency recommendations",
+    answer: "For beginners, we recommend 2-3 workouts per week with rest days in between. Intermediate users should aim for 3-4 workouts weekly with proper recovery. Advanced users can exercise 4-6 times per week, varying intensity and targeting different muscle groups. Always listen to your body and include at least one full rest day weekly."
+  },
+  {
+    question: "how to track achievements",
+    answer: "Your achievements are automatically tracked as you use the app. Visit the Profile section to view all your earned and locked achievements. You'll earn achievements for completing workouts, burning calories, maintaining streaks, and reaching fitness milestones. These visual markers help keep you motivated on your fitness journey."
+  },
+  {
+    question: "water intake recommendations",
+    answer: "We recommend drinking at least 2-3 liters of water daily, adjusting for your activity level and climate. During workouts, aim to drink about 200-300ml every 15-20 minutes. Our app can help you track your daily water intake to ensure proper hydration, which is crucial for optimal workout performance and recovery."
+  },
+  {
+    question: "rest and recovery tips",
+    answer: "Proper recovery is essential for fitness progress. We recommend: 1) Get 7-8 hours of quality sleep nightly, 2) Include 1-2 complete rest days weekly, 3) Try light activities like walking or yoga on recovery days, 4) Stay hydrated, 5) Consider foam rolling for muscle recovery, and 6) Consume protein within 30-45 minutes post-workout to aid muscle repair."
+  },
+  {
+    question: "how to customize my profile",
+    answer: "To customize your profile, go to the Profile section where you can update your personal information, fitness level, goals, and preferences. The more accurate your profile information, the better our system can tailor workouts and nutrition recommendations to your specific needs. Don't forget to update your measurements regularly to track your progress!"
   }
 ];
 

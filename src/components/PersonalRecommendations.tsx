@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Trophy, Timer, Calendar, Zap, RefreshCw } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
@@ -80,7 +81,8 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips. Focus on Indian context if possible.
       `;
       
-      const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
+      // Update to use the gemini-2.0-flash model
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
