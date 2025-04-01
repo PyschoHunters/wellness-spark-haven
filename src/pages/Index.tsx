@@ -35,10 +35,10 @@ const workouts = [
     duration: '30 min',
     calories: 320,
     exercises: [
-      { name: 'Jumping Jacks', duration: '60 sec', image: '/lovable-uploads/d55c9fdc-5140-4b3d-a01b-8baa687b32f6.png' },
-      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: '/lovable-uploads/fa036ab9-d05c-45ac-ba81-78272141fb54.png' },
+      { name: 'Jumping Jacks', duration: '60 sec', image: 'https://images.healthshots.com/healthshots/en/uploads/2022/05/18164903/jumping-jack.gif' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: 'https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/pushup-1457045024.gif' },
       { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
-      { name: 'Plank', duration: '30 sec', sets: 3, image: '/lovable-uploads/b09f16e8-1531-4633-a1c9-5c92a73b9c00.png' },
+      { name: 'Plank', duration: '30 sec', sets: 3, image: 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif' },
       { name: 'Mountain Climbers', duration: '45 sec' },
       { name: 'Lunges', duration: '45 sec', sets: 3, reps: 10 },
       { name: 'Burpees', duration: '30 sec' },
@@ -93,9 +93,9 @@ const workouts = [
 
 const getExerciseImage = (name: string): string => {
   const exerciseImages: Record<string, string> = {
-    'Plank': '/lovable-uploads/b09f16e8-1531-4633-a1c9-5c92a73b9c00.png',
-    'Push-ups': '/lovable-uploads/fa036ab9-d05c-45ac-ba81-78272141fb54.png',
-    'Jumping Jacks': '/lovable-uploads/d55c9fdc-5140-4b3d-a01b-8baa687b32f6.png',
+    'Plank': 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif',
+    'Push-ups': 'https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/pushup-1457045024.gif',
+    'Jumping Jacks': 'https://images.healthshots.com/healthshots/en/uploads/2022/05/18164903/jumping-jack.gif',
   };
   
   return exerciseImages[name] || '';
