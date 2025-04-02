@@ -6,6 +6,8 @@ import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';
 import BodyProgress from '@/components/BodyProgress';
 import PersonalRecommendations from '@/components/PersonalRecommendations';
+import WaterTracker from '@/components/WaterTracker';
+import SleepTracker from '@/components/SleepTracker';
 import { showActionToast } from '@/utils/toast-utils';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -114,6 +116,12 @@ const Profile = () => {
             </div>
           </div>
         </div>
+        
+        {/* Water Tracker */}
+        <WaterTracker />
+        
+        {/* Sleep Tracker */}
+        <SleepTracker />
         
         {/* Achievements Section */}
         <div className="bg-blue-50 rounded-2xl p-4 shadow-sm">

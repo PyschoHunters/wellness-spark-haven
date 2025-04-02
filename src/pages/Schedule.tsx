@@ -4,12 +4,13 @@ import { Calendar as CalendarIcon, Clock, Check } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import EmailForm from '@/components/EmailForm';
+import AddWorkout from '@/components/AddWorkout';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { showActionToast } from '@/utils/toast-utils';
+import { showActionToast, sendEmailReminder } from '@/utils/toast-utils';
 
 const initialWorkouts = [
   {
@@ -40,6 +41,7 @@ const SchedulePage = () => {
   const [scheduledWorkouts, setScheduledWorkouts] = useState(initialWorkouts);
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<typeof initialWorkouts[0] | null>(null);
+  const [showAddWorkout, setShowAddWorkout] = useState(false);
 
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
@@ -68,7 +70,20 @@ const SchedulePage = () => {
   };
 
   const handleAddNewWorkout = () => {
-    showActionToast("Add new workout feature coming soon!");
+    setShowAddWorkout(true);
+  };
+
+  const handleSaveWorkout = (workoutData: any) => {
+    const newWorkout = {
+      id: Date.now(),
+      title: workoutData.title,
+      time: new Date().getHours() < 12 ? '09:00 AM' : '06:00 PM',
+      duration: workoutData.duration,
+      completed: false
+    };
+    
+    setScheduledWorkouts(prev => [...prev, newWorkout]);
+    showActionToast(`New workout added: ${workoutData.title}`);
   };
 
   const handleBellClick = () => {
@@ -78,6 +93,13 @@ const SchedulePage = () => {
   const handleScheduleReminder = (workout: typeof initialWorkouts[0]) => {
     setSelectedWorkout(workout);
     setShowEmailForm(true);
+  };
+  
+  const handleSubmitEmailReminder = (email: string) => {
+    if (selectedWorkout) {
+      sendEmailReminder(email, selectedWorkout.title, selectedWorkout.time);
+    }
+    setShowEmailForm(false);
   };
 
   return (
@@ -197,9 +219,14 @@ const SchedulePage = () => {
           workoutTitle={selectedWorkout.title}
           workoutTime={selectedWorkout.time}
           onClose={() => setShowEmailForm(false)}
-          onSubmit={() => {
-            showActionToast(`Email reminder scheduled for ${selectedWorkout.title}`);
-          }}
+          onSubmit={handleSubmitEmailReminder}
+        />
+      )}
+      
+      {showAddWorkout && (
+        <AddWorkout 
+          onClose={() => setShowAddWorkout(false)}
+          onSave={handleSaveWorkout}
         />
       )}
       

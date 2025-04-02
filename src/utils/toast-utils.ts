@@ -51,9 +51,11 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
     );
     showActionToast(`Email reminder sent to ${email}`);
     
-    // Fallback to mailto for demonstration
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailtoLink, '_blank');
+    // Always open mailto for demonstration purposes
+    setTimeout(() => {
+      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(mailtoLink, '_blank');
+    }, 500);
   })
   .catch(error => {
     console.error("Failed to send email:", error);
@@ -100,9 +102,11 @@ export const sendDietReminder = (email: string, mealType: string) => {
       `A meal plan reminder has been sent to ${email} for your ${mealType}.`
     );
     
-    // Fallback to mailto for demonstration
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailtoLink, '_blank');
+    // Always open mailto for demonstration purposes
+    setTimeout(() => {
+      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(mailtoLink, '_blank');
+    }, 500);
   })
   .catch(error => {
     console.error("Failed to send email:", error);
