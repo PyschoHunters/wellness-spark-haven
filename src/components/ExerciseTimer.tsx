@@ -34,6 +34,22 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     // Reset image states when image changes
     setImageLoaded(false);
     setImageError(false);
+    
+    // Preload image to check if it can be loaded
+    if (image) {
+      const img = new Image();
+      img.onload = () => {
+        console.log('Image preloaded successfully:', image);
+        setImageLoaded(true);
+        setImageError(false);
+      };
+      img.onerror = () => {
+        console.error('Image preload failed:', image);
+        setImageLoaded(false);
+        setImageError(true);
+      };
+      img.src = image;
+    }
   }, [exercise, image]);
   
   useEffect(() => {
@@ -77,8 +93,28 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     setImageError(true);
   };
   
+  // Fix image URL if it's a relative path
+  const getFixedImageUrl = (url?: string): string => {
+    if (!url) return '';
+    
+    // If it's already an absolute URL, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // If it's a relative path, make it absolute
+    if (url.startsWith('/')) {
+      // Use the current domain
+      const origin = window.location.origin;
+      return `${origin}${url}`;
+    }
+    
+    return url;
+  };
+  
   // Show image layout if there's an image
   const showImageLayout = !!image;
+  const fixedImageUrl = getFixedImageUrl(image);
   
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
@@ -103,18 +139,21 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
             </div>
             
             <div className="flex-1 relative overflow-hidden">
-              {image ? (
+              {fixedImageUrl ? (
                 <div className="w-full h-3/4 max-h-[400px] overflow-hidden flex items-center justify-center">
-                  <img 
-                    src={image} 
-                    alt={exercise}
-                    className="object-contain max-w-full max-h-full"
-                    onLoad={handleImageLoad}
-                    onError={handleImageError}
-                  />
+                  {!imageError && (
+                    <img 
+                      src={fixedImageUrl} 
+                      alt={exercise}
+                      className="object-contain max-w-full max-h-full"
+                      onLoad={handleImageLoad}
+                      onError={handleImageError}
+                    />
+                  )}
                   {imageError && (
-                    <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-                      <p className="text-gray-500">Image could not be loaded</p>
+                    <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center justify-center">
+                      <p className="text-gray-500 mb-2">Image could not be loaded</p>
+                      <p className="text-xs text-gray-400">URL: {fixedImageUrl}</p>
                     </div>
                   )}
                 </div>

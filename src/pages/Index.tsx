@@ -34,10 +34,10 @@ const workouts = [
     duration: '30 min',
     calories: 320,
     exercises: [
-      { name: 'Jumping Jacks', duration: '60 sec', image: '/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png' },
-      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: '/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png' },
+      { name: 'Jumping Jacks', duration: '60 sec', image: 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png' },
       { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
-      { name: 'Plank', duration: '30 sec', sets: 3, image: '/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png' },
+      { name: 'Plank', duration: '30 sec', sets: 3, image: 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png' },
       { name: 'Mountain Climbers', duration: '45 sec' },
       { name: 'Lunges', duration: '45 sec', sets: 3, reps: 10 },
       { name: 'Burpees', duration: '30 sec' },
@@ -92,9 +92,9 @@ const workouts = [
 
 const getExerciseImage = (name: string): string => {
   const exerciseImages: Record<string, string> = {
-    'Plank': '/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png',
-    'Push-ups': '/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png',
-    'Jumping Jacks': '/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png',
+    'Plank': 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png',
+    'Push-ups': 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png',
+    'Jumping Jacks': 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png',
   };
   
   return exerciseImages[name] || '';
