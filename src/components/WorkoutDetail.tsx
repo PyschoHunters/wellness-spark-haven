@@ -51,9 +51,9 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
 
   const getExerciseImage = (name: string): string => {
     const exerciseImages: Record<string, string> = {
-      'Plank': 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif',
-      'Push-ups': '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png',
-      'Jumping Jacks': '/lovable-uploads/101fe1dc-18d6-4c17-bc17-0b48fb29a098.png',
+      'Plank': '/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png', 
+      'Push-ups': '/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png',
+      'Jumping Jacks': '/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png',
       'Squats': 'https://images.unsplash.com/photo-1584863231364-2edc166de576?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Mountain Climbers': 'https://images.unsplash.com/photo-1597347316205-36f6c451902a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
       'Lunges': 'https://images.unsplash.com/photo-1603287681836-b174ce5074c2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',

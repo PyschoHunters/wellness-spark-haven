@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -13,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
 
-// Sample data
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
   { name: 'Tue', calories: 450 },
@@ -93,9 +91,9 @@ const workouts = [
 
 const getExerciseImage = (name: string): string => {
   const exerciseImages: Record<string, string> = {
-    'Plank': 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif',
-    'Push-ups': '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png',
-    'Jumping Jacks': '/lovable-uploads/101fe1dc-18d6-4c17-bc17-0b48fb29a098.png',
+    'Plank': '/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png',
+    'Push-ups': '/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png',
+    'Jumping Jacks': '/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png',
   };
   
   return exerciseImages[name] || '';
@@ -228,7 +226,6 @@ const Home = () => {
         <ActivityChart data={weeklyActivity} />
       </section>
       
-      {/* Daily Tips Section */}
       <section className="mb-6">
         <DailyTips />
       </section>
