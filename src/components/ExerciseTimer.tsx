@@ -22,12 +22,18 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
 }) => {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [isRunning, setIsRunning] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const progress = (timeLeft / duration) * 100;
   
   // Debug the image prop when component mounts
   useEffect(() => {
     console.log('ExerciseTimer mounted with exercise:', exercise);
     console.log('Image path:', image);
+    
+    // Reset image states when image changes
+    setImageLoaded(false);
+    setImageError(false);
   }, [exercise, image]);
   
   useEffect(() => {
@@ -55,6 +61,20 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+  
+  // Handle image loading success
+  const handleImageLoad = () => {
+    console.log('Image loaded successfully:', image);
+    setImageLoaded(true);
+    setImageError(false);
+  };
+  
+  // Handle image loading error
+  const handleImageError = () => {
+    console.error('Image failed to load:', image);
+    setImageLoaded(false);
+    setImageError(true);
   };
   
   // Show image layout if there's an image
@@ -87,13 +107,16 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
                 <div className="w-full h-3/4 max-h-[400px] overflow-hidden flex items-center justify-center">
                   <img 
                     src={image} 
-                    alt={exercise} 
-                    className="object-contain max-w-full max-h-full" 
-                    onError={(e) => {
-                      console.error('Image failed to load:', image);
-                      e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Exercise+Image+Not+Found';
-                    }}
+                    alt={exercise}
+                    className="object-contain max-w-full max-h-full"
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
                   />
+                  {imageError && (
+                    <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+                      <p className="text-gray-500">Image could not be loaded</p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">

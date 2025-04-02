@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -33,10 +34,10 @@ const workouts = [
     duration: '30 min',
     calories: 320,
     exercises: [
-      { name: 'Jumping Jacks', duration: '60 sec', image: '/lovable-uploads/101fe1dc-18d6-4c17-bc17-0b48fb29a098.png' },
-      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png' },
+      { name: 'Jumping Jacks', duration: '60 sec', image: '/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: '/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png' },
       { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
-      { name: 'Plank', duration: '30 sec', sets: 3, image: 'https://www.inspireusafoundation.org/wp-content/uploads/2023/02/plank-variations-anatomy.gif' },
+      { name: 'Plank', duration: '30 sec', sets: 3, image: '/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png' },
       { name: 'Mountain Climbers', duration: '45 sec' },
       { name: 'Lunges', duration: '45 sec', sets: 3, reps: 10 },
       { name: 'Burpees', duration: '30 sec' },
