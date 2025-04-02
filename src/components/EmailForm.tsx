@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Mail, Info } from 'lucide-react';
 import { showActionToast, sendEmailReminder } from '@/utils/toast-utils';
@@ -7,7 +6,7 @@ interface EmailFormProps {
   workoutTitle: string;
   workoutTime: string;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (email: string) => void;
 }
 
 const EmailForm: React.FC<EmailFormProps> = ({ 
@@ -34,7 +33,7 @@ const EmailForm: React.FC<EmailFormProps> = ({
     
     // Close modal and notify parent
     setTimeout(() => {
-      onSubmit();
+      onSubmit(email);
       onClose();
       setIsSending(false);
     }, 1500);
