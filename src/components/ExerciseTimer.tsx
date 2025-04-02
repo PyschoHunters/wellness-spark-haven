@@ -34,22 +34,6 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     // Reset image states when image changes
     setImageLoaded(false);
     setImageError(false);
-    
-    // Preload image to check if it can be loaded
-    if (image) {
-      const img = new Image();
-      img.onload = () => {
-        console.log('Image preloaded successfully:', image);
-        setImageLoaded(true);
-        setImageError(false);
-      };
-      img.onerror = () => {
-        console.error('Image preload failed:', image);
-        setImageLoaded(false);
-        setImageError(true);
-      };
-      img.src = image;
-    }
   }, [exercise, image]);
   
   useEffect(() => {
@@ -93,28 +77,50 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
     setImageError(true);
   };
   
-  // Fix image URL if it's a relative path
-  const getFixedImageUrl = (url?: string): string => {
-    if (!url) return '';
+  // Get fallback image based on exercise name
+  const getFallbackImage = (exerciseName: string): string => {
+    const fallbackImages: Record<string, string> = {
+      'Jumping Jacks': '/images/exercises/jumping-jacks.jpg',
+      'Push-ups': '/images/exercises/pushups.jpg',
+      'Plank': '/images/exercises/plank.jpg',
+      'Squats': '/images/exercises/squats.jpg',
+      'Mountain Climbers': '/images/exercises/mountain-climbers.jpg',
+      'Lunges': '/images/exercises/lunges.jpg',
+      'Burpees': '/images/exercises/burpees.jpg',
+    };
     
-    // If it's already an absolute URL, return as is
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-      return url;
+    // Default fallback for any exercise
+    const defaultFallback = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3';
+    
+    return fallbackImages[exerciseName] || defaultFallback;
+  };
+  
+  // Get proper image URL (either the provided one or a fallback)
+  const getImageUrl = (): string => {
+    // If there's no image or we've already had an error loading it, use the fallback
+    if (!image || imageError) {
+      return getFallbackImage(exercise);
     }
     
-    // If it's a relative path, make it absolute
-    if (url.startsWith('/')) {
-      // Use the current domain
-      const origin = window.location.origin;
-      return `${origin}${url}`;
+    // For normal image URLs from external services, use directly
+    if (image.startsWith('http://') || image.startsWith('https://')) {
+      if (image.includes('lovable-uploads')) {
+        // For lovable-uploads URLs, use a direct public URL without the domain part
+        const parts = image.split('lovable-uploads/');
+        if (parts.length > 1) {
+          return `https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3`;
+        }
+      }
+      return image;
     }
     
-    return url;
+    // Ensure local image paths start with /
+    return image.startsWith('/') ? image : `/${image}`;
   };
   
   // Show image layout if there's an image
-  const showImageLayout = !!image;
-  const fixedImageUrl = getFixedImageUrl(image);
+  const showImageLayout = true; // Always show image layout with fallbacks
+  const imageUrl = getImageUrl();
   
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
@@ -139,29 +145,15 @@ const ExerciseTimer: React.FC<ExerciseTimerProps> = ({
             </div>
             
             <div className="flex-1 relative overflow-hidden">
-              {fixedImageUrl ? (
-                <div className="w-full h-3/4 max-h-[400px] overflow-hidden flex items-center justify-center">
-                  {!imageError && (
-                    <img 
-                      src={fixedImageUrl} 
-                      alt={exercise}
-                      className="object-contain max-w-full max-h-full"
-                      onLoad={handleImageLoad}
-                      onError={handleImageError}
-                    />
-                  )}
-                  {imageError && (
-                    <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center justify-center">
-                      <p className="text-gray-500 mb-2">Image could not be loaded</p>
-                      <p className="text-xs text-gray-400">URL: {fixedImageUrl}</p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500">No image available</p>
-                </div>
-              )}
+              <div className="w-full h-3/4 max-h-[400px] overflow-hidden flex items-center justify-center">
+                <img 
+                  src={imageUrl} 
+                  alt={exercise}
+                  className="object-contain max-w-full max-h-full"
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
+                />
+              </div>
               
               <div className="absolute bottom-24 left-0 right-0 flex justify-center">
                 <div className="bg-gray-800 text-white text-5xl font-bold py-4 px-8 rounded-xl">

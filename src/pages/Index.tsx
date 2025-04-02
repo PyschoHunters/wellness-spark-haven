@@ -34,10 +34,10 @@ const workouts = [
     duration: '30 min',
     calories: 320,
     exercises: [
-      { name: 'Jumping Jacks', duration: '60 sec', image: 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png' },
-      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png' },
+      { name: 'Jumping Jacks', duration: '60 sec', image: 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3' },
+      { name: 'Push-ups', duration: '45 sec', sets: 3, reps: 12, image: 'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3' },
       { name: 'Squats', duration: '45 sec', sets: 3, reps: 15 },
-      { name: 'Plank', duration: '30 sec', sets: 3, image: 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png' },
+      { name: 'Plank', duration: '30 sec', sets: 3, image: 'https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3' },
       { name: 'Mountain Climbers', duration: '45 sec' },
       { name: 'Lunges', duration: '45 sec', sets: 3, reps: 10 },
       { name: 'Burpees', duration: '30 sec' },
@@ -92,9 +92,9 @@ const workouts = [
 
 const getExerciseImage = (name: string): string => {
   const exerciseImages: Record<string, string> = {
-    'Plank': 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/2bad5058-b7d9-4644-989f-cae01f498417.png',
-    'Push-ups': 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/7b362037-a3a1-45ef-b671-bc04f0394fb9.png',
-    'Jumping Jacks': 'https://af0ff92a-e9af-44e6-83b8-60c7f8c2834b.lovableproject.com/lovable-uploads/67eaf200-4692-4e4d-a308-f99b2ee91e71.png',
+    'Plank': 'https://images.unsplash.com/photo-1566241142559-40e1dab266c6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+    'Push-ups': 'https://images.unsplash.com/photo-1616803689943-5601631c7fec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+    'Jumping Jacks': 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
   };
   
   return exerciseImages[name] || '';
