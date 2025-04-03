@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Trophy, Timer, Calendar, Zap, RefreshCw } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
@@ -59,6 +58,14 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
     }
   };
 
+  const formatAIRecommendation = (rawText: string): string => {
+    let formatted = rawText.replace(/\*\*Recommendation for [^:]*:\*\*/g, '');
+    formatted = formatted.replace(/\*\*/g, '');
+    formatted = formatted.trim().replace(/\.\s*/g, '. ');
+    formatted = formatted.replace(/\n+/g, ' ');
+    return formatted;
+  };
+
   const getAIRecommendation = async () => {
     setIsLoading(true);
     
@@ -78,10 +85,9 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         BMI: ${userHealthDetails.bmi}
         Health Issues: ${userHealthDetails.healthIssues.length > 0 ? userHealthDetails.healthIssues.join(', ') : 'None'}
         
-        Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips. Focus on Indian context if possible.
+        Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips. Focus on Indian context if possible. Format your response as clean text without any markdown formatting or headers.
       `;
       
-      // Update to use the gemini-2.0-flash model
       const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
         method: 'POST',
         headers: {
@@ -123,7 +129,7 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
           data.candidates[0].content.parts && 
           data.candidates[0].content.parts[0] && 
           data.candidates[0].content.parts[0].text) {
-        recommendationText = data.candidates[0].content.parts[0].text;
+        recommendationText = formatAIRecommendation(data.candidates[0].content.parts[0].text);
       }
       
       setAiRecommendation(recommendationText);
