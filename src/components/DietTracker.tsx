@@ -82,6 +82,36 @@ const meals: Record<string, MealItem[]> = {
         fats: 2,
         fiber: 2
       }
+    },
+    {
+      id: 15,
+      name: 'Idli Sambar',
+      calories: 220,
+      prepTime: '40 min',
+      image: 'https://images.unsplash.com/photo-1610725664285-7c68adcee9e5?w=800&auto=format&fit=crop',
+      description: 'Soft, steamed rice cakes served with spicy lentil soup and coconut chutney. A South Indian breakfast staple.',
+      ingredients: ['Rice', 'Urad dal', 'Fenugreek seeds', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Sambar powder', 'Coconut'],
+      nutritionalInfo: {
+        protein: 8,
+        carbs: 40,
+        fats: 3,
+        fiber: 5
+      }
+    },
+    {
+      id: 16,
+      name: 'Aloo Paratha',
+      calories: 340,
+      prepTime: '25 min',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      description: 'Whole wheat flatbread stuffed with spiced potato filling, typically served with yogurt and pickle. Popular North Indian breakfast.',
+      ingredients: ['Whole wheat flour', 'Potatoes', 'Green chilies', 'Cumin', 'Coriander powder', 'Garam masala', 'Ghee', 'Yogurt'],
+      nutritionalInfo: {
+        protein: 7,
+        carbs: 55,
+        fats: 12,
+        fiber: 4
+      }
     }
   ],
   lunch: [
@@ -144,6 +174,36 @@ const meals: Record<string, MealItem[]> = {
         fats: 18,
         fiber: 6
       }
+    },
+    {
+      id: 17,
+      name: 'Bisi Bele Bath',
+      calories: 380,
+      prepTime: '50 min',
+      image: 'https://images.unsplash.com/photo-1589301761821-ab89546c9eaf?w=800&auto=format&fit=crop',
+      description: 'Spicy rice dish with lentils, vegetables and aromatic spices from Karnataka, South India. Rich in protein and fiber.',
+      ingredients: ['Rice', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Bisi Bele Bath powder', 'Ghee', 'Cashews', 'Curry leaves'],
+      nutritionalInfo: {
+        protein: 12,
+        carbs: 65,
+        fats: 9,
+        fiber: 8
+      }
+    },
+    {
+      id: 18,
+      name: 'Chole Bhature',
+      calories: 650,
+      prepTime: '60 min',
+      image: 'https://images.unsplash.com/photo-1626777547572-a8954e6ef25b?w=800&auto=format&fit=crop',
+      description: 'Spicy chickpea curry served with deep-fried bread. A beloved North Indian specialty perfect for special occasions.',
+      ingredients: ['Chickpeas', 'Onions', 'Tomatoes', 'Ginger-garlic paste', 'Chole masala', 'All-purpose flour', 'Yogurt', 'Oil'],
+      nutritionalInfo: {
+        protein: 18,
+        carbs: 90,
+        fats: 25,
+        fiber: 14
+      }
     }
   ],
   dinner: [
@@ -191,6 +251,36 @@ const meals: Record<string, MealItem[]> = {
         fats: 10,
         fiber: 7
       }
+    },
+    {
+      id: 19,
+      name: 'Avial with Kerala Rice',
+      calories: 340,
+      prepTime: '40 min',
+      image: 'https://images.unsplash.com/photo-1567337710282-00832b415979?w=800&auto=format&fit=crop',
+      description: 'Traditional Kerala-style mixed vegetable curry in coconut yogurt sauce, served with red rice.',
+      ingredients: ['Mixed vegetables', 'Coconut', 'Yogurt', 'Curry leaves', 'Green chilies', 'Cumin', 'Coconut oil', 'Kerala red rice'],
+      nutritionalInfo: {
+        protein: 8,
+        carbs: 55,
+        fats: 12,
+        fiber: 9
+      }
+    },
+    {
+      id: 20,
+      name: 'Butter Chicken with Naan',
+      calories: 750,
+      prepTime: '55 min',
+      image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&auto=format&fit=crop',
+      description: 'Tender chicken pieces in rich, creamy tomato sauce, served with buttery naan bread. A North Indian restaurant favorite.',
+      ingredients: ['Chicken', 'Tomatoes', 'Butter', 'Cream', 'Kashmiri red chili powder', 'Garam masala', 'Fenugreek leaves', 'All-purpose flour'],
+      nutritionalInfo: {
+        protein: 35,
+        carbs: 60,
+        fats: 40,
+        fiber: 3
+      }
     }
   ],
   snacks: [
@@ -237,6 +327,36 @@ const meals: Record<string, MealItem[]> = {
         carbs: 22,
         fats: 7,
         fiber: 1
+      }
+    },
+    {
+      id: 21,
+      name: 'Medu Vada',
+      calories: 180,
+      prepTime: '30 min',
+      image: 'https://images.unsplash.com/photo-1589301570451-1c73f16b9a6a?w=800&auto=format&fit=crop',
+      description: 'Crispy South Indian savory donuts made from urad dal, served with coconut chutney and sambar.',
+      ingredients: ['Urad dal', 'Green chilies', 'Ginger', 'Curry leaves', 'Asafoetida', 'Coconut', 'Black pepper', 'Oil for frying'],
+      nutritionalInfo: {
+        protein: 6,
+        carbs: 20,
+        fats: 10,
+        fiber: 3
+      }
+    },
+    {
+      id: 22,
+      name: 'Aloo Tikki',
+      calories: 210,
+      prepTime: '25 min',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      description: 'Spiced potato patties pan-fried until golden and crispy, topped with tangy chutneys and yogurt. A popular North Indian street food.',
+      ingredients: ['Potatoes', 'Bread crumbs', 'Green peas', 'Cumin powder', 'Chaat masala', 'Coriander leaves', 'Green chutney', 'Tamarind chutney'],
+      nutritionalInfo: {
+        protein: 4,
+        carbs: 30,
+        fats: 9,
+        fiber: 3
       }
     }
   ]
