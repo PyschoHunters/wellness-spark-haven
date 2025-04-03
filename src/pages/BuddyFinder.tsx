@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
@@ -9,38 +8,57 @@ import { Search, Filter, MapPin, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { showActionToast } from '@/utils/toast-utils';
 
-// Sample data for workout buddies
 const workoutBuddies = [
   {
     id: 1,
-    name: 'Alex Johnson',
+    name: 'Arjun Sharma',
     age: 28,
     location: '2.3 miles away',
     interests: ['Yoga', 'Running', 'HIIT'],
     availability: 'Mornings',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
     level: 'Intermediate'
   },
   {
     id: 2,
-    name: 'Jamie Smith',
+    name: 'Priya Patel',
     age: 32,
     location: '0.8 miles away',
     interests: ['Weightlifting', 'CrossFit'],
     availability: 'Evenings',
-    image: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2662&q=80',
+    image: 'https://images.unsplash.com/photo-1581182800629-7d90925ad072?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2662&q=80',
     level: 'Advanced'
   },
   {
     id: 3,
-    name: 'Taylor Kim',
+    name: 'Neha Singh',
     age: 25,
     location: '1.5 miles away',
     interests: ['Swimming', 'Pilates'],
     availability: 'Weekends',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80',
+    image: 'https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80',
     level: 'Beginner'
   },
+  {
+    id: 4,
+    name: 'Vikram Mehta',
+    age: 30,
+    location: '3.2 miles away',
+    interests: ['Cycling', 'Boxing'],
+    availability: 'Afternoons',
+    image: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    level: 'Advanced'
+  },
+  {
+    id: 5,
+    name: 'Divya Nair',
+    age: 27,
+    location: '1.1 miles away',
+    interests: ['Zumba', 'Yoga', 'Dancing'],
+    availability: 'Evenings',
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80',
+    level: 'Intermediate'
+  }
 ];
 
 const BuddyFinder = () => {
@@ -57,25 +75,20 @@ const BuddyFinder = () => {
     showActionToast(`Request sent to ${workoutBuddies.find(b => b.id === buddyId)?.name}!`);
   };
 
-  // Filter buddies based on search term and filters
   const filteredBuddies = workoutBuddies.filter(buddy => {
-    // Search term filtering
     if (searchTerm && !buddy.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
         !buddy.interests.some(i => i.toLowerCase().includes(searchTerm.toLowerCase()))) {
       return false;
     }
     
-    // Filter by level
     if (filters.level !== 'all' && buddy.level !== filters.level) {
       return false;
     }
     
-    // Filter by interest (simplified)
     if (filters.interests !== 'all' && !buddy.interests.includes(filters.interests)) {
       return false;
     }
     
-    // Filter by availability
     if (filters.availability !== 'all' && buddy.availability !== filters.availability) {
       return false;
     }
@@ -140,6 +153,10 @@ const BuddyFinder = () => {
                 <option value="HIIT">HIIT</option>
                 <option value="Weightlifting">Weightlifting</option>
                 <option value="Swimming">Swimming</option>
+                <option value="Cycling">Cycling</option>
+                <option value="Zumba">Zumba</option>
+                <option value="Dancing">Dancing</option>
+                <option value="Boxing">Boxing</option>
               </select>
             </div>
             <div>
@@ -151,6 +168,7 @@ const BuddyFinder = () => {
               >
                 <option value="all">Any Time</option>
                 <option value="Mornings">Mornings</option>
+                <option value="Afternoons">Afternoons</option>
                 <option value="Evenings">Evenings</option>
                 <option value="Weekends">Weekends</option>
               </select>

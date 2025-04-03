@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
@@ -36,12 +35,11 @@ const WorkoutBuddyFinder: React.FC = () => {
     workoutType: 'all',
   });
 
-  // Sample data - in a real app, this would come from an API
   const buddies: WorkoutBuddy[] = [
     {
       id: 1,
-      name: "Sarah Johnson",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      name: "Ananya Gupta",
+      avatar: "https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       location: "Downtown",
       distance: "1.2 km",
       fitnessLevel: "Intermediate",
@@ -51,8 +49,8 @@ const WorkoutBuddyFinder: React.FC = () => {
     },
     {
       id: 2,
-      name: "Michael Chen",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      name: "Rohit Verma",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       location: "Westside",
       distance: "2.8 km",
       fitnessLevel: "Advanced",
@@ -62,8 +60,8 @@ const WorkoutBuddyFinder: React.FC = () => {
     },
     {
       id: 3,
-      name: "Aisha Patel",
-      avatar: "https://images.unsplash.com/photo-1539698103494-a76dd0436fbc?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      name: "Kavita Sharma",
+      avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       location: "Northside",
       distance: "0.5 km",
       fitnessLevel: "Beginner",
@@ -73,35 +71,42 @@ const WorkoutBuddyFinder: React.FC = () => {
     },
     {
       id: 4,
-      name: "David Williams",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      name: "Rajesh Kumar",
+      avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
       location: "Eastside",
       distance: "3.5 km",
       fitnessLevel: "Intermediate",
       preferredWorkouts: ["Running", "Group Classes", "Tennis"],
       availability: ["Weekends", "Wed (Evening)"],
       matchPercentage: 68
+    },
+    {
+      id: 5,
+      name: "Meera Iyer",
+      avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      location: "Central",
+      distance: "0.8 km",
+      fitnessLevel: "Advanced",
+      preferredWorkouts: ["Kickboxing", "Martial Arts", "Pilates"],
+      availability: ["Mon-Fri (Morning)", "Sat (Evening)"],
+      matchPercentage: 81
     }
   ];
 
   const filteredBuddies = buddies.filter(buddy => {
-    // Filter by search term
     if (searchTerm && !buddy.name.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
     
-    // Filter by distance
     const distanceNum = parseFloat(buddy.distance);
     if (filters.maxDistance < distanceNum) {
       return false;
     }
     
-    // Filter by fitness level
     if (filters.fitnessLevel !== 'all' && buddy.fitnessLevel !== filters.fitnessLevel) {
       return false;
     }
     
-    // Filter by workout type
     if (filters.workoutType !== 'all') {
       if (!buddy.preferredWorkouts.some(workout => 
         workout.toLowerCase().includes(filters.workoutType.toLowerCase()))) {
@@ -299,6 +304,8 @@ const WorkoutBuddyFinder: React.FC = () => {
                   <option value="hiit">HIIT</option>
                   <option value="weight">Weightlifting</option>
                   <option value="cardio">Cardio</option>
+                  <option value="martial">Martial Arts</option>
+                  <option value="pilates">Pilates</option>
                 </select>
               </div>
               
