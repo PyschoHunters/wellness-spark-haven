@@ -58,7 +58,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Masala Dosa',
       calories: 235,
       prepTime: '30 min',
-      image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       description: 'Thin crispy rice and lentil crepe filled with spiced potato filling, served with coconut chutney and sambar.',
       ingredients: ['Rice flour', 'Urad dal', 'Potatoes', 'Mustard seeds', 'Curry leaves', 'Turmeric', 'Green chilies', 'Onions'],
       nutritionalInfo: {
@@ -73,7 +73,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Poha',
       calories: 170,
       prepTime: '15 min',
-      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      image: 'https://www.cookwithmanali.com/wp-content/uploads/2014/08/Poha-Recipe-1014x1536.jpg',
       description: 'Flattened rice flakes tempered with mustard seeds, curry leaves, and mild spices, topped with fresh coriander and lemon juice.',
       ingredients: ['Flattened rice (poha)', 'Mustard seeds', 'Curry leaves', 'Onions', 'Green chilies', 'Turmeric', 'Lemon', 'Coriander'],
       nutritionalInfo: {
@@ -88,7 +88,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Idli Sambar',
       calories: 220,
       prepTime: '40 min',
-      image: 'https://images.unsplash.com/photo-1610725664285-7c68adcee9e5?w=800&auto=format&fit=crop',
+      image: 'https://i0.wp.com/cookingwithpree.com/wp-content/uploads/2020/11/tiffin-sambar-instant-pot-1.jpg?w=1830&ssl=1',
       description: 'Soft, steamed rice cakes served with spicy lentil soup and coconut chutney. A South Indian breakfast staple.',
       ingredients: ['Rice', 'Urad dal', 'Fenugreek seeds', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Sambar powder', 'Coconut'],
       nutritionalInfo: {
@@ -103,7 +103,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Paratha',
       calories: 340,
       prepTime: '25 min',
-      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1683533761804-5fc12be0f684?q=80&w=2576&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       description: 'Whole wheat flatbread stuffed with spiced potato filling, typically served with yogurt and pickle. Popular North Indian breakfast.',
       ingredients: ['Whole wheat flour', 'Potatoes', 'Green chilies', 'Cumin', 'Coriander powder', 'Garam masala', 'Ghee', 'Yogurt'],
       nutritionalInfo: {
@@ -165,7 +165,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Paneer Tikka Wrap',
       calories: 420,
       prepTime: '30 min',
-      image: 'https://images.unsplash.com/photo-1651534986345-2a47162f7647?w=800&auto=format&fit=crop',
+      image: 'https://spicecravings.com/wp-content/uploads/2020/12/Paneer-kathi-Roll-6.jpg',
       description: 'Tandoori-style grilled cottage cheese with vegetables wrapped in a whole wheat roti.',
       ingredients: ['Paneer', 'Bell peppers', 'Onions', 'Yogurt', 'Tandoori masala', 'Whole wheat roti', 'Mint chutney'],
       nutritionalInfo: {
@@ -180,7 +180,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Bisi Bele Bath',
       calories: 380,
       prepTime: '50 min',
-      image: 'https://images.unsplash.com/photo-1589301761821-ab89546c9eaf?w=800&auto=format&fit=crop',
+      image: 'https://kannanskitchen.com/wp-content/uploads/2022/10/DSC_2152.jpg',
       description: 'Spicy rice dish with lentils, vegetables and aromatic spices from Karnataka, South India. Rich in protein and fiber.',
       ingredients: ['Rice', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Bisi Bele Bath powder', 'Ghee', 'Cashews', 'Curry leaves'],
       nutritionalInfo: {
@@ -195,7 +195,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Chole Bhature',
       calories: 650,
       prepTime: '60 min',
-      image: 'https://images.unsplash.com/photo-1626777547572-a8954e6ef25b?w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1596522869169-95231d2b6864?q=80&w=2737&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       description: 'Spicy chickpea curry served with deep-fried bread. A beloved North Indian specialty perfect for special occasions.',
       ingredients: ['Chickpeas', 'Onions', 'Tomatoes', 'Ginger-garlic paste', 'Chole masala', 'All-purpose flour', 'Yogurt', 'Oil'],
       nutritionalInfo: {
@@ -227,7 +227,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Dal Tadka with Roti',
       calories: 320,
       prepTime: '35 min',
-      image: 'https://images.unsplash.com/photo-1613292443291-9f06c2a5a549?w=800&auto=format&fit=crop',
+      image: 'https://myfoodstory.com/wp-content/uploads/2016/09/Dhaba-Dal-Tadka-2.jpg',
       description: 'Yellow lentils tempered with cumin, garlic, and dried red chilies, served with whole wheat flatbread.',
       ingredients: ['Yellow lentils', 'Cumin seeds', 'Garlic', 'Dried red chilies', 'Turmeric', 'Ghee', 'Whole wheat flour', 'Coriander'],
       nutritionalInfo: {
@@ -334,7 +334,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Medu Vada',
       calories: 180,
       prepTime: '30 min',
-      image: 'https://images.unsplash.com/photo-1589301570451-1c73f16b9a6a?w=800&auto=format&fit=crop',
+      image: 'https://cookwithdi.com/wp-content/uploads/2024/10/IMG_1462photo-full-1170x840.jpg',
       description: 'Crispy South Indian savory donuts made from urad dal, served with coconut chutney and sambar.',
       ingredients: ['Urad dal', 'Green chilies', 'Ginger', 'Curry leaves', 'Asafoetida', 'Coconut', 'Black pepper', 'Oil for frying'],
       nutritionalInfo: {
@@ -349,7 +349,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Tikki',
       calories: 210,
       prepTime: '25 min',
-      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      image: 'https://sinfullyspicy.com/wp-content/uploads/2023/03/3-1.jpg',
       description: 'Spiced potato patties pan-fried until golden and crispy, topped with tangy chutneys and yogurt. A popular North Indian street food.',
       ingredients: ['Potatoes', 'Bread crumbs', 'Green peas', 'Cumin powder', 'Chaat masala', 'Coriander leaves', 'Green chutney', 'Tamarind chutney'],
       nutritionalInfo: {
