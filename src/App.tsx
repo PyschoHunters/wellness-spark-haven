@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,24 +15,35 @@ import ChatAssistant from "./components/ChatAssistant";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/activity" element={<Activity />} />
-          <Route path="/schedule" element={<Schedule />} />
-          <Route path="/buddy-finder" element={<BuddyFinder />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <ChatAssistant />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  // Add a state to force rerender
+  const [refresh, setRefresh] = useState(0);
+  
+  // Force a refresh once when the app loads
+  useEffect(() => {
+    // This will cause the app to rerender once
+    setRefresh(prev => prev + 1);
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter key={refresh}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/activity" element={<Activity />} />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/buddy-finder" element={<BuddyFinder />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <ChatAssistant />
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
