@@ -58,7 +58,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Masala Dosa',
       calories: 235,
       prepTime: '30 min',
-      image: 'public/lovable-uploads/4d645782-a4df-4bb5-8df1-adc1439d9150.png',
+      image: '/lovable-uploads/4d645782-a4df-4bb5-8df1-adc1439d9150.png',
       description: 'Thin crispy rice and lentil crepe filled with spiced potato filling, served with coconut chutney and sambar.',
       ingredients: ['Rice flour', 'Urad dal', 'Potatoes', 'Mustard seeds', 'Curry leaves', 'Turmeric', 'Green chilies', 'Onions'],
       nutritionalInfo: {
@@ -73,7 +73,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Poha',
       calories: 170,
       prepTime: '15 min',
-      image: 'public/lovable-uploads/8193daf0-9cfe-49fb-9b89-3d96dd07b8c1.png',
+      image: '/lovable-uploads/8193daf0-9cfe-49fb-9b89-3d96dd07b8c1.png',
       description: 'Flattened rice flakes tempered with mustard seeds, curry leaves, and mild spices, topped with fresh coriander and lemon juice.',
       ingredients: ['Flattened rice (poha)', 'Mustard seeds', 'Curry leaves', 'Onions', 'Green chilies', 'Turmeric', 'Lemon', 'Coriander'],
       nutritionalInfo: {
@@ -88,7 +88,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Idli Sambar',
       calories: 220,
       prepTime: '40 min',
-      image: 'public/lovable-uploads/4d645782-a4df-4bb5-8df1-adc1439d9150.png',
+      image: '/lovable-uploads/4d645782-a4df-4bb5-8df1-adc1439d9150.png',
       description: 'Soft, steamed rice cakes served with spicy lentil soup and coconut chutney. A South Indian breakfast staple.',
       ingredients: ['Rice', 'Urad dal', 'Fenugreek seeds', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Sambar powder', 'Coconut'],
       nutritionalInfo: {
@@ -103,7 +103,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Paratha',
       calories: 340,
       prepTime: '25 min',
-      image: 'public/lovable-uploads/8193daf0-9cfe-49fb-9b89-3d96dd07b8c1.png',
+      image: '/lovable-uploads/8193daf0-9cfe-49fb-9b89-3d96dd07b8c1.png',
       description: 'Whole wheat flatbread stuffed with spiced potato filling, typically served with yogurt and pickle. Popular North Indian breakfast.',
       ingredients: ['Whole wheat flour', 'Potatoes', 'Green chilies', 'Cumin', 'Coriander powder', 'Garam masala', 'Ghee', 'Yogurt'],
       nutritionalInfo: {
@@ -334,7 +334,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Medu Vada',
       calories: 180,
       prepTime: '30 min',
-      image: 'public/lovable-uploads/4d645782-a4df-4bb5-8df1-adc1439d9150.png',
+      image: '/lovable-uploads/4d645782-a4df-4bb5-8df1-adc1439d9150.png',
       description: 'Crispy South Indian savory donuts made from urad dal, served with coconut chutney and sambar.',
       ingredients: ['Urad dal', 'Green chilies', 'Ginger', 'Curry leaves', 'Asafoetida', 'Coconut', 'Black pepper', 'Oil for frying'],
       nutritionalInfo: {
@@ -349,7 +349,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Tikki',
       calories: 210,
       prepTime: '25 min',
-      image: 'public/lovable-uploads/8193daf0-9cfe-49fb-9b89-3d96dd07b8c1.png',
+      image: '/lovable-uploads/8193daf0-9cfe-49fb-9b89-3d96dd07b8c1.png',
       description: 'Spiced potato patties pan-fried until golden and crispy, topped with tangy chutneys and yogurt. A popular North Indian street food.',
       ingredients: ['Potatoes', 'Bread crumbs', 'Green peas', 'Cumin powder', 'Chaat masala', 'Coriander leaves', 'Green chutney', 'Tamarind chutney'],
       nutritionalInfo: {
