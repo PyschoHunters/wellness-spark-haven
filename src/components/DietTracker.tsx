@@ -57,7 +57,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Masala Dosa',
       calories: 235,
       prepTime: '30 min',
-      image: 'https://images.unsplash.com/photo-1589301761821-ab89546c9eaf?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/d51d0f44-4865-4ead-981e-b492e8c55e0a.png',
       description: 'Thin crispy rice and lentil crepe filled with spiced potato filling, served with coconut chutney and sambar.',
       ingredients: ['Rice flour', 'Urad dal', 'Potatoes', 'Mustard seeds', 'Curry leaves', 'Turmeric', 'Green chilies', 'Onions'],
       nutritionalInfo: {
@@ -72,7 +72,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Poha',
       calories: 170,
       prepTime: '15 min',
-      image: 'https://images.unsplash.com/photo-1613292443291-9f06c2a5a549?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/b6592fa5-61ca-45c9-a1f3-9c31477982ed.png',
       description: 'Flattened rice flakes tempered with mustard seeds, curry leaves, and mild spices, topped with fresh coriander and lemon juice.',
       ingredients: ['Flattened rice (poha)', 'Mustard seeds', 'Curry leaves', 'Onions', 'Green chilies', 'Turmeric', 'Lemon', 'Coriander'],
       nutritionalInfo: {
@@ -87,7 +87,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Idli Sambar',
       calories: 220,
       prepTime: '40 min',
-      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/7ecf9ede-0243-4055-bcc6-81af9856b2ce.png',
       description: 'Soft, steamed rice cakes served with spicy lentil soup and coconut chutney. A South Indian breakfast staple.',
       ingredients: ['Rice', 'Urad dal', 'Fenugreek seeds', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Sambar powder', 'Coconut'],
       nutritionalInfo: {
@@ -102,7 +102,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Paratha',
       calories: 340,
       prepTime: '25 min',
-      image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/61bfbede-f5d4-41f2-953b-4b115a4199d1.png',
       description: 'Whole wheat flatbread stuffed with spiced potato filling, typically served with yogurt and pickle. Popular North Indian breakfast.',
       ingredients: ['Whole wheat flour', 'Potatoes', 'Green chilies', 'Cumin', 'Coriander powder', 'Garam masala', 'Ghee', 'Yogurt'],
       nutritionalInfo: {
@@ -333,7 +333,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Medu Vada',
       calories: 180,
       prepTime: '30 min',
-      image: 'https://images.unsplash.com/photo-1626777547572-a8954e6ef25b?w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1589301570451-1c73f16b9a6a?w=800&auto=format&fit=crop',
       description: 'Crispy South Indian savory donuts made from urad dal, served with coconut chutney and sambar.',
       ingredients: ['Urad dal', 'Green chilies', 'Ginger', 'Curry leaves', 'Asafoetida', 'Coconut', 'Black pepper', 'Oil for frying'],
       nutritionalInfo: {
@@ -348,7 +348,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Tikki',
       calories: 210,
       prepTime: '25 min',
-      image: 'https://images.unsplash.com/photo-1651534986345-2a47162f7647?w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
       description: 'Spiced potato patties pan-fried until golden and crispy, topped with tangy chutneys and yogurt. A popular North Indian street food.',
       ingredients: ['Potatoes', 'Bread crumbs', 'Green peas', 'Cumin powder', 'Chaat masala', 'Coriander leaves', 'Green chutney', 'Tamarind chutney'],
       nutritionalInfo: {
@@ -428,6 +428,7 @@ const DietTracker: React.FC = () => {
                   alt={meal.name} 
                   className="w-full h-40 object-cover"
                   onError={(e) => {
+                    // Fallback image if the original fails to load
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop';
                   }}
                 />
@@ -463,6 +464,7 @@ const DietTracker: React.FC = () => {
                   alt={selectedMeal.name}
                   className="w-full h-48 object-cover"
                   onError={(e) => {
+                    // Fallback image if the original fails to load
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop';
                   }}
                 />
