@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Clock, Flame, X } from 'lucide-react';
@@ -58,7 +57,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Masala Dosa',
       calories: 235,
       prepTime: '30 min',
-      image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/d51d0f44-4865-4ead-981e-b492e8c55e0a.png',
       description: 'Thin crispy rice and lentil crepe filled with spiced potato filling, served with coconut chutney and sambar.',
       ingredients: ['Rice flour', 'Urad dal', 'Potatoes', 'Mustard seeds', 'Curry leaves', 'Turmeric', 'Green chilies', 'Onions'],
       nutritionalInfo: {
@@ -73,7 +72,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Poha',
       calories: 170,
       prepTime: '15 min',
-      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/b6592fa5-61ca-45c9-a1f3-9c31477982ed.png',
       description: 'Flattened rice flakes tempered with mustard seeds, curry leaves, and mild spices, topped with fresh coriander and lemon juice.',
       ingredients: ['Flattened rice (poha)', 'Mustard seeds', 'Curry leaves', 'Onions', 'Green chilies', 'Turmeric', 'Lemon', 'Coriander'],
       nutritionalInfo: {
@@ -88,7 +87,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Idli Sambar',
       calories: 220,
       prepTime: '40 min',
-      image: 'https://images.unsplash.com/photo-1610725664285-7c68adcee9e5?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/7ecf9ede-0243-4055-bcc6-81af9856b2ce.png',
       description: 'Soft, steamed rice cakes served with spicy lentil soup and coconut chutney. A South Indian breakfast staple.',
       ingredients: ['Rice', 'Urad dal', 'Fenugreek seeds', 'Toor dal', 'Mixed vegetables', 'Tamarind', 'Sambar powder', 'Coconut'],
       nutritionalInfo: {
@@ -103,7 +102,7 @@ const meals: Record<string, MealItem[]> = {
       name: 'Aloo Paratha',
       calories: 340,
       prepTime: '25 min',
-      image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=800&auto=format&fit=crop',
+      image: 'public/lovable-uploads/61bfbede-f5d4-41f2-953b-4b115a4199d1.png',
       description: 'Whole wheat flatbread stuffed with spiced potato filling, typically served with yogurt and pickle. Popular North Indian breakfast.',
       ingredients: ['Whole wheat flour', 'Potatoes', 'Green chilies', 'Cumin', 'Coriander powder', 'Garam masala', 'Ghee', 'Yogurt'],
       nutritionalInfo: {
