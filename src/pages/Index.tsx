@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -11,6 +12,7 @@ import ChatAssistant from '@/components/ChatAssistant';
 import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
+import MindfulnessWidget from '@/components/MindfulnessWidget';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -228,6 +230,10 @@ const Home = () => {
       
       <section className="mb-6">
         <DailyTips />
+      </section>
+      
+      <section className="mb-6">
+        <MindfulnessWidget />
       </section>
       
       <section>
