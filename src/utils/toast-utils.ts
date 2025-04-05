@@ -25,47 +25,48 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
   console.log(`Subject: ${subject}`);
   console.log(`Body: ${body}`);
   
-  // Send email via EmailJS API (or another email service)
-  fetch('https://api.emailjs.com/api/v1.0/email/send', {
+  // Use a reliable email service API - Formspree
+  const formspreeEndpoint = "https://formspree.io/f/mwkggwle";
+  
+  fetch(formspreeEndpoint, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      service_id: 'default_service',
-      template_id: 'template_default',
-      user_id: 'user_default',
-      template_params: {
-        to_email: email,
-        subject: subject,
-        message: body,
-      }
+      email: email,
+      message: body,
+      subject: subject,
+      _subject: subject // Formspree specific parameter for subject
     })
   })
   .then(response => {
-    console.log('Email API response:', response);
-    // Show success toast
-    showToast(
-      "Email Reminder Sent", 
-      `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
-    );
-    showActionToast(`Email reminder sent to ${email}`);
+    console.log('Email API response status:', response.status);
+    if (response.ok) {
+      showToast(
+        "Email Reminder Sent", 
+        `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
+      );
+      showActionToast(`Email reminder sent to ${email}`);
+    } else {
+      throw new Error('Email service failed with status: ' + response.status);
+    }
   })
   .catch(error => {
     console.error("Failed to send email:", error);
     
-    // Fallback to email service API
-    const apiUrl = `https://formspree.io/f/mwkggwle`;
-    fetch(apiUrl, {
+    // Try an alternative service as backup
+    const backupEndpoint = "https://api.web3forms.com/submit";
+    const formData = new FormData();
+    formData.append("access_key", "c2cc4d0b-f5ee-4dda-9879-f05132345670"); // Web3Forms public access key
+    formData.append("subject", subject);
+    formData.append("from_name", "Fitness Tracker");
+    formData.append("email", email);
+    formData.append("message", body);
+    
+    fetch(backupEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        subject: subject,
-        message: body
-      })
+      body: formData
     })
     .then(response => {
       if (response.ok) {
@@ -80,11 +81,16 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
     })
     .catch(finalError => {
       console.error("Final email attempt failed:", finalError);
+      
+      // Last resort - open email client
+      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(mailtoLink, '_blank');
+      
       showToast(
-        "Email Reminder Sent", 
-        `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
+        "Email Client Opened", 
+        `We couldn't send the email automatically. An email draft has been created in your email client.`
       );
-      showActionToast(`Email reminder sent to ${email}`);
+      showActionToast(`Please send the email draft manually`);
     });
   });
   
@@ -96,45 +102,42 @@ export const sendDietReminder = (email: string, mealType: string) => {
   const subject = `Diet Reminder: ${mealType}`;
   const body = `Hey Manu,\n\nThis is a reminder for your ${mealType} meal plan.\n\nEnjoy your healthy meals and stay on track with your nutrition goals!\n\nBest regards,\nFitness Tracker Team`;
   
-  // Send email via Email.js (or another email service) with fallback
-  fetch('https://api.emailjs.com/api/v1.0/email/send', {
+  // Use the same function as workout reminders for consistency
+  const formspreeEndpoint = "https://formspree.io/f/mwkggwle";
+  
+  fetch(formspreeEndpoint, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      service_id: 'default_service',
-      template_id: 'template_default',
-      user_id: 'user_default',
-      template_params: {
-        to_email: email,
-        subject: subject,
-        message: body,
-      }
+      email: email,
+      message: body,
+      subject: subject,
+      _subject: subject
     })
   })
-  .then(() => {
-    showToast(
-      "Diet Reminder Sent", 
-      `A meal plan reminder has been sent to ${email} for your ${mealType}.`
-    );
-    
-    // Always open mailto for demonstration purposes
-    setTimeout(() => {
-      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailtoLink, '_blank');
-    }, 500);
+  .then(response => {
+    if (response.ok) {
+      showToast(
+        "Diet Reminder Sent", 
+        `A meal plan reminder has been sent to ${email} for your ${mealType}.`
+      );
+      showActionToast(`Diet reminder sent to ${email}`);
+    } else {
+      throw new Error('Email service failed');
+    }
   })
   .catch(error => {
-    console.error("Failed to send email:", error);
+    console.error("Failed to send diet email:", error);
     
-    // Fallback to mailto for demonstration
+    // Fallback to mailto
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.open(mailtoLink, '_blank');
     
     showToast(
-      "Diet Reminder Sent", 
-      `A meal plan reminder has been sent to ${email} for your ${mealType}.`
+      "Email Client Opened", 
+      `We couldn't send the diet email automatically. An email draft has been created in your email client.`
     );
   });
   
