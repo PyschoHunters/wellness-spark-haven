@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { X, Clock, Flame, Dumbbell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ExerciseTimer from './ExerciseTimer';
 import EmailForm from './EmailForm';
+import { sendEmailReminder } from '@/utils/toast-utils';
 
 export interface Exercise {
   name: string;
@@ -138,6 +140,14 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
     setShowEmailForm(true);
   };
 
+  const handleSubmitEmailReminder = (email: string) => {
+    sendEmailReminder(
+      email,
+      title,
+      new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    );
+  };
+
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col animate-scale-up">
@@ -254,7 +264,7 @@ const WorkoutDetail: React.FC<WorkoutDetailProps> = ({
           workoutTitle={title}
           workoutTime={new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           onClose={() => setShowEmailForm(false)}
-          onSubmit={() => {}}
+          onSubmit={handleSubmitEmailReminder}
         />
       )}
     </div>

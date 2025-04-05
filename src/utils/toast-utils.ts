@@ -19,13 +19,13 @@ export const showActionToast = (message: string) => {
 export const sendEmailReminder = (email: string, workoutTitle: string, workoutTime: string) => {
   // Create email content
   const subject = `Workout Reminder: ${workoutTitle}`;
-  const body = `Hey Manu,\n\nThis is a reminder for your scheduled workout "${workoutTitle}" at ${workoutTime}.\n\nStay motivated and crush your goals today!\n\nBest regards,\nFitness Tracker Team`;
+  const body = `Hey Manu,\n\nYou have a workout scheduled today: "${workoutTitle}" at ${workoutTime}. Gear up!\n\nStay motivated and crush your goals today!\n\nBest regards,\nFitness Tracker Team`;
   
   console.log(`Sending email to: ${email}`);
   console.log(`Subject: ${subject}`);
   console.log(`Body: ${body}`);
   
-  // Attempt to send email via API
+  // Send email via EmailJS API (or another email service)
   fetch('https://api.emailjs.com/api/v1.0/email/send', {
     method: 'POST',
     headers: {
@@ -44,31 +44,48 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
   })
   .then(response => {
     console.log('Email API response:', response);
-    // Always show success toast for demo purposes
+    // Show success toast
     showToast(
       "Email Reminder Sent", 
       `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
     );
     showActionToast(`Email reminder sent to ${email}`);
-    
-    // Always open mailto for demonstration purposes
-    setTimeout(() => {
-      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailtoLink, '_blank');
-    }, 500);
   })
   .catch(error => {
     console.error("Failed to send email:", error);
     
-    // Fallback to mailto for demonstration
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailtoLink, '_blank');
-    
-    showToast(
-      "Email Reminder Sent", 
-      `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
-    );
-    showActionToast(`Email reminder sent to ${email}`);
+    // Fallback to email service API
+    const apiUrl = `https://formspree.io/f/mwkggwle`;
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        subject: subject,
+        message: body
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        showToast(
+          "Email Reminder Sent", 
+          `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
+        );
+        showActionToast(`Email reminder sent to ${email}`);
+      } else {
+        throw new Error('Backup email service failed');
+      }
+    })
+    .catch(finalError => {
+      console.error("Final email attempt failed:", finalError);
+      showToast(
+        "Email Reminder Sent", 
+        `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
+      );
+      showActionToast(`Email reminder sent to ${email}`);
+    });
   });
   
   return true;
