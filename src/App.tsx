@@ -9,6 +9,7 @@ import Activity from "./pages/Activity";
 import Schedule from "./pages/Schedule";
 import Profile from "./pages/Profile";
 import BuddyFinder from "./pages/BuddyFinder";
+import Mindfulness from "./pages/Mindfulness";
 import NotFound from "./pages/NotFound";
 import ChatAssistant from "./components/ChatAssistant";
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/buddy-finder" element={<BuddyFinder />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/mindfulness" element={<Mindfulness />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <ChatAssistant />

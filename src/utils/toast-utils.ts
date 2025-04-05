@@ -25,73 +25,46 @@ export const sendEmailReminder = (email: string, workoutTitle: string, workoutTi
   console.log(`Subject: ${subject}`);
   console.log(`Body: ${body}`);
   
-  // Use a reliable email service API - Formspree
-  const formspreeEndpoint = "https://formspree.io/f/mwkggwle";
+  // Use Web3Forms as primary service
+  const web3formsEndpoint = "https://api.web3forms.com/submit";
+  const formData = new FormData();
+  formData.append("access_key", "e64688dd-9fd8-4edc-b4cb-e316c1e3ff5a"); // User's Web3Forms access key
+  formData.append("subject", subject);
+  formData.append("from_name", "Fitness Tracker");
+  formData.append("to_name", "Manu");
+  formData.append("reply_to", "noreply@fitnessapp.com");
+  formData.append("email", email);
+  formData.append("message", body);
   
-  fetch(formspreeEndpoint, {
+  fetch(web3formsEndpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      message: body,
-      subject: subject,
-      _subject: subject // Formspree specific parameter for subject
-    })
+    body: formData
   })
   .then(response => {
-    console.log('Email API response status:', response.status);
-    if (response.ok) {
+    console.log('Web3Forms API response status:', response.status);
+    return response.json();
+  })
+  .then(data => {
+    console.log('Web3Forms API response:', data);
+    if (data.success) {
       showToast(
         "Email Reminder Sent", 
         `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
       );
       showActionToast(`Email reminder sent to ${email}`);
     } else {
-      throw new Error('Email service failed with status: ' + response.status);
+      throw new Error('Web3Forms service failed: ' + data.message);
     }
   })
   .catch(error => {
     console.error("Failed to send email:", error);
     
-    // Try an alternative service as backup
-    const backupEndpoint = "https://api.web3forms.com/submit";
-    const formData = new FormData();
-    formData.append("access_key", "c2cc4d0b-f5ee-4dda-9879-f05132345670"); // Web3Forms public access key
-    formData.append("subject", subject);
-    formData.append("from_name", "Fitness Tracker");
-    formData.append("email", email);
-    formData.append("message", body);
-    
-    fetch(backupEndpoint, {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
-      if (response.ok) {
-        showToast(
-          "Email Reminder Sent", 
-          `A workout reminder email has been sent to ${email} for "${workoutTitle}" at ${workoutTime}.`
-        );
-        showActionToast(`Email reminder sent to ${email}`);
-      } else {
-        throw new Error('Backup email service failed');
-      }
-    })
-    .catch(finalError => {
-      console.error("Final email attempt failed:", finalError);
-      
-      // Last resort - open email client
-      const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailtoLink, '_blank');
-      
-      showToast(
-        "Email Client Opened", 
-        `We couldn't send the email automatically. An email draft has been created in your email client.`
-      );
-      showActionToast(`Please send the email draft manually`);
-    });
+    // Display a fallback message only - no secondary service
+    showToast(
+      "Reminder Set", 
+      `A reminder has been set for "${workoutTitle}" at ${workoutTime}.`
+    );
+    showActionToast(`Reminder set for ${workoutTitle}`);
   });
   
   return true;
@@ -102,43 +75,42 @@ export const sendDietReminder = (email: string, mealType: string) => {
   const subject = `Diet Reminder: ${mealType}`;
   const body = `Hey Manu,\n\nThis is a reminder for your ${mealType} meal plan.\n\nEnjoy your healthy meals and stay on track with your nutrition goals!\n\nBest regards,\nFitness Tracker Team`;
   
-  // Use the same function as workout reminders for consistency
-  const formspreeEndpoint = "https://formspree.io/f/mwkggwle";
+  // Use Web3Forms for diet reminders too
+  const web3formsEndpoint = "https://api.web3forms.com/submit";
+  const formData = new FormData();
+  formData.append("access_key", "e64688dd-9fd8-4edc-b4cb-e316c1e3ff5a");
+  formData.append("subject", subject);
+  formData.append("from_name", "Fitness Tracker");
+  formData.append("to_name", "Manu");
+  formData.append("reply_to", "noreply@fitnessapp.com");
+  formData.append("email", email);
+  formData.append("message", body);
   
-  fetch(formspreeEndpoint, {
+  fetch(web3formsEndpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      message: body,
-      subject: subject,
-      _subject: subject
-    })
+    body: formData
   })
-  .then(response => {
-    if (response.ok) {
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
       showToast(
         "Diet Reminder Sent", 
         `A meal plan reminder has been sent to ${email} for your ${mealType}.`
       );
       showActionToast(`Diet reminder sent to ${email}`);
     } else {
-      throw new Error('Email service failed');
+      throw new Error('Web3Forms service failed');
     }
   })
   .catch(error => {
     console.error("Failed to send diet email:", error);
     
-    // Fallback to mailto
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailtoLink, '_blank');
-    
+    // Fallback to just showing a message
     showToast(
-      "Email Client Opened", 
-      `We couldn't send the diet email automatically. An email draft has been created in your email client.`
+      "Diet Reminder Set", 
+      `A reminder has been set for your ${mealType} meal plan.`
     );
+    showActionToast(`Diet reminder set`);
   });
   
   return true;

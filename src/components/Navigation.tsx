@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, BarChart2, Calendar, User, Users } from 'lucide-react';
+import { Home, BarChart2, Calendar, User, Users, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const Navigation = () => {
@@ -12,6 +12,7 @@ const Navigation = () => {
     { path: '/', icon: Home, label: 'Home' },
     { path: '/activity', icon: BarChart2, label: 'Activity' },
     { path: '/schedule', icon: Calendar, label: 'Schedule' },
+    { path: '/mindfulness', icon: Heart, label: 'Mindful' },
     { path: '/buddy-finder', icon: Users, label: 'Buddies' },
     { path: '/profile', icon: User, label: 'Profile' }
   ];
