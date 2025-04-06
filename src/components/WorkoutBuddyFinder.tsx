@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
@@ -263,18 +262,17 @@ const WorkoutBuddyFinder: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Initialize sample buddy requests
     const sampleRequests: BuddyRequest[] = [
       {
         id: 1,
-        buddy: buddies[3], // Rajesh Kumar
+        buddy: buddies[3],
         status: 'pending',
         date: '2024-04-02',
         message: "Hi! I noticed we both enjoy running. Would you like to meet for a weekend run at Central Park?"
       },
       {
         id: 2,
-        buddy: buddies[5], // Arjun Patel
+        buddy: buddies[5],
         status: 'accepted',
         date: '2024-03-28',
         message: "Hey, I'm looking for a basketball partner for Thursday evenings. Are you interested?"
@@ -284,11 +282,9 @@ const WorkoutBuddyFinder: React.FC = () => {
     setBuddyRequests(sampleRequests);
     setHasUnreadRequests(true);
     
-    // Initialize sample connections
-    const sampleConnections = [buddies[1], buddies[5]]; // Rohit and Arjun
+    const sampleConnections = [buddies[1], buddies[5]];
     setConnections(sampleConnections);
     
-    // Load sample messages for Rohit
     if (buddies[1]) {
       const sampleMessages: Message[] = [
         {
@@ -296,7 +292,7 @@ const WorkoutBuddyFinder: React.FC = () => {
           sender: "Rohit Verma",
           receiver: "You",
           text: "Hey there! Looking forward to our workout session tomorrow.",
-          timestamp: new Date(Date.now() - 3600000 * 24), // 24 hours ago
+          timestamp: new Date(Date.now() - 3600000 * 24),
           read: true
         },
         {
@@ -304,7 +300,7 @@ const WorkoutBuddyFinder: React.FC = () => {
           sender: "You",
           receiver: "Rohit Verma",
           text: "Absolutely! I'll meet you at the gym at 7 AM. Should I bring anything specific?",
-          timestamp: new Date(Date.now() - 3600000 * 23), // 23 hours ago
+          timestamp: new Date(Date.now() - 3600000 * 23),
           read: true
         },
         {
@@ -312,7 +308,7 @@ const WorkoutBuddyFinder: React.FC = () => {
           sender: "Rohit Verma",
           receiver: "You",
           text: "Just bring water and a towel. I'll guide you through the workout routine.",
-          timestamp: new Date(Date.now() - 3600000 * 22), // 22 hours ago
+          timestamp: new Date(Date.now() - 3600000 * 22),
           read: true
         },
         {
@@ -320,7 +316,7 @@ const WorkoutBuddyFinder: React.FC = () => {
           sender: "Rohit Verma",
           receiver: "You",
           text: "Also, how was your last workout? Did you try the routine I suggested?",
-          timestamp: new Date(Date.now() - 3600000 * 2), // 2 hours ago
+          timestamp: new Date(Date.now() - 3600000 * 2),
           read: false
         }
       ];
@@ -404,26 +400,22 @@ const WorkoutBuddyFinder: React.FC = () => {
     }
     
     if (selectedBuddy) {
-      // Check if already connected
       const isAlreadyConnected = connections.some(connection => connection.id === selectedBuddy.id);
       
       if (isAlreadyConnected) {
-        // Open chat with this buddy
         setActiveChat({
           buddy: selectedBuddy,
           messages: []
         });
         setView('chat');
       } else {
-        // Add new buddy request
         const newRequest: BuddyRequest = {
           id: Date.now(),
           buddy: selectedBuddy,
-          status: 'accepted', // Auto-accept for demo purposes
+          status: 'accepted',
           date: new Date().toISOString().split('T')[0],
         };
         
-        // Add to connections right away for demo
         setConnections(prev => [...prev, selectedBuddy]);
         setBuddyRequests(prev => [...prev, newRequest]);
         
@@ -462,7 +454,6 @@ const WorkoutBuddyFinder: React.FC = () => {
     
     setNewMessage('');
     
-    // Simulate reply after 2 seconds
     setTimeout(() => {
       const replyMessage: Message = {
         id: Date.now() + 1,
@@ -489,7 +480,6 @@ const WorkoutBuddyFinder: React.FC = () => {
     
     const request = buddyRequests.find(req => req.id === requestId);
     if (request) {
-      // Add to connections if not already there
       if (!connections.some(conn => conn.id === request.buddy.id)) {
         setConnections(prev => [...prev, request.buddy]);
       }
@@ -512,8 +502,8 @@ const WorkoutBuddyFinder: React.FC = () => {
     return Array(5).fill(0).map((_, i) => (
       <Star 
         key={i} 
-        size={14} 
         className={i < rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"} 
+        size={14}
       />
     ));
   };
