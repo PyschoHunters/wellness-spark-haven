@@ -1,12 +1,15 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, BarChart2, Calendar, User, Users } from 'lucide-react';
+import { Home, BarChart2, Calendar, User, Users, LogIn, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { showActionToast } from '@/utils/toast-utils';
 
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
@@ -18,6 +21,16 @@ const Navigation = () => {
 
   const handleNavigation = (path: string) => {
     navigate(path);
+  };
+  
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      logout();
+      showActionToast("Successfully logged out");
+      navigate('/auth');
+    } else {
+      navigate('/auth');
+    }
   };
 
   return (
@@ -48,6 +61,23 @@ const Navigation = () => {
             </div>
           );
         })}
+        
+        <div
+          className="flex flex-col items-center px-3 py-2 rounded-xl transition-all duration-300 relative cursor-pointer text-fitness-gray"
+          onClick={handleAuthAction}
+        >
+          {isAuthenticated ? (
+            <>
+              <LogOut size={22} />
+              <span className="text-xs mt-1 font-medium">Logout</span>
+            </>
+          ) : (
+            <>
+              <LogIn size={22} />
+              <span className="text-xs mt-1 font-medium">Login</span>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
