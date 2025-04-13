@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw } from 'lucide-react';
+import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw, User, Users, Baby, Wheelchair } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';
@@ -17,6 +17,9 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ElderFitness from '@/components/ElderFitness';
+import KidsFitness from '@/components/KidsFitness';
+import FamilyFitness from '@/components/FamilyFitness';
 
 const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
@@ -121,9 +124,12 @@ const Profile = () => {
       />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="wellness">Wellness</TabsTrigger>
+          <TabsTrigger value="elders" className="text-xs">Elders</TabsTrigger>
+          <TabsTrigger value="kids" className="text-xs">Kids</TabsTrigger>
+          <TabsTrigger value="family" className="text-xs">Family</TabsTrigger>
         </TabsList>
         
         <TabsContent value="profile" className="mt-6">
@@ -241,6 +247,18 @@ const Profile = () => {
             
             <MoodWorkout className="shadow-sm" />
           </div>
+        </TabsContent>
+        
+        <TabsContent value="elders" className="mt-6">
+          <ElderFitness />
+        </TabsContent>
+        
+        <TabsContent value="kids" className="mt-6">
+          <KidsFitness />
+        </TabsContent>
+        
+        <TabsContent value="family" className="mt-6">
+          <FamilyFitness />
         </TabsContent>
       </Tabs>
       
