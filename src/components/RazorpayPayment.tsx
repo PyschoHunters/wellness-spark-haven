@@ -175,7 +175,8 @@ const RazorpayPayment = () => {
           }
         },
         prefill: {
-          name: user?.user_metadata?.full_name || "",
+          // Fix: Use optional chaining and access user_metadata as property from any
+          name: user ? (user as any).user_metadata?.full_name || "" : "",
           email: user?.email || "",
         },
         theme: {
