@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
 import AvatarCreator from '@/components/AvatarCreator';
+import EmotionWorkoutPlanner from '@/components/EmotionWorkoutPlanner';
+import EcoFitRewards from '@/components/EcoFitRewards';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -227,11 +229,19 @@ const Home = () => {
       </section>
       
       <section className="mb-6">
+        <EmotionWorkoutPlanner />
+      </section>
+      
+      <section className="mb-6">
         <DailyTips />
       </section>
       
       <section className="mb-6">
         <AvatarCreator />
+      </section>
+      
+      <section className="mb-6">
+        <EcoFitRewards />
       </section>
       
       <section>
