@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,10 +8,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { showActionToast } from '@/utils/toast-utils';
 
 const avatarStyles = [
-  { id: 1, name: 'Sporty', image: '/lovable-uploads/06928842-90bc-4aff-83fe-27a303331c3d.png' },
-  { id: 2, name: 'Casual', image: '/lovable-uploads/4249e777-53a3-4c1a-9a98-6290c5033521.png' },
-  { id: 3, name: 'Vibrant', image: '/lovable-uploads/74b6ebc2-f084-4008-a589-e7bcd8d6c481.png' },
-  { id: 4, name: 'Scholar', image: '/lovable-uploads/008981bd-9aed-4038-b04b-3498da8639f2.png' }
+  { id: 1, name: 'Casual', image: 'https://img.freepik.com/free-vector/smiling-young-man-glasses_1308-174702.jpg?t=st=1744568749~exp=1744572349~hmac=c449517fb5917e841d45c92cddc9f2fe41f2af579aa012bb52e36a165a1829b5&w=996' },
+  { id: 2, name: 'Friendly', image: 'https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg?t=st=1744568774~exp=1744572374~hmac=6058207927c97d6613c49874ef5293a73b5df42dc37315e0d8e67929312ee939&w=1060' },
+  { id: 3, name: 'Professional', image: 'https://img.freepik.com/free-vector/young-man-with-glasses-illustration_1308-174706.jpg?t=st=1744568797~exp=1744572397~hmac=5266e234fa3d1858b88ff3ec838a7c7ec347a173c259f0911d2a3a8b74fd4f54&w=996' },
+  { id: 4, name: 'Contemporary', image: 'https://img.freepik.com/free-photo/androgynous-avatar-non-binary-queer-person_23-2151100226.jpg?t=st=1744568833~exp=1744572433~hmac=2414e54e07e53b34f10a2783bc0ff86d495a567908567cb5ae05bb790eb1eb3b&w=1380' }
 ];
 
 const hairStyles = [

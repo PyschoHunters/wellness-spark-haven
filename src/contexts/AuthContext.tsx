@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser({
             id: user.id,
             email: user.email || '',
-            avatar_url: user.user_metadata?.avatar_url,
+            avatar_url: (user as any).user_metadata?.avatar_url,
           });
         }
       } catch (error) {
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser({
             id: session.user.id,
             email: session.user.email || '',
-            avatar_url: session.user.user_metadata?.avatar_url,
+            avatar_url: (session.user as any).user_metadata?.avatar_url,
           });
         } else {
           setUser(null);
