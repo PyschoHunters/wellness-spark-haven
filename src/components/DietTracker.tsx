@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Clock, Flame, X, PlusCircle } from 'lucide-react';
+import { Clock, Flame, X } from 'lucide-react';
 import { sendDietReminder, showActionToast } from '@/utils/toast-utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
 
@@ -420,28 +421,30 @@ const DietTracker: React.FC = () => {
             {meals[mealType].map((meal) => (
               <div 
                 key={meal.id} 
-                className="rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow flex"
+                className="rounded-2xl overflow-hidden shadow-sm cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => handleMealClick(meal)}
               >
                 <img 
                   src={meal.image} 
                   alt={meal.name} 
-                  className="w-24 h-24 object-cover"
+                  className="w-full h-40 object-cover"
                   onError={(e) => {
+                    // Fallback image if the original fails to load
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop';
                   }}
                 />
-                <div className="p-3 flex-1 flex justify-between items-center">
-                  <div>
-                    <h3 className="font-bold text-base">{meal.name}</h3>
-                    <div className="flex items-center gap-2 text-fitness-gray">
-                      <Clock size={12} />
-                      <span className="text-xs">{meal.prepTime}</span>
-                      <Flame size={12} className="text-fitness-secondary" />
-                      <span className="text-xs">{meal.calories} kCal</span>
+                <div className="p-3">
+                  <h3 className="font-bold text-lg">{meal.name}</h3>
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="flex items-center gap-1 text-fitness-gray">
+                      <Clock size={14} />
+                      <span className="text-sm">{meal.prepTime}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-fitness-secondary">
+                      <Flame size={14} />
+                      <span className="text-sm">{meal.calories} kCal</span>
                     </div>
                   </div>
-                  <PlusCircle size={20} className="text-fitness-primary" />
                 </div>
               </div>
             ))}
@@ -462,6 +465,7 @@ const DietTracker: React.FC = () => {
                   alt={selectedMeal.name}
                   className="w-full h-48 object-cover"
                   onError={(e) => {
+                    // Fallback image if the original fails to load
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop';
                   }}
                 />
