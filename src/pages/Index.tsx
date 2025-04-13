@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Activity, Flame, Heart } from 'lucide-react';
 import Header from '@/components/Header';
@@ -8,7 +7,6 @@ import StatsCard from '@/components/StatsCard';
 import ActivityChart from '@/components/ActivityChart';
 import Navigation from '@/components/Navigation';
 import DailyTips from '@/components/DailyTips';
-import ChatAssistant from '@/components/ChatAssistant';
 import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
@@ -286,7 +284,6 @@ const Home = () => {
       )}
       
       <Navigation />
-      <ChatAssistant />
     </div>
   );
 };

@@ -8,6 +8,29 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Function to clean up Gemini responses
+const cleanupResponse = (text: string): string => {
+  // Remove markdown formatting (asterisks for bold/italic)
+  let cleaned = text.replace(/\*\*([^*]+)\*\*/g, '$1'); // Remove bold formatting **text**
+  cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');      // Remove italic formatting *text*
+  
+  // Remove any markdown headers (# Header)
+  cleaned = cleaned.replace(/#{1,6}\s+([^\n]+)/g, '$1');
+  
+  // Clean up bullet points and numbered lists for better display
+  cleaned = cleaned.replace(/^\s*[-*•]\s+/gm, '• ');    // Standardize bullet points
+  cleaned = cleaned.replace(/^\s*\d+\.\s+/gm, '');      // Remove numbered list markers
+  
+  // Remove double line breaks and standardize spacing
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+  
+  // Remove any remaining markdown artifacts
+  cleaned = cleaned.replace(/`([^`]+)`/g, '$1');        // Remove code ticks
+  cleaned = cleaned.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // Remove markdown links
+  
+  return cleaned.trim();
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -69,7 +92,8 @@ serve(async (req) => {
         data.candidates[0].content.parts && 
         data.candidates[0].content.parts[0] && 
         data.candidates[0].content.parts[0].text) {
-      recommendationText = data.candidates[0].content.parts[0].text;
+      // Clean and format the recommendation text
+      recommendationText = cleanupResponse(data.candidates[0].content.parts[0].text);
     }
     
     return new Response(JSON.stringify({ recommendation: recommendationText }), {

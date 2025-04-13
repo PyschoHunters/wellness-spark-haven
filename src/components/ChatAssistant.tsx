@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
@@ -195,7 +194,6 @@ const ChatAssistant: React.FC = () => {
   };
   
   useEffect(() => {
-    // Scroll to bottom of chat when messages change
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -204,29 +202,24 @@ const ChatAssistant: React.FC = () => {
   const findMatchingFaq = (userQuery: string): FAQ | undefined => {
     const normalizedQuery = userQuery.toLowerCase().trim();
     
-    // First try exact match
     const exactMatch = faqs.find(faq => 
       faq.question.toLowerCase() === normalizedQuery
     );
     
     if (exactMatch) return exactMatch;
     
-    // Then try partial matches
     const partialMatches = faqs.filter(faq => {
-      // Check if query contains key terms from FAQ question
       return faq.question.toLowerCase().includes(normalizedQuery) || 
         normalizedQuery.includes(faq.question.toLowerCase());
     });
     
-    // If we have a partial match, return the best one (shortest question for relevance)
     if (partialMatches.length > 0) {
       return partialMatches.sort((a, b) => a.question.length - b.question.length)[0];
     }
     
-    // Check for keyword matches
     const keywords = normalizedQuery.split(' ');
     for (const keyword of keywords) {
-      if (keyword.length < 3) continue; // Skip very short words
+      if (keyword.length < 3) continue;
       
       const keywordMatches = faqs.filter(faq => 
         faq.question.toLowerCase().includes(keyword) || 
@@ -241,9 +234,21 @@ const ChatAssistant: React.FC = () => {
     return undefined;
   };
 
+  const formatResponseText = (text: string): string => {
+    let formatted = text.replace(/\*\*([^*]+)\*\*/g, '$1');
+    formatted = formatted.replace(/\*([^*]+)\*/g, '$1');
+    formatted = formatted.replace(/#{1,6}\s+([^\n]+)/g, '$1');
+    formatted = formatted.replace(/^\s*[-*•]\s+/gm, '• ');
+    formatted = formatted.replace(/^\s*\d+\.\s+/gm, '');
+    formatted = formatted.replace(/```[^`]*```/g, '');
+    formatted = formatted.replace(/`([^`]+)`/g, '$1');
+    formatted = formatted.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+    
+    return formatted.trim();
+  };
+
   const getGeminiResponse = async (userQuery: string): Promise<string> => {
     try {
-      // First try to use our Edge Function
       const response = await supabase.functions.invoke('gemini-ai', {
         body: { 
           prompt: `You are a helpful fitness assistant that helps users with questions about fitness, workouts, nutrition, and wellness. The user has asked: ${userQuery}. Provide a helpful, concise response.`,
@@ -259,7 +264,6 @@ const ChatAssistant: React.FC = () => {
     } catch (error) {
       console.error("Error calling Supabase function:", error);
       
-      // Fallback to direct API call
       try {
         const directResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI`, {
           method: 'POST',
@@ -291,7 +295,7 @@ const ChatAssistant: React.FC = () => {
             data.candidates[0].content.parts && 
             data.candidates[0].content.parts[0] && 
             data.candidates[0].content.parts[0].text) {
-          return data.candidates[0].content.parts[0].text;
+          return formatResponseText(data.candidates[0].content.parts[0].text);
         }
         
         throw new Error("Failed to parse Gemini API response");
@@ -307,13 +311,11 @@ const ChatAssistant: React.FC = () => {
     
     if (query.trim() === '') return;
     
-    // Add user message
     const newMessages = [...messages, {type: 'user' as const, content: query}];
     setMessages(newMessages);
     setQuery('');
     setIsLoading(true);
     
-    // Find matching FAQ using improved matching
     const matchingFaq = findMatchingFaq(query);
     
     try {
@@ -323,9 +325,9 @@ const ChatAssistant: React.FC = () => {
           setIsLoading(false);
         }, 500);
       } else {
-        // Use Gemini AI for dynamic responses
         const aiResponse = await getGeminiResponse(query);
-        setMessages([...newMessages, {type: 'bot' as const, content: aiResponse}]);
+        const formattedResponse = formatResponseText(aiResponse);
+        setMessages([...newMessages, {type: 'bot' as const, content: formattedResponse}]);
         setIsLoading(false);
       }
     } catch (error) {
@@ -364,7 +366,7 @@ const ChatAssistant: React.FC = () => {
                   message.type === 'user' ? 'ml-auto' : 'mr-auto'
                 }`}
               >
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
               </div>
             ))}
             {isLoading && (
