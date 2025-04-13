@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, Filter, Award, Bookmark, Sliders, Users, UserPlus } from 'lucide-react';
+import { Search, Filter, Award, Bookmark, Sliders, Users, UserPlus, Plus, Star } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
