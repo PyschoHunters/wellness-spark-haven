@@ -84,28 +84,10 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
   };
 
   const formatAIRecommendation = (rawText: string): string => {
-    // Clean up the Gemini API output
-    let formatted = rawText;
-    
-    // Remove markdown formatting
-    formatted = formatted.replace(/\*\*/g, ''); // Remove bold markers
-    formatted = formatted.replace(/\*/g, ''); // Remove italics/emphasis markers
-    formatted = formatted.replace(/#{1,6}\s/g, ''); // Remove heading markers
-    formatted = formatted.replace(/\n+/g, ' '); // Replace multiple newlines with spaces
-    formatted = formatted.replace(/\s{2,}/g, ' '); // Replace multiple spaces with a single space
-    
-    // Remove common prefixes that Gemini might add
-    formatted = formatted.replace(/\*\*Recommendation for [^:]*:\*\*/g, '');
-    formatted = formatted.replace(/Recommendation for [^:]*:/g, '');
-    formatted = formatted.replace(/Here's a personalized [^:]*:/g, '');
-    
-    // Clean up bullet points
-    formatted = formatted.replace(/- /g, '• ');
-    
-    // Trim and clean sentence spacing
-    formatted = formatted.trim();
-    formatted = formatted.replace(/\.\s*/g, '. ');
-    
+    let formatted = rawText.replace(/\*\*Recommendation for [^:]*:\*\*/g, '');
+    formatted = formatted.replace(/\*\*/g, '');
+    formatted = formatted.trim().replace(/\.\s*/g, '. ');
+    formatted = formatted.replace(/\n+/g, ' ');
     return formatted;
   };
 
@@ -237,11 +219,10 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         throw new Error(response.error.message);
       }
       
-      // Add AI response with formatting applied
-      const formattedResponse = formatAIRecommendation(response.data.recommendation || "I'm sorry, I couldn't generate a response at this time.");
+      // Add AI response
       setChatMessages(prev => [...prev, { 
         type: 'bot', 
-        content: formattedResponse
+        content: response.data.recommendation || "I'm sorry, I couldn't generate a response at this time." 
       }]);
     } catch (error) {
       console.error("Error fetching chat response:", error);
@@ -271,12 +252,9 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         });
         
         const data = await directResponse.json();
-        let responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 
           "I'm sorry, I couldn't generate a response at this time.";
           
-        // Apply formatting to clean up response
-        responseText = formatAIRecommendation(responseText);
-        
         setChatMessages(prev => [...prev, { type: 'bot', content: responseText }]);
       } catch (fallbackError) {
         setChatMessages(prev => [...prev, { 
