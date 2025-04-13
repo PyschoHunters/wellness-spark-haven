@@ -70,6 +70,14 @@ serve(async (req) => {
         data.candidates[0].content.parts[0] && 
         data.candidates[0].content.parts[0].text) {
       recommendationText = data.candidates[0].content.parts[0].text;
+      
+      // Clean up formatting
+      recommendationText = recommendationText.replace(/\*\*/g, ''); // Remove asterisks
+      recommendationText = recommendationText.replace(/\*/g, ''); // Remove single asterisks
+      recommendationText = recommendationText.replace(/#+\s/g, ''); // Remove markdown headers
+      recommendationText = recommendationText.replace(/\n+/g, ' '); // Replace multiple newlines with spaces
+      recommendationText = recommendationText.replace(/\s{2,}/g, ' '); // Replace multiple spaces with a single space
+      recommendationText = recommendationText.trim(); // Trim leading/trailing whitespace
     }
     
     return new Response(JSON.stringify({ recommendation: recommendationText }), {
