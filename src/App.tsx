@@ -11,7 +11,6 @@ import Activity from "./pages/Activity";
 import Schedule from "./pages/Schedule";
 import Profile from "./pages/Profile";
 import BuddyFinder from "./pages/BuddyFinder";
-import SkillSwap from "./pages/SkillSwap";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 
@@ -32,7 +31,6 @@ const App = () => (
               <Route path="/activity" element={<Activity />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/buddy-finder" element={<BuddyFinder />} />
-              <Route path="/skill-swap" element={<SkillSwap />} />
               <Route path="/profile" element={<Profile />} />
             </Route>
             
