@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw, User, Users, Baby, Wheelchair } from 'lucide-react';
+import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw, User, Users, Baby, UserRound } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';

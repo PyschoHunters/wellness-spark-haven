@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Heart, Clock, Wheelchair, ThumbsUp, ArrowRight } from 'lucide-react';
+import { UserRound, Clock, ThumbsUp, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ const ElderFitness = () => {
     <div className="flex flex-col gap-6">
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 shadow-sm">
         <div className="flex items-center justify-center w-16 h-16 mb-4 bg-white rounded-full shadow-sm mx-auto">
-          <Wheelchair className="text-purple-600" size={28} />
+          <UserRound className="text-purple-600" size={28} />
         </div>
         <h1 className="text-2xl font-bold text-center mb-2">Senior Fitness</h1>
         <p className="text-gray-600 text-center mb-6">
