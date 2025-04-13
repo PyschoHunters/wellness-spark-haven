@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -8,12 +7,11 @@ import { Camera, User, Image, Palette, Save, RefreshCw } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { showActionToast } from '@/utils/toast-utils';
 
-// Avatar options for different categories
 const avatarStyles = [
-  { id: 1, name: 'Professional', image: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=300&auto=format&fit=crop' },
-  { id: 2, name: 'Casual', image: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=300&auto=format&fit=crop' },
-  { id: 3, name: 'Athletic', image: 'https://images.unsplash.com/photo-1499952127939-9bbf5af6c51c?q=80&w=300&auto=format&fit=crop' },
-  { id: 4, name: 'Cartoon', image: 'https://images.unsplash.com/photo-1537815749002-de6a533c64db?q=80&w=300&auto=format&fit=crop' }
+  { id: 1, name: 'Hero', image: '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png' },
+  { id: 2, name: 'Wizard', image: '/lovable-uploads/21f1cb59-c5f4-4268-9bf0-8f45deac3592.png' },
+  { id: 3, name: 'Ninja', image: '/lovable-uploads/11f24990-5ac1-4930-8ca7-eaea332a39ee.png' },
+  { id: 4, name: 'Robot', image: 'https://images.unsplash.com/photo-1537815749002-de6a533c64db?q=80&w=300&auto=format&fit=crop' }
 ];
 
 const hairStyles = [
@@ -42,7 +40,7 @@ const clothingColors = [
 ];
 
 const AvatarCreator: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateUserAvatar } = useAuth();
   const [activeTab, setActiveTab] = useState('style');
   const [selectedStyle, setSelectedStyle] = useState(avatarStyles[0]);
   const [selectedHair, setSelectedHair] = useState(hairStyles[0]);
@@ -52,25 +50,34 @@ const AvatarCreator: React.FC = () => {
 
   const handleRandomize = () => {
     setIsRandomizing(true);
-    // Randomize selections
     setSelectedStyle(avatarStyles[Math.floor(Math.random() * avatarStyles.length)]);
     setSelectedHair(hairStyles[Math.floor(Math.random() * hairStyles.length)]);
     setSelectedSkin(skinTones[Math.floor(Math.random() * skinTones.length)]);
     setSelectedClothing(clothingColors[Math.floor(Math.random() * clothingColors.length)]);
     
-    // Visual feedback for randomization
     setTimeout(() => {
       setIsRandomizing(false);
     }, 500);
   };
 
   const handleSaveAvatar = () => {
-    // In a real app, this would save the avatar configuration to the user profile
+    const avatarData = {
+      style: selectedStyle,
+      hair: selectedHair,
+      skin: selectedSkin,
+      clothing: selectedClothing
+    };
+    
+    localStorage.setItem('userAvatar', JSON.stringify(avatarData));
+    
+    if (typeof updateUserAvatar === 'function') {
+      updateUserAvatar(selectedStyle.image);
+    }
+    
     showActionToast("Avatar saved successfully!");
   };
 
   const handleUploadPhoto = () => {
-    // In a real app, this would open a file picker
     showActionToast("This feature will let you upload your photo");
   };
 

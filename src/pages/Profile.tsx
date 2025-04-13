@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';
@@ -21,6 +20,20 @@ const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
   const [showPaymentPlans, setShowPaymentPlans] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
+  const [showAvatar, setShowAvatar] = useState(false);
+  const [avatarImage, setAvatarImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+      try {
+        const avatarData = JSON.parse(savedAvatar);
+        setAvatarImage(avatarData.style.image);
+      } catch (error) {
+        console.error("Error parsing avatar data:", error);
+      }
+    }
+  }, []);
 
   const handleSeeAllAchievements = () => {
     setShowAchievements(true);
@@ -30,7 +43,15 @@ const Profile = () => {
     showActionToast("No new notifications");
   };
 
-  // User data for personalized recommendations
+  const toggleProfileImage = () => {
+    if (avatarImage) {
+      setShowAvatar(!showAvatar);
+      showActionToast(showAvatar ? "Showing profile photo" : "Showing avatar");
+    } else {
+      showActionToast("No avatar saved yet. Create one in the Home screen!");
+    }
+  };
+
   const userData = {
     name: "Manumohan",
     level: "Intermediate",
@@ -40,7 +61,6 @@ const Profile = () => {
     recentWorkouts: ["Morning Workout", "Full Body", "HIIT Session"]
   };
 
-  // Achievements data
   const achievements = [
     {
       title: "1st Workout",
@@ -80,7 +100,6 @@ const Profile = () => {
     }
   ];
 
-  // Calories burned progress
   const caloriesBurned = 480;
   const caloriesGoal = 6000;
   const caloriesProgress = (caloriesBurned / caloriesGoal) * 100;
@@ -109,11 +128,29 @@ const Profile = () => {
         <TabsContent value="profile" className="mt-6">
           <div className="flex flex-col gap-6">
             <div className="flex items-center bg-white rounded-2xl p-4 shadow-sm">
-              <img 
-                src="/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png" 
-                alt="Profile" 
-                className="w-20 h-20 rounded-full object-cover"
-              />
+              <div 
+                className="relative cursor-pointer" 
+                onClick={toggleProfileImage}
+              >
+                {avatarImage && showAvatar ? (
+                  <img 
+                    src={avatarImage} 
+                    alt="Avatar" 
+                    className="w-20 h-20 rounded-full object-cover transition-all"
+                  />
+                ) : (
+                  <img 
+                    src="/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png" 
+                    alt="Profile" 
+                    className="w-20 h-20 rounded-full object-cover transition-all"
+                  />
+                )}
+                {avatarImage && (
+                  <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center bg-fitness-primary text-white">
+                    <RefreshCw size={12} />
+                  </div>
+                )}
+              </div>
               <div className="ml-4 flex-1">
                 <h2 className="font-bold text-xl">Manumohan</h2>
                 <p className="text-fitness-gray text-sm">manumohan.ai21@gmail.com</p>
@@ -130,7 +167,6 @@ const Profile = () => {
               </div>
             </div>
             
-            {/* Achievements Section */}
             <div className="bg-blue-50 rounded-2xl p-4 shadow-sm">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Achievements</h2>
@@ -192,16 +228,12 @@ const Profile = () => {
         
         <TabsContent value="wellness" className="mt-6">
           <div className="flex flex-col gap-6">
-            {/* Water Tracker */}
             <WaterTracker />
             
-            {/* Sleep Tracker */}
             <SleepTracker />
             
-            {/* Mindfulness Widget */}
             <MindfulnessWidget />
             
-            {/* Yoga Card */}
             <YogaCard className="shadow-sm" />
           </div>
         </TabsContent>
