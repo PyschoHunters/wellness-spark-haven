@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Clock, Flame, X } from 'lucide-react';
@@ -429,7 +428,6 @@ const DietTracker: React.FC = () => {
                   alt={meal.name} 
                   className="w-full h-40 object-cover"
                   onError={(e) => {
-                    // Fallback image if the original fails to load
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop';
                   }}
                 />
@@ -453,7 +451,7 @@ const DietTracker: React.FC = () => {
       </Tabs>
 
       <Dialog open={showMealDetail} onOpenChange={setShowMealDetail}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
           <DialogClose className="absolute right-4 top-4">
             <X size={18} className="text-gray-500" />
           </DialogClose>
@@ -463,55 +461,54 @@ const DietTracker: React.FC = () => {
                 <img 
                   src={selectedMeal.image} 
                   alt={selectedMeal.name}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-36 object-cover"
                   onError={(e) => {
-                    // Fallback image if the original fails to load
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2080&auto=format&fit=crop';
                   }}
                 />
               </div>
               <DialogHeader>
-                <DialogTitle className="text-xl">{selectedMeal.name}</DialogTitle>
-                <div className="flex items-center gap-4 text-sm mt-1">
+                <DialogTitle className="text-lg">{selectedMeal.name}</DialogTitle>
+                <div className="flex items-center gap-2 text-xs mt-1">
                   <div className="flex items-center gap-1">
-                    <Clock size={14} />
+                    <Clock size={12} />
                     <span>{selectedMeal.prepTime}</span>
                   </div>
                   <div className="flex items-center gap-1 text-fitness-secondary">
-                    <Flame size={14} />
+                    <Flame size={12} />
                     <span>{selectedMeal.calories} kCal</span>
                   </div>
                 </div>
               </DialogHeader>
-              <DialogDescription className="mt-4 text-sm text-gray-700">
+              <DialogDescription className="mt-2 text-xs text-gray-700">
                 {selectedMeal.description}
               </DialogDescription>
               
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold mb-2">Nutritional Information</h4>
-                <div className="grid grid-cols-4 gap-2 text-center">
-                  <div className="bg-fitness-gray-light rounded-lg p-2">
-                    <p className="text-xs text-gray-500">Protein</p>
-                    <p className="font-medium text-sm">{selectedMeal.nutritionalInfo.protein}g</p>
+              <div className="mt-3">
+                <h4 className="text-xs font-semibold mb-1">Nutritional Information</h4>
+                <div className="grid grid-cols-4 gap-1 text-center">
+                  <div className="bg-fitness-gray-light rounded-lg p-1">
+                    <p className="text-[10px] text-gray-500">Protein</p>
+                    <p className="font-medium text-xs">{selectedMeal.nutritionalInfo.protein}g</p>
                   </div>
-                  <div className="bg-fitness-gray-light rounded-lg p-2">
-                    <p className="text-xs text-gray-500">Carbs</p>
-                    <p className="font-medium text-sm">{selectedMeal.nutritionalInfo.carbs}g</p>
+                  <div className="bg-fitness-gray-light rounded-lg p-1">
+                    <p className="text-[10px] text-gray-500">Carbs</p>
+                    <p className="font-medium text-xs">{selectedMeal.nutritionalInfo.carbs}g</p>
                   </div>
-                  <div className="bg-fitness-gray-light rounded-lg p-2">
-                    <p className="text-xs text-gray-500">Fats</p>
-                    <p className="font-medium text-sm">{selectedMeal.nutritionalInfo.fats}g</p>
+                  <div className="bg-fitness-gray-light rounded-lg p-1">
+                    <p className="text-[10px] text-gray-500">Fats</p>
+                    <p className="font-medium text-xs">{selectedMeal.nutritionalInfo.fats}g</p>
                   </div>
-                  <div className="bg-fitness-gray-light rounded-lg p-2">
-                    <p className="text-xs text-gray-500">Fiber</p>
-                    <p className="font-medium text-sm">{selectedMeal.nutritionalInfo.fiber}g</p>
+                  <div className="bg-fitness-gray-light rounded-lg p-1">
+                    <p className="text-[10px] text-gray-500">Fiber</p>
+                    <p className="font-medium text-xs">{selectedMeal.nutritionalInfo.fiber}g</p>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-4">
-                <h4 className="text-sm font-semibold mb-2">Ingredients</h4>
-                <ul className="list-disc pl-5 text-sm space-y-1">
+              <div className="mt-3">
+                <h4 className="text-xs font-semibold mb-1">Ingredients</h4>
+                <ul className="list-disc pl-4 text-xs space-y-1">
                   {selectedMeal.ingredients.map((ingredient, index) => (
                     <li key={index}>{ingredient}</li>
                   ))}
@@ -519,7 +516,7 @@ const DietTracker: React.FC = () => {
               </div>
               
               <button 
-                className="w-full mt-6 bg-fitness-primary text-white py-2 rounded-xl font-medium"
+                className="w-full mt-4 bg-fitness-primary text-white py-2 rounded-xl text-sm font-medium"
                 onClick={() => {
                   showActionToast(`Added ${selectedMeal.name} to your meal plan`);
                   setShowMealDetail(false);
