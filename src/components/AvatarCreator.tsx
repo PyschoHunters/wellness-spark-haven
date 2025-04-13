@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, User, Image, Palette, Save, RefreshCw } from 'lucide-react';
+import { Camera, User, Image, Palette, Save, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { showActionToast } from '@/utils/toast-utils';
 
@@ -47,6 +48,7 @@ const AvatarCreator: React.FC = () => {
   const [selectedSkin, setSelectedSkin] = useState(skinTones[0]);
   const [selectedClothing, setSelectedClothing] = useState(clothingColors[0]);
   const [isRandomizing, setIsRandomizing] = useState(false);
+  const [showSaveAnimation, setShowSaveAnimation] = useState(false);
 
   const handleRandomize = () => {
     setIsRandomizing(true);
@@ -74,7 +76,11 @@ const AvatarCreator: React.FC = () => {
       updateUserAvatar(selectedStyle.image);
     }
     
-    showActionToast("Avatar saved successfully!");
+    setShowSaveAnimation(true);
+    setTimeout(() => {
+      setShowSaveAnimation(false);
+      showActionToast("Avatar saved successfully!");
+    }, 1000);
   };
 
   const handleUploadPhoto = () => {
@@ -93,165 +99,187 @@ const AvatarCreator: React.FC = () => {
             variant="outline" 
             size="sm" 
             onClick={handleRandomize}
-            className="text-xs flex items-center gap-1"
+            className="text-xs flex items-center gap-1 rounded-full"
           >
             <RefreshCw size={14} className={isRandomizing ? "animate-spin" : ""} />
-            Random
+            Randomize
           </Button>
           <Button 
             variant="default" 
             size="sm" 
             onClick={handleSaveAvatar}
-            className="text-xs flex items-center gap-1"
+            className="text-xs flex items-center gap-1 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 rounded-full"
+            disabled={showSaveAnimation}
           >
-            <Save size={14} />
-            Save
+            {showSaveAnimation ? (
+              <CheckCircle2 size={14} className="animate-pulse" />
+            ) : (
+              <Save size={14} />
+            )}
+            {showSaveAnimation ? "Saved!" : "Save Avatar"}
           </Button>
         </div>
       </div>
       
-      <Card>
+      <Card className="overflow-hidden border-none shadow-md">
         <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center mb-4">
+          <div className="flex flex-col sm:flex-row gap-6 items-center mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl">
             <div className="flex-shrink-0">
-              <div className={`relative rounded-full border-4 ${isRandomizing ? "animate-pulse" : ""}`} style={{ borderColor: selectedClothing.color }}>
-                <Avatar className="w-24 h-24">
-                  <AvatarImage src={selectedStyle.image} alt="Avatar preview" />
+              <div className={`relative rounded-full border-4 ${isRandomizing ? "animate-pulse" : ""} shadow-lg transition-all duration-300`} 
+                   style={{ borderColor: selectedClothing.color }}>
+                <Avatar className="w-28 h-28">
+                  <AvatarImage src={selectedStyle.image} alt="Avatar preview" className="object-cover" />
                   <AvatarFallback style={{ backgroundColor: selectedSkin.color }}>
                     {user?.email?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div 
-                  className="absolute top-0 right-0 w-6 h-6 rounded-full flex items-center justify-center bg-fitness-primary text-white cursor-pointer"
+                  className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center bg-white text-fitness-primary shadow-md cursor-pointer hover:bg-fitness-primary hover:text-white transition-colors"
                   onClick={handleUploadPhoto}
                 >
-                  <Camera size={14} />
+                  <Camera size={16} />
                 </div>
               </div>
             </div>
             
-            <div className="flex-1">
-              <p className="text-sm mb-2">Customize your fitness avatar to represent you in the app.</p>
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="text-lg font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600">Your Custom Avatar</h3>
+              <p className="text-sm mb-3 text-gray-600">Express yourself with a personalized avatar that represents your fitness journey.</p>
               
-              <div className="flex flex-wrap gap-2 text-xs">
-                <span className="bg-gray-100 px-2 py-1 rounded-full">Style: {selectedStyle.name}</span>
-                <span className="bg-gray-100 px-2 py-1 rounded-full">Hair: {selectedHair.name}</span>
-                <span className="bg-gray-100 px-2 py-1 rounded-full flex items-center gap-1">
-                  Skin
-                  <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: selectedSkin.color }}></span>
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                <span className="bg-gradient-to-r from-blue-100 to-blue-200 px-3 py-1 rounded-full text-blue-800 text-xs font-medium">{selectedStyle.name}</span>
+                <span className="bg-gradient-to-r from-amber-100 to-amber-200 px-3 py-1 rounded-full text-amber-800 text-xs font-medium flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: selectedHair.color }}></span>
+                  {selectedHair.name}
                 </span>
-                <span className="bg-gray-100 px-2 py-1 rounded-full flex items-center gap-1">
-                  Clothing
-                  <span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: selectedClothing.color }}></span>
+                <span className="bg-gradient-to-r from-orange-100 to-orange-200 px-3 py-1 rounded-full text-orange-800 text-xs font-medium flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: selectedSkin.color }}></span>
+                  {selectedSkin.name}
+                </span>
+                <span className="bg-gradient-to-r from-green-100 to-green-200 px-3 py-1 rounded-full text-green-800 text-xs font-medium flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: selectedClothing.color }}></span>
+                  {selectedClothing.name}
                 </span>
               </div>
             </div>
           </div>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-4 mb-4">
-              <TabsTrigger value="style" className="text-xs flex items-center gap-1">
+            <TabsList className="w-full grid grid-cols-4 mb-4 bg-gray-100 p-1 rounded-lg">
+              <TabsTrigger 
+                value="style" 
+                className="text-xs flex items-center gap-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md"
+              >
                 <Image size={14} />
                 Style
               </TabsTrigger>
-              <TabsTrigger value="hair" className="text-xs flex items-center gap-1">
+              <TabsTrigger 
+                value="hair" 
+                className="text-xs flex items-center gap-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md"
+              >
                 <Palette size={14} />
                 Hair
               </TabsTrigger>
-              <TabsTrigger value="skin" className="text-xs flex items-center gap-1">
+              <TabsTrigger 
+                value="skin" 
+                className="text-xs flex items-center gap-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md"
+              >
                 <Palette size={14} />
                 Skin
               </TabsTrigger>
-              <TabsTrigger value="clothing" className="text-xs flex items-center gap-1">
+              <TabsTrigger 
+                value="clothing" 
+                className="text-xs flex items-center gap-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md"
+              >
                 <Palette size={14} />
                 Clothing
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="style" className="mt-0">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {avatarStyles.map(style => (
                   <div
                     key={style.id}
                     onClick={() => setSelectedStyle(style)}
-                    className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedStyle.id === style.id ? 'border-fitness-primary scale-105' : 'border-transparent hover:border-gray-200'
+                    className={`cursor-pointer rounded-xl overflow-hidden border-2 transition-all hover:shadow-md ${
+                      selectedStyle.id === style.id ? 'border-fitness-primary scale-105 shadow-md' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <div className="aspect-square overflow-hidden">
+                    <div className="aspect-square overflow-hidden bg-gray-50">
                       <img 
                         src={style.image} 
                         alt={style.name} 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform"
                       />
                     </div>
-                    <div className="p-1 text-center text-xs">{style.name}</div>
+                    <div className="p-2 text-center text-xs font-medium bg-white">{style.name}</div>
                   </div>
                 ))}
               </div>
             </TabsContent>
             
             <TabsContent value="hair" className="mt-0">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {hairStyles.map(hair => (
                   <div
                     key={hair.id}
                     onClick={() => setSelectedHair(hair)}
-                    className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedHair.id === hair.id ? 'border-fitness-primary' : 'border-transparent hover:border-gray-200'
+                    className={`cursor-pointer rounded-xl overflow-hidden border-2 transition-all hover:shadow-md ${
+                      selectedHair.id === hair.id ? 'border-fitness-primary scale-105 shadow-md' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <div className="p-4 flex items-center justify-center">
+                    <div className="p-6 flex items-center justify-center bg-gray-50">
                       <div 
-                        className="w-12 h-12 rounded-full" 
+                        className="w-16 h-16 rounded-full shadow-inner" 
                         style={{ backgroundColor: hair.color }}
                       ></div>
                     </div>
-                    <div className="p-1 text-center text-xs">{hair.name}</div>
+                    <div className="p-2 text-center text-xs font-medium bg-white">{hair.name}</div>
                   </div>
                 ))}
               </div>
             </TabsContent>
             
             <TabsContent value="skin" className="mt-0">
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                 {skinTones.map(skin => (
                   <div
                     key={skin.id}
                     onClick={() => setSelectedSkin(skin)}
-                    className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedSkin.id === skin.id ? 'border-fitness-primary' : 'border-transparent hover:border-gray-200'
+                    className={`cursor-pointer rounded-xl overflow-hidden border-2 transition-all hover:shadow-md ${
+                      selectedSkin.id === skin.id ? 'border-fitness-primary scale-105 shadow-md' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <div className="p-4 flex items-center justify-center">
+                    <div className="p-4 flex items-center justify-center bg-gray-50">
                       <div 
-                        className="w-12 h-12 rounded-full" 
+                        className="w-14 h-14 rounded-full shadow-inner" 
                         style={{ backgroundColor: skin.color }}
                       ></div>
                     </div>
-                    <div className="p-1 text-center text-xs">{skin.name}</div>
+                    <div className="p-2 text-center text-xs font-medium bg-white">{skin.name}</div>
                   </div>
                 ))}
               </div>
             </TabsContent>
             
             <TabsContent value="clothing" className="mt-0">
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                 {clothingColors.map(clothing => (
                   <div
                     key={clothing.id}
                     onClick={() => setSelectedClothing(clothing)}
-                    className={`cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedClothing.id === clothing.id ? 'border-fitness-primary' : 'border-transparent hover:border-gray-200'
+                    className={`cursor-pointer rounded-xl overflow-hidden border-2 transition-all hover:shadow-md ${
+                      selectedClothing.id === clothing.id ? 'border-fitness-primary scale-105 shadow-md' : 'border-transparent hover:border-gray-200'
                     }`}
                   >
-                    <div className="p-4 flex items-center justify-center">
+                    <div className="p-4 flex items-center justify-center bg-gray-50">
                       <div 
-                        className="w-12 h-12 rounded-full" 
+                        className="w-14 h-14 rounded-full shadow-inner" 
                         style={{ backgroundColor: clothing.color }}
                       ></div>
                     </div>
-                    <div className="p-1 text-center text-xs">{clothing.name}</div>
+                    <div className="p-2 text-center text-xs font-medium bg-white">{clothing.name}</div>
                   </div>
                 ))}
               </div>

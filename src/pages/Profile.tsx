@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw } from 'lucide-react';
 import Navigation from '@/components/Navigation';
@@ -10,6 +11,7 @@ import SleepTracker from '@/components/SleepTracker';
 import MindfulnessWidget from '@/components/MindfulnessWidget';
 import YogaCard from '@/components/YogaCard';
 import RazorpayPayment from '@/components/RazorpayPayment';
+import EcoFitRewards from '@/components/EcoFitRewards';
 import { showActionToast } from '@/utils/toast-utils';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -166,6 +168,8 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+            
+            <EcoFitRewards />
             
             <div className="bg-blue-50 rounded-2xl p-4 shadow-sm">
               <div className="flex justify-between items-center mb-4">
