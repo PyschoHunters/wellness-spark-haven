@@ -1,15 +1,13 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, BarChart2, Calendar, User, Users, LogOut } from 'lucide-react';
+import { Home, BarChart2, Calendar, User, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { showActionToast } from '@/utils/toast-utils';
 
 const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { signOut } = useAuth();
   
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
@@ -21,11 +19,6 @@ const Navigation = () => {
 
   const handleNavigation = (path: string) => {
     navigate(path);
-  };
-
-  const handleLogout = async () => {
-    await signOut();
-    showActionToast("You've been logged out successfully");
   };
 
   return (
@@ -56,14 +49,6 @@ const Navigation = () => {
             </div>
           );
         })}
-        
-        <div
-          className="flex flex-col items-center px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer text-red-500"
-          onClick={handleLogout}
-        >
-          <LogOut size={22} />
-          <span className="text-xs mt-1 font-medium">Logout</span>
-        </div>
       </div>
     </nav>
   );
