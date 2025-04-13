@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Smile, Frown, Meh, Zap, Sun, Moon, Cloud, CloudRain, Heart, RefreshCw } from 'lucide-react';
+import { Smile, Frown, Meh, Zap, Sun, Moon, Cloud, CloudRain, Heart, RefreshCw, Clock } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';

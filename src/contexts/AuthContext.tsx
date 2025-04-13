@@ -94,7 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       navigate('/');
       showActionToast('Signed in successfully!');
     } catch (error: any) {
-      showActionToast(error.message || 'Error signing in', { type: 'error' });
+      showActionToast(error.message || 'Error signing in');
       console.error('Error signing in:', error);
     } finally {
       setLoading(false);
@@ -119,7 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       showActionToast('Signed up successfully! Check your email for confirmation.');
     } catch (error: any) {
-      showActionToast(error.message || 'Error signing up', { type: 'error' });
+      showActionToast(error.message || 'Error signing up');
       console.error('Error signing up:', error);
     } finally {
       setLoading(false);
@@ -138,7 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       navigate('/login');
       showActionToast('Signed out successfully!');
     } catch (error: any) {
-      showActionToast(error.message || 'Error signing out', { type: 'error' });
+      showActionToast(error.message || 'Error signing out');
       console.error('Error signing out:', error);
     } finally {
       setLoading(false);
