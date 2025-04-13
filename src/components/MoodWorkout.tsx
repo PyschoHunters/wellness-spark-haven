@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -125,7 +124,6 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
   ];
   
   const getWorkoutSuggestion = () => {
-    // Filter workouts that match the selected mood and energy level
     const matchingWorkouts = workouts.filter(workout => 
       workout.suitable.includes(selectedMood) && 
       workout.suitable.includes(selectedEnergy)
@@ -133,21 +131,17 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
     
     if (matchingWorkouts.length === 0) {
       showActionToast("No perfect match found. Here's our best recommendation!");
-      // If no perfect match, get workouts that match at least the mood
       const moodMatches = workouts.filter(workout => 
         workout.suitable.includes(selectedMood)
       );
       
       if (moodMatches.length > 0) {
-        // Return a random workout from mood matches
         return moodMatches[Math.floor(Math.random() * moodMatches.length)];
       } else {
-        // If still no matches, return any random workout
         return workouts[Math.floor(Math.random() * workouts.length)];
       }
     }
     
-    // Return a random workout from the matching workouts
     return matchingWorkouts[Math.floor(Math.random() * matchingWorkouts.length)];
   };
   
@@ -171,43 +165,50 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
   };
   
   return (
-    <Card className={cn("overflow-hidden", className)}>
-      <CardContent className="p-4">
+    <Card className={cn(
+      "overflow-hidden transition-all duration-300 hover:shadow-lg",
+      "bg-gradient-to-br from-blue-50 to-blue-100/50",
+      className
+    )}>
+      <CardContent className="p-4 relative">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Mood-Based Workout</h3>
+          <h3 className="text-lg font-semibold text-gray-800">Mood-Based Workout</h3>
           {suggestedWorkout && (
             <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => setSuggestedWorkout(null)}
-              className="h-8 w-8"
+              className="h-8 w-8 hover:bg-blue-100 transition-colors"
             >
-              <RefreshCw size={16} />
+              <RefreshCw size={16} className="text-gray-600" />
             </Button>
           )}
         </div>
         
         {!suggestedWorkout ? (
           <>
-            <p className="text-sm text-fitness-gray mb-4">
-              Get personalized workout suggestions based on how you're feeling today
+            <p className="text-sm text-gray-600 mb-4 animate-fade-up">
+              Discover personalized workouts tailored to your mood and energy
             </p>
             
             <div className="space-y-4">
               <div>
-                <h4 className="text-sm font-medium mb-2">How are you feeling today?</h4>
+                <h4 className="text-sm font-medium mb-2 text-gray-700">How are you feeling today?</h4>
                 <div className="grid grid-cols-3 gap-2">
                   {moods.map((mood) => (
                     <Button
                       key={mood.id}
                       variant={selectedMood === mood.id ? "default" : "outline"}
                       className={cn(
-                        "flex flex-col h-auto py-3",
-                        selectedMood === mood.id ? "bg-fitness-primary" : ""
+                        "flex flex-col h-auto py-3 transition-all duration-300",
+                        "hover:bg-blue-50 hover:border-blue-200",
+                        selectedMood === mood.id 
+                          ? "bg-fitness-primary text-white" 
+                          : "bg-white text-gray-700"
                       )}
                       onClick={() => setSelectedMood(mood.id)}
                     >
-                      <div className="mb-1">{mood.icon}</div>
+                      <div className="mb-1 opacity-80">{mood.icon}</div>
                       <span className="text-xs">{mood.label}</span>
                     </Button>
                   ))}
@@ -215,19 +216,22 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
               </div>
               
               <div>
-                <h4 className="text-sm font-medium mb-2">What's your energy level?</h4>
+                <h4 className="text-sm font-medium mb-2 text-gray-700">What's your energy level?</h4>
                 <div className="grid grid-cols-3 gap-2">
                   {energyLevels.map((level) => (
                     <Button
                       key={level.id}
                       variant={selectedEnergy === level.id ? "default" : "outline"}
                       className={cn(
-                        "flex flex-col h-auto py-3",
-                        selectedEnergy === level.id ? "bg-fitness-primary" : ""
+                        "flex flex-col h-auto py-3 transition-all duration-300",
+                        "hover:bg-blue-50 hover:border-blue-200",
+                        selectedEnergy === level.id 
+                          ? "bg-fitness-primary text-white" 
+                          : "bg-white text-gray-700"
                       )}
                       onClick={() => setSelectedEnergy(level.id)}
                     >
-                      <div className="mb-1">{level.icon}</div>
+                      <div className="mb-1 opacity-80">{level.icon}</div>
                       <span className="text-xs">{level.label}</span>
                     </Button>
                   ))}
@@ -235,7 +239,10 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
               </div>
               
               <Button 
-                className="w-full bg-fitness-primary hover:bg-fitness-primary/90 mt-4"
+                className={cn(
+                  "w-full bg-fitness-primary hover:bg-fitness-primary/90 mt-4",
+                  "transition-all duration-300 transform hover:scale-[1.02]"
+                )}
                 onClick={handleGetSuggestion}
               >
                 <Zap size={16} className="mr-2" />
@@ -244,18 +251,21 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
             </div>
           </>
         ) : (
-          <div className="space-y-4 bg-fitness-gray-light rounded-xl p-4">
+          <div className="space-y-4 bg-white rounded-xl p-4 shadow-sm">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-semibold text-lg">{suggestedWorkout.title}</h3>
+                <h3 className="font-semibold text-lg text-gray-800">{suggestedWorkout.title}</h3>
                 <div className="flex gap-2 mt-1">
                   <Badge variant="outline" className="flex items-center gap-1">
-                    <Clock size={12} />
-                    <span className="text-xs">{suggestedWorkout.duration}</span>
+                    <Clock size={12} className="text-gray-500" />
+                    <span className="text-xs text-gray-600">{suggestedWorkout.duration}</span>
                   </Badge>
                   <Badge 
                     variant="outline" 
-                    className={cn("text-xs", getIntensityColor(suggestedWorkout.intensity))}
+                    className={cn(
+                      "text-xs", 
+                      getIntensityColor(suggestedWorkout.intensity)
+                    )}
                   >
                     {suggestedWorkout.intensity.charAt(0).toUpperCase() + suggestedWorkout.intensity.slice(1)} Intensity
                   </Badge>
@@ -263,37 +273,47 @@ const MoodWorkout: React.FC<MoodWorkoutProps> = ({ className }) => {
               </div>
               
               <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-fitness-primary flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-fitness-primary flex items-center justify-center animate-pulse">
                   <Heart size={20} className="text-white" />
                 </div>
-                <span className="text-xs mt-1">Perfect Match</span>
+                <span className="text-xs mt-1 text-gray-600">Perfect Match</span>
               </div>
             </div>
             
-            <p className="text-sm">{suggestedWorkout.description}</p>
+            <p className="text-sm text-gray-700">{suggestedWorkout.description}</p>
             
             <div>
               <div className="flex justify-between text-sm mb-1">
-                <span>Energy Required</span>
-                <span>{suggestedWorkout.energy}%</span>
+                <span className="text-gray-600">Energy Required</span>
+                <span className="font-medium text-gray-800">{suggestedWorkout.energy}%</span>
               </div>
-              <Progress value={suggestedWorkout.energy} className="h-2" />
+              <Progress 
+                value={suggestedWorkout.energy} 
+                className="h-2 bg-blue-100" 
+                indicatorClassName="bg-fitness-primary" 
+              />
             </div>
             
             <div>
-              <h4 className="text-sm font-medium mb-1">Benefits:</h4>
+              <h4 className="text-sm font-medium mb-1 text-gray-700">Benefits:</h4>
               <ul className="list-disc pl-5 space-y-1">
                 {suggestedWorkout.benefits.map((benefit, index) => (
-                  <li key={index} className="text-sm">{benefit}</li>
+                  <li key={index} className="text-sm text-gray-600">{benefit}</li>
                 ))}
               </ul>
             </div>
             
             <div className="flex gap-2 mt-2">
-              <Button className="flex-1 bg-fitness-primary hover:bg-fitness-primary/90">
+              <Button 
+                className="flex-1 bg-fitness-primary hover:bg-fitness-primary/90 transition-colors"
+              >
                 Start Workout
               </Button>
-              <Button variant="outline" className="flex-1" onClick={() => setSuggestedWorkout(null)}>
+              <Button 
+                variant="outline" 
+                className="flex-1 hover:bg-gray-50 transition-colors" 
+                onClick={() => setSuggestedWorkout(null)}
+              >
                 Choose Again
               </Button>
             </div>
