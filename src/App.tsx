@@ -13,7 +13,6 @@ import Profile from "./pages/Profile";
 import BuddyFinder from "./pages/BuddyFinder";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import ChatAssistant from "./components/ChatAssistant";
 
 const queryClient = new QueryClient();
 
@@ -37,7 +36,6 @@ const App = () => (
             
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <ChatAssistant />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

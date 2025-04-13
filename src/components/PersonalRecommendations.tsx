@@ -368,15 +368,23 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
           </div>
         )}
         
-        {!aiRecommendation && !showChatbot && (
+        {!aiRecommendation && (
           <button 
             className="w-full bg-fitness-primary/10 text-fitness-primary py-2 rounded-xl font-medium flex items-center justify-center mt-2"
-            onClick={openChatbot}
+            onClick={() => setShowHealthForm(true)}
           >
-            <MessageCircle size={18} className="mr-2" />
+            <RefreshCw size={18} className="mr-2" />
             Get AI Personalized Recommendation
           </button>
         )}
+        
+        <button 
+          className="w-full bg-fitness-primary/10 text-fitness-primary py-2 rounded-xl font-medium flex items-center justify-center mt-2"
+          onClick={openChatbot}
+        >
+          <MessageCircle size={18} className="mr-2" />
+          Chat with AI Assistant
+        </button>
       </div>
       
       <Dialog open={showHealthForm} onOpenChange={setShowHealthForm}>
