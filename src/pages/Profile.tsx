@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy } from 'lucide-react';
+import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
 import DietTracker from '@/components/DietTracker';
@@ -8,13 +8,19 @@ import BodyProgress from '@/components/BodyProgress';
 import PersonalRecommendations from '@/components/PersonalRecommendations';
 import WaterTracker from '@/components/WaterTracker';
 import SleepTracker from '@/components/SleepTracker';
+import MindfulnessWidget from '@/components/MindfulnessWidget';
+import YogaCard from '@/components/YogaCard';
+import RazorpayPayment from '@/components/RazorpayPayment';
 import { showActionToast } from '@/utils/toast-utils';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showPaymentPlans, setShowPaymentPlans] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile');
 
   const handleSeeAllAchievements = () => {
     setShowAchievements(true);
@@ -94,85 +100,112 @@ const Profile = () => {
         }
       />
       
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center bg-white rounded-2xl p-4 shadow-sm">
-          <img 
-            src="/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png" 
-            alt="Profile" 
-            className="w-20 h-20 rounded-full object-cover"
-          />
-          <div className="ml-4 flex-1">
-            <h2 className="font-bold text-xl">Manumohan</h2>
-            <p className="text-fitness-gray text-sm">manumohan.ai21@gmail.com</p>
-            <div className="flex gap-4 mt-2">
-              <div className="flex items-center gap-1">
-                <Activity size={14} className="text-fitness-primary" />
-                <span className="text-xs font-medium">Intermediate</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Flame size={14} className="text-fitness-secondary" />
-                <span className="text-xs font-medium">1250 kcal/week</span>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="wellness">Wellness</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="profile" className="mt-6">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center bg-white rounded-2xl p-4 shadow-sm">
+              <img 
+                src="/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png" 
+                alt="Profile" 
+                className="w-20 h-20 rounded-full object-cover"
+              />
+              <div className="ml-4 flex-1">
+                <h2 className="font-bold text-xl">Manumohan</h2>
+                <p className="text-fitness-gray text-sm">manumohan.ai21@gmail.com</p>
+                <div className="flex gap-4 mt-2">
+                  <div className="flex items-center gap-1">
+                    <Activity size={14} className="text-fitness-primary" />
+                    <span className="text-xs font-medium">Intermediate</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Flame size={14} className="text-fitness-secondary" />
+                    <span className="text-xs font-medium">1250 kcal/week</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        
-        {/* Water Tracker */}
-        <WaterTracker />
-        
-        {/* Sleep Tracker */}
-        <SleepTracker />
-        
-        {/* Achievements Section */}
-        <div className="bg-blue-50 rounded-2xl p-4 shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Achievements</h2>
+            
+            {/* Achievements Section */}
+            <div className="bg-blue-50 rounded-2xl p-4 shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold">Achievements</h2>
+                <button 
+                  className="text-sm font-medium text-fitness-primary"
+                  onClick={handleSeeAllAchievements}
+                >
+                  See All
+                </button>
+              </div>
+              
+              <div className="flex gap-4 mb-6 overflow-x-auto pb-2">
+                {achievements.slice(0, 3).map((achievement, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div className={cn(
+                      "w-16 h-16 rounded-full flex items-center justify-center mb-1",
+                      achievement.color,
+                      !achievement.completed && "opacity-40"
+                    )}>
+                      {achievement.icon}
+                    </div>
+                    <div className={cn(
+                      "text-xs font-medium text-center",
+                      !achievement.completed && "text-gray-400"
+                    )}>
+                      {achievement.title}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">You've burned</span>
+                  <span className="font-medium">{caloriesBurned} kcal</span>
+                </div>
+                <Progress value={caloriesProgress} className="h-2 bg-blue-100" />
+                <div className="flex justify-end">
+                  <span className="text-sm text-gray-500">{caloriesGoal} kcal</span>
+                </div>
+              </div>
+            </div>
+            
+            <PersonalRecommendations userData={userData} />
+            
+            <DietTracker />
+            
+            <BodyProgress />
+            
             <button 
-              className="text-sm font-medium text-fitness-primary"
-              onClick={handleSeeAllAchievements}
+              className="flex items-center justify-center gap-2 w-full bg-fitness-primary text-white p-3 rounded-xl font-medium"
+              onClick={() => setShowPaymentPlans(true)}
             >
-              See All
+              <PlusCircle size={18} />
+              Upgrade to Premium
             </button>
           </div>
-          
-          <div className="flex gap-4 mb-6 overflow-x-auto pb-2">
-            {achievements.slice(0, 3).map((achievement, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className={cn(
-                  "w-16 h-16 rounded-full flex items-center justify-center mb-1",
-                  achievement.color,
-                  !achievement.completed && "opacity-40"
-                )}>
-                  {achievement.icon}
-                </div>
-                <div className={cn(
-                  "text-xs font-medium text-center",
-                  !achievement.completed && "text-gray-400"
-                )}>
-                  {achievement.title}
-                </div>
-              </div>
-            ))}
+        </TabsContent>
+        
+        <TabsContent value="wellness" className="mt-6">
+          <div className="flex flex-col gap-6">
+            {/* Water Tracker */}
+            <WaterTracker />
+            
+            {/* Sleep Tracker */}
+            <SleepTracker />
+            
+            {/* Mindfulness Widget */}
+            <MindfulnessWidget />
+            
+            {/* Yoga Card */}
+            <YogaCard className="shadow-sm" />
           </div>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">You've burned</span>
-              <span className="font-medium">{caloriesBurned} kcal</span>
-            </div>
-            <Progress value={caloriesProgress} className="h-2 bg-blue-100" />
-            <div className="flex justify-end">
-              <span className="text-sm text-gray-500">{caloriesGoal} kcal</span>
-            </div>
-          </div>
-        </div>
-        
-        <PersonalRecommendations userData={userData} />
-        
-        <DietTracker />
-        
-        <BodyProgress />
-      </div>
+        </TabsContent>
+      </Tabs>
       
       <Dialog open={showAchievements} onOpenChange={setShowAchievements}>
         <DialogContent className="sm:max-w-[425px]">
@@ -214,6 +247,19 @@ const Profile = () => {
               <span className="text-gray-500">{caloriesGoal} kcal</span>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showPaymentPlans} onOpenChange={setShowPaymentPlans}>
+        <DialogContent className="sm:max-w-[90%] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Upgrade Your Membership</DialogTitle>
+            <DialogDescription>
+              Choose a plan that suits your fitness goals
+            </DialogDescription>
+          </DialogHeader>
+          
+          <RazorpayPayment />
         </DialogContent>
       </Dialog>
       

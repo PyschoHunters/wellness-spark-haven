@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-import { Trophy, Timer, Calendar, Zap, RefreshCw } from 'lucide-react';
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Trophy, Timer, Calendar, Zap, RefreshCw, Send, Bot, MessageCircle, MessageSquare } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface RecommendationProps {
   userData: {
@@ -20,7 +25,13 @@ interface UserHealthDetails {
   healthIssues: string[];
 }
 
+interface ChatMessage {
+  type: 'user' | 'bot';
+  content: string;
+}
+
 const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) => {
+  const { user } = useAuth();
   const [showHealthForm, setShowHealthForm] = useState(false);
   const [userHealthDetails, setUserHealthDetails] = useState<UserHealthDetails>({
     goal: "Weight loss",
@@ -29,6 +40,20 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
   });
   const [isLoading, setIsLoading] = useState(false);
   const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
+  const [showChatbot, setShowChatbot] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    { type: 'bot', content: 'Hi there! I\'m your fitness assistant. How can I help you with your fitness journey today?' }
+  ]);
+  const [query, setQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('fitness');
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    // Scroll to bottom of chat when messages change
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatMessages]);
   
   const getRecommendedWorkouts = () => {
     if (userData.level === 'Beginner') {
@@ -88,51 +113,59 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
         Provide a concise personalized recommendation (max 150 words) covering workout suggestions, nutrition advice, and recovery tips. Focus on Indian context if possible. Format your response as clean text without any markdown formatting or headers.
       `;
       
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
+      try {
+        const response = await supabase.functions.invoke('gemini-ai', {
+          body: { prompt, type: 'fitness' }
+        });
+
+        if (response.error) {
+          throw new Error(response.error.message);
+        }
+        
+        const recommendationText = formatAIRecommendation(response.data.recommendation);
+        setAiRecommendation(recommendationText);
+      } catch (error) {
+        console.error("Error calling Supabase function:", error);
+        
+        // Fallback to direct Gemini API call if Supabase function fails
+        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: prompt
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 500,
             }
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 500,
-          }
-        })
-      });
-      
-      console.log('Gemini API response status:', response.status);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Gemini API error:', errorData);
-        throw new Error(`Failed to get response from Gemini API: ${errorData?.error?.message || response.statusText}`);
+          })
+        });
+        
+        const data = await response.json();
+        
+        let recommendationText = 'Unable to generate recommendation.';
+        
+        if (data.candidates && 
+            data.candidates[0] && 
+            data.candidates[0].content && 
+            data.candidates[0].content.parts && 
+            data.candidates[0].content.parts[0] && 
+            data.candidates[0].content.parts[0].text) {
+          recommendationText = formatAIRecommendation(data.candidates[0].content.parts[0].text);
+        }
+        
+        setAiRecommendation(recommendationText);
       }
       
-      const data = await response.json();
-      console.log('Gemini API response data:', data);
-      
-      let recommendationText = 'Unable to generate recommendation.';
-      
-      if (data.candidates && 
-          data.candidates[0] && 
-          data.candidates[0].content && 
-          data.candidates[0].content.parts && 
-          data.candidates[0].content.parts[0] && 
-          data.candidates[0].content.parts[0].text) {
-        recommendationText = formatAIRecommendation(data.candidates[0].content.parts[0].text);
-      }
-      
-      setAiRecommendation(recommendationText);
       setIsLoading(false);
       setShowHealthForm(false);
       showActionToast("Generated new AI recommendations");
@@ -157,8 +190,88 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
       return "To improve general fitness, I recommend a balanced approach with 2 strength training sessions, 2 cardio sessions (mix of steady-state and HIIT), and 1 flexibility-focused workout (yoga/Pilates) weekly. Maintain calories at maintenance level with a balanced macronutrient profile (30% protein, 40% carbs, 30% fats). Stay hydrated with at least 3 liters of water daily.";
     }
   };
+  
+  const handleChatSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (query.trim() === '') return;
+    
+    // Add user message
+    const newUserMessage = { type: 'user' as const, content: query };
+    setChatMessages(prev => [...prev, newUserMessage]);
+    
+    // Clear input field
+    setQuery('');
+    
+    // Show typing indicator
+    setIsLoading(true);
+    
+    try {
+      // Call Gemini API through our Supabase function
+      const response = await supabase.functions.invoke('gemini-ai', {
+        body: { 
+          prompt: query,
+          type: activeTab
+        }
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      // Add AI response
+      setChatMessages(prev => [...prev, { 
+        type: 'bot', 
+        content: response.data.recommendation || "I'm sorry, I couldn't generate a response at this time." 
+      }]);
+    } catch (error) {
+      console.error("Error fetching chat response:", error);
+      
+      // Fallback to direct API call if needed
+      try {
+        const directResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `You are a fitness assistant specializing in ${activeTab}. Answer this query: ${query}`
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 500,
+            }
+          })
+        });
+        
+        const data = await directResponse.json();
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 
+          "I'm sorry, I couldn't generate a response at this time.";
+          
+        setChatMessages(prev => [...prev, { type: 'bot', content: responseText }]);
+      } catch (fallbackError) {
+        setChatMessages(prev => [...prev, { 
+          type: 'bot', 
+          content: "I'm experiencing connectivity issues. Please try again later." 
+        }]);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const recommendedWorkouts = getRecommendedWorkouts();
+  
+  const openChatbot = () => {
+    setShowChatbot(true);
+  };
   
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm">
@@ -255,11 +368,12 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
           </div>
         )}
         
-        {!aiRecommendation && (
+        {!aiRecommendation && !showChatbot && (
           <button 
             className="w-full bg-fitness-primary/10 text-fitness-primary py-2 rounded-xl font-medium flex items-center justify-center mt-2"
-            onClick={() => handleRecommendationClick('AI')}
+            onClick={openChatbot}
           >
+            <MessageCircle size={18} className="mr-2" />
             Get AI Personalized Recommendation
           </button>
         )}
@@ -335,6 +449,77 @@ const PersonalRecommendations: React.FC<RecommendationProps> = ({ userData }) =>
               {isLoading ? 'Generating...' : 'Get Personalized Plan'}
             </button>
           </div>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showChatbot} onOpenChange={setShowChatbot}>
+        <DialogContent className="sm:max-w-[425px] max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bot size={18} /> 
+              AI Fitness Assistant
+            </DialogTitle>
+            <DialogDescription>
+              Ask me anything about fitness, nutrition, or mindfulness
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="fitness" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="fitness">Fitness</TabsTrigger>
+              <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
+              <TabsTrigger value="mindfulness">Mindfulness</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
+          <div className="flex-1 overflow-y-auto py-4 max-h-[50vh] space-y-4">
+            {chatMessages.map((message, index) => (
+              <div 
+                key={index} 
+                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div 
+                  className={`max-w-[80%] p-3 rounded-lg ${
+                    message.type === 'user' 
+                      ? 'bg-fitness-primary text-white' 
+                      : 'bg-fitness-gray-light text-gray-800'
+                  }`}
+                >
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="max-w-[80%] p-3 rounded-lg bg-fitness-gray-light text-gray-800">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={chatEndRef} />
+          </div>
+          
+          <form onSubmit={handleChatSubmit} className="mt-4 flex gap-2">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={`Ask about ${activeTab}...`}
+              className="flex-1 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-fitness-primary"
+              disabled={isLoading}
+            />
+            <Button 
+              type="submit" 
+              className="bg-fitness-primary text-white rounded-lg" 
+              disabled={isLoading || query.trim() === ''}
+            >
+              <Send size={18} />
+            </Button>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

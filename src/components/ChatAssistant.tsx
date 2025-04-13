@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { MessageCircle, X, Send } from 'lucide-react';
+
+import React, { useState, useRef, useEffect } from 'react';
+import { MessageCircle, X, Send, Bot } from 'lucide-react';
+import { showActionToast } from '@/utils/toast-utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FAQ {
   question: string;
@@ -14,7 +17,7 @@ interface ChatMessage {
 const faqs: FAQ[] = [
   {
     question: "What features does this app offer?",
-    answer: "Our fitness app offers workout tracking, custom exercise timers, workout scheduling with reminders, activity statistics, personalized recommendations, diet tracking, body progress monitoring, and a chat assistant for guidance."
+    answer: "Our fitness app offers workout tracking, custom exercise timers, workout scheduling with reminders, activity statistics, personalized recommendations, diet tracking, body progress monitoring, mindfulness practices, yoga sessions, and a chat assistant for guidance."
   },
   {
     question: "How do I schedule a workout?",
@@ -180,6 +183,8 @@ const ChatAssistant: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {type: 'bot', content: 'Hi there! How can I help you today? You can ask me about our app features, schedules, or how to track your progress.'}
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   const handleToggleChat = () => {
     setIsOpen(!isOpen);
@@ -188,6 +193,13 @@ const ChatAssistant: React.FC = () => {
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+  
+  useEffect(() => {
+    // Scroll to bottom of chat when messages change
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
   
   const findMatchingFaq = (userQuery: string): FAQ | undefined => {
     const normalizedQuery = userQuery.toLowerCase().trim();
@@ -229,7 +241,68 @@ const ChatAssistant: React.FC = () => {
     return undefined;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const getGeminiResponse = async (userQuery: string): Promise<string> => {
+    try {
+      // First try to use our Edge Function
+      const response = await supabase.functions.invoke('gemini-ai', {
+        body: { 
+          prompt: `You are a helpful fitness assistant that helps users with questions about fitness, workouts, nutrition, and wellness. The user has asked: ${userQuery}. Provide a helpful, concise response.`,
+          type: 'fitness' 
+        }
+      });
+      
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+      
+      return response.data.recommendation;
+    } catch (error) {
+      console.error("Error calling Supabase function:", error);
+      
+      // Fallback to direct API call
+      try {
+        const directResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCR_6tqAUeI4vs5rAd5irRYPqK_0-pPudI`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `You are a helpful fitness assistant that helps users with questions about fitness, workouts, nutrition, and wellness. The user has asked: ${userQuery}. Provide a helpful, concise response.`
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 500,
+            }
+          })
+        });
+        
+        const data = await directResponse.json();
+        
+        if (data.candidates && 
+            data.candidates[0] && 
+            data.candidates[0].content && 
+            data.candidates[0].content.parts && 
+            data.candidates[0].content.parts[0] && 
+            data.candidates[0].content.parts[0].text) {
+          return data.candidates[0].content.parts[0].text;
+        }
+        
+        throw new Error("Failed to parse Gemini API response");
+      } catch (fallbackError) {
+        console.error("Direct Gemini API error:", fallbackError);
+        return "I'm experiencing connectivity issues. Please try again later or contact support at manumohan.ai21@gmail.com for assistance.";
+      }
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (query.trim() === '') return;
@@ -237,30 +310,43 @@ const ChatAssistant: React.FC = () => {
     // Add user message
     const newMessages = [...messages, {type: 'user' as const, content: query}];
     setMessages(newMessages);
+    setQuery('');
+    setIsLoading(true);
     
     // Find matching FAQ using improved matching
     const matchingFaq = findMatchingFaq(query);
     
-    setTimeout(() => {
+    try {
       if (matchingFaq) {
-        setMessages([...newMessages, {type: 'bot' as const, content: matchingFaq.answer}]);
+        setTimeout(() => {
+          setMessages([...newMessages, {type: 'bot' as const, content: matchingFaq.answer}]);
+          setIsLoading(false);
+        }, 500);
       } else {
-        setMessages([
-          ...newMessages, 
-          {type: 'bot' as const, content: "I don't have information about that specific topic. For our app features, try asking 'What features does this app offer?' or for support, please email manumohan.ai21@gmail.com for more details."}
-        ]);
+        // Use Gemini AI for dynamic responses
+        const aiResponse = await getGeminiResponse(query);
+        setMessages([...newMessages, {type: 'bot' as const, content: aiResponse}]);
+        setIsLoading(false);
       }
-    }, 500);
-    
-    setQuery('');
+    } catch (error) {
+      console.error("Error generating response:", error);
+      setMessages([
+        ...newMessages, 
+        {type: 'bot' as const, content: "I'm sorry, I encountered an error processing your request. Please try again or contact support for assistance."}
+      ]);
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="fixed bottom-20 right-4 z-40">
       {isOpen ? (
-        <div className="bg-white rounded-2xl shadow-xl w-80 max-h-[500px] flex flex-col animate-scale-up overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl w-80 max-h-[500px] flex flex-col animate-scale-in overflow-hidden">
           <div className="bg-fitness-primary text-white p-3 flex justify-between items-center">
-            <h3 className="font-medium">Fitness Assistant</h3>
+            <h3 className="font-medium flex items-center gap-2">
+              <Bot size={16} />
+              Fitness Assistant
+            </h3>
             <button onClick={handleToggleChat} className="p-1">
               <X size={18} />
             </button>
@@ -281,6 +367,16 @@ const ChatAssistant: React.FC = () => {
                 <p className="text-sm">{message.content}</p>
               </div>
             ))}
+            {isLoading && (
+              <div className="bg-fitness-primary/10 p-2 rounded-lg max-w-[85%] mr-auto">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                </div>
+              </div>
+            )}
+            <div ref={chatEndRef} />
           </div>
           
           <form onSubmit={handleSubmit} className="border-t border-gray-100 p-2 flex">
@@ -290,10 +386,12 @@ const ChatAssistant: React.FC = () => {
               onChange={handleQueryChange}
               placeholder="Ask a question..."
               className="flex-1 p-2 text-sm border border-gray-200 rounded-lg mr-2 focus:outline-none focus:ring-1 focus:ring-fitness-primary"
+              disabled={isLoading}
             />
             <button 
               type="submit" 
-              className="bg-fitness-primary text-white p-2 rounded-lg"
+              className={`bg-fitness-primary text-white p-2 rounded-lg ${isLoading ? 'opacity-50' : ''}`}
+              disabled={isLoading || query.trim() === ''}
             >
               <Send size={18} />
             </button>
