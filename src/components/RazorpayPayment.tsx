@@ -1,273 +1,357 @@
 
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import { BadgeCheck, CheckCircle, Shield } from "lucide-react";
-import { showActionToast } from "@/utils/toast-utils";
-import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Check, AlertCircle, CreditCard, Award, Shield } from 'lucide-react';
+import { showActionToast } from '@/utils/toast-utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+interface PlanFeature {
+  included: boolean;
+  text: string;
+}
 
 interface Plan {
   id: string;
   name: string;
   price: number;
+  oldPrice?: number;
+  billingPeriod: string;
   description: string;
-  features: string[];
-  popular?: boolean;
+  features: PlanFeature[];
+  highlighted?: boolean;
 }
 
 const plans: Plan[] = [
   {
-    id: "basic",
-    name: "Basic",
-    price: 999,
-    description: "Essential features to start your fitness journey",
+    id: 'basic',
+    name: 'Basic Plan',
+    price: 299,
+    oldPrice: 499,
+    billingPeriod: 'monthly',
+    description: 'Essential features for your fitness journey',
     features: [
-      "Unlimited workouts",
-      "Basic progress tracking",
-      "3 workout plans",
-    ],
+      { included: true, text: 'Workout tracking' },
+      { included: true, text: 'Basic nutrition guidance' },
+      { included: true, text: 'Weekly progress reports' },
+      { included: false, text: 'Personalized workout plans' },
+      { included: false, text: 'One-on-one coaching' },
+      { included: false, text: 'Premium content' }
+    ]
   },
   {
-    id: "pro",
-    name: "Pro",
-    price: 1999,
-    description: "Advanced features for serious fitness enthusiasts",
+    id: 'pro',
+    name: 'Pro Plan',
+    price: 799,
+    oldPrice: 999,
+    billingPeriod: 'monthly',
+    description: 'Advanced features for dedicated fitness enthusiasts',
     features: [
-      "Everything in Basic",
-      "Advanced analytics",
-      "Unlimited workout plans",
-      "Nutrition guidance",
-      "Priority support",
+      { included: true, text: 'Workout tracking' },
+      { included: true, text: 'Advanced nutrition guidance' },
+      { included: true, text: 'Weekly progress reports' },
+      { included: true, text: 'Personalized workout plans' },
+      { included: true, text: 'One-on-one coaching sessions (2/month)' },
+      { included: false, text: 'Premium content' }
     ],
-    popular: true,
+    highlighted: true
   },
   {
-    id: "ultimate",
-    name: "Ultimate",
-    price: 3999,
-    description: "Complete fitness solution for maximum results",
+    id: 'premium',
+    name: 'Premium Plan',
+    price: 1499,
+    billingPeriod: 'monthly',
+    description: 'Comprehensive suite for serious fitness goals',
     features: [
-      "Everything in Pro",
-      "Personal trainer consultation",
-      "Custom workout creation",
-      "Meal planning",
-      "Premium content",
-      "Family accounts (up to 5)",
-    ],
-  },
+      { included: true, text: 'Workout tracking' },
+      { included: true, text: 'Expert nutrition guidance' },
+      { included: true, text: 'Daily progress reports' },
+      { included: true, text: 'Personalized workout plans' },
+      { included: true, text: 'One-on-one coaching sessions (unlimited)' },
+      { included: true, text: 'Premium content' }
+    ]
+  }
 ];
 
-const RazorpayPayment: React.FC = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string>("pro");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-  const [isProcessing, setIsProcessing] = useState(false);
+const yearlyPlans: Plan[] = plans.map(plan => ({
+  ...plan,
+  id: `${plan.id}-yearly`,
+  price: Math.floor(plan.price * 10.8), // 10% discount for yearly billing
+  oldPrice: plan.oldPrice ? Math.floor(plan.oldPrice * 12) : undefined,
+  billingPeriod: 'yearly'
+}));
+
+const RazorpayPayment = () => {
   const { user } = useAuth();
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [transactionDetails, setTransactionDetails] = useState<{
+    orderId: string;
+    amount: number;
+    planName: string;
+  } | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const loadRazorpayScript = () => {
+    return new Promise<boolean>((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
   };
 
-  const getSelectedPlan = () => {
-    return plans.find((plan) => plan.id === selectedPlan);
-  };
-
-  const handlePayment = async () => {
-    setIsProcessing(true);
+  const handlePayment = async (plan: Plan) => {
+    setSelectedPlan(plan);
+    setPaymentLoading(true);
     
     try {
-      // In a real implementation, this would call your backend to create an order
-      // For demonstration, we're simulating a successful payment after a delay
+      // Ensure Razorpay is loaded
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        throw new Error("Failed to load Razorpay script");
+      }
       
-      setTimeout(() => {
-        showActionToast(`Payment successful for ${getSelectedPlan()?.name} plan!`);
-        setIsProcessing(false);
-      }, 2000);
+      // Create order via our Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('razorpay', {
+        body: {
+          amount: plan.price,
+          userId: user?.id,
+          currency: 'INR',
+          description: `${plan.name} - ${plan.billingPeriod} subscription`
+        }
+      });
+      
+      if (error) {
+        throw new Error(`Failed to create order: ${error.message}`);
+      }
+      
+      // Open Razorpay checkout
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: "FitTrack",
+        description: `${plan.name} - ${plan.billingPeriod} subscription`,
+        order_id: data.order_id,
+        handler: async function (response: any) {
+          try {
+            // Update payment status in database
+            const { error: updateError } = await supabase
+              .from('payments')
+              .update({
+                status: 'completed',
+                payment_id: response.razorpay_payment_id,
+                payment_signature: response.razorpay_signature
+              })
+              .eq('order_id', response.razorpay_order_id);
+              
+            if (updateError) {
+              throw new Error(`Failed to update payment: ${updateError.message}`);
+            }
+            
+            // Show success confirmation
+            setTransactionDetails({
+              orderId: response.razorpay_order_id,
+              amount: plan.price,
+              planName: plan.name
+            });
+            setShowConfirmation(true);
+            
+          } catch (error) {
+            console.error("Payment verification error:", error);
+            showActionToast("Payment recorded but verification failed. Please contact support.");
+          }
+        },
+        prefill: {
+          name: user?.user_metadata?.full_name || "",
+          email: user?.email || "",
+        },
+        theme: {
+          color: "#4F46E5",
+        },
+      };
+      
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
       
     } catch (error) {
       console.error("Payment error:", error);
-      showActionToast("Payment failed. Please try again.");
-      setIsProcessing(false);
+      showActionToast("Failed to initiate payment. Please try again.");
+    } finally {
+      setPaymentLoading(false);
     }
   };
-
-  // Prefill form with user data if available
-  React.useEffect(() => {
-    if (user) {
-      const userData = {
-        email: user.email || "",
-        name: user.user_metadata?.full_name || "",
-        phone: user.user_metadata?.phone || "",
-      };
-      
-      setFormData(prevData => ({
-        ...prevData,
-        ...userData
-      }));
-    }
-  }, [user]);
-
+  
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle className="text-xl font-bold">Upgrade Your Plan</CardTitle>
-        <CardDescription>
-          Choose a plan that works for your fitness goals
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <RadioGroup
-            defaultValue={selectedPlan}
-            value={selectedPlan}
-            onValueChange={setSelectedPlan}
-            className="grid gap-4"
+    <div className="max-w-5xl mx-auto py-8 px-4">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold mb-2">Upgrade Your Fitness Journey</h2>
+        <p className="text-fitness-gray max-w-xl mx-auto">
+          Unlock premium features and personalized guidance to accelerate your fitness results
+        </p>
+        
+        <Tabs 
+          defaultValue="monthly" 
+          value={billingCycle}
+          onValueChange={(value) => setBillingCycle(value as 'monthly' | 'yearly')}
+          className="mt-6"
+        >
+          <TabsList className="mx-auto">
+            <TabsTrigger value="monthly">Monthly Billing</TabsTrigger>
+            <TabsTrigger value="yearly">
+              Yearly Billing
+              <span className="ml-2 bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                Save 10%
+              </span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {(billingCycle === 'monthly' ? plans : yearlyPlans).map((plan) => (
+          <Card 
+            key={plan.id} 
+            className={`relative ${plan.highlighted ? 'border-fitness-primary shadow-lg' : ''}`}
           >
-            {plans.map((plan) => (
-              <div key={plan.id} className="relative">
-                <RadioGroupItem
-                  value={plan.id}
-                  id={plan.id}
-                  className="peer sr-only"
-                />
-                <Label
-                  htmlFor={plan.id}
-                  className={`flex flex-col p-4 border rounded-lg cursor-pointer transition-all hover:border-primary/50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 ${
-                    plan.popular ? "ring-2 ring-primary/30" : ""
-                  }`}
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <div>
-                      <span className="text-base font-semibold">
-                        {plan.name}
-                      </span>
-                      <p className="text-xs text-muted-foreground">
-                        {plan.description}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-lg font-bold">
-                        ₹{plan.price.toLocaleString()}
-                      </span>
-                      <p className="text-xs text-muted-foreground">per year</p>
-                    </div>
-                  </div>
-                  <ul className="text-sm space-y-1 mt-2">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center gap-2">
-                        <CheckCircle className="h-3.5 w-3.5 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {plan.popular && (
-                    <div className="absolute -top-2 -right-2">
-                      <div className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-white flex items-center gap-0.5">
-                        <BadgeCheck className="h-3 w-3" />
-                        POPULAR
-                      </div>
-                    </div>
-                  )}
-                </Label>
+            {plan.highlighted && (
+              <div className="absolute -top-3 left-0 right-0 mx-auto w-max bg-fitness-primary text-white text-xs px-3 py-1 rounded-full">
+                Most Popular
               </div>
-            ))}
-          </RadioGroup>
-
-          <Separator className="my-4" />
-
-          <div className="space-y-3">
-            <div>
-              <Label htmlFor="name" className="text-sm font-medium">
-                Full Name
-              </Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="email" className="text-sm font-medium">
-                Email
-              </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="john@example.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="phone" className="text-sm font-medium">
-                Phone Number
-              </Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="+91 9876543210"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="mt-1"
-              />
-            </div>
+            )}
+            
+            <CardHeader>
+              <CardTitle>{plan.name}</CardTitle>
+              <CardDescription>{plan.description}</CardDescription>
+              
+              <div className="mt-4">
+                <div className="flex items-end">
+                  <span className="text-3xl font-bold">₹{plan.price}</span>
+                  {plan.oldPrice && (
+                    <span className="text-sm text-fitness-gray line-through ml-2">₹{plan.oldPrice}</span>
+                  )}
+                </div>
+                <p className="text-sm text-fitness-gray mt-1">
+                  per {plan.billingPeriod === 'monthly' ? 'month' : 'year'}
+                </p>
+              </div>
+            </CardHeader>
+            
+            <CardContent>
+              <ul className="space-y-3 mb-6">
+                {plan.features.map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    {feature.included ? (
+                      <Check size={18} className="text-green-500" />
+                    ) : (
+                      <AlertCircle size={18} className="text-fitness-gray" />
+                    )}
+                    <span className={feature.included ? '' : 'text-fitness-gray'}>
+                      {feature.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              
+              <Button 
+                className={`w-full ${plan.highlighted ? 'bg-fitness-primary' : ''}`}
+                onClick={() => handlePayment(plan)}
+                disabled={paymentLoading}
+              >
+                {paymentLoading && selectedPlan?.id === plan.id ? 'Processing...' : 'Choose Plan'}
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div className="flex flex-col items-center">
+          <div className="bg-fitness-primary/10 p-3 rounded-full mb-3">
+            <CreditCard className="h-6 w-6 text-fitness-primary" />
           </div>
-
-          <div className="flex items-center justify-between pt-4">
-            <div>
-              <p className="text-sm font-medium">
-                Total: ₹{getSelectedPlan()?.price.toLocaleString()}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Billed annually
-              </p>
-            </div>
-            <Button
-              onClick={handlePayment}
-              disabled={
-                isProcessing ||
-                !formData.name ||
-                !formData.email ||
-                !formData.phone
-              }
-              className="relative"
-            >
-              {isProcessing ? "Processing..." : "Pay Now"}
-              <Shield className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-
-          <p className="text-xs text-center text-muted-foreground pt-2 flex items-center justify-center">
-            <Shield className="inline h-3 w-3 mr-1" />
-            Secure payment processing powered by Razorpay
+          <h3 className="font-medium mb-1">Secure Payments</h3>
+          <p className="text-sm text-fitness-gray">
+            All transactions are processed securely with Razorpay
           </p>
         </div>
-      </CardContent>
-    </Card>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-fitness-primary/10 p-3 rounded-full mb-3">
+            <Award className="h-6 w-6 text-fitness-primary" />
+          </div>
+          <h3 className="font-medium mb-1">Satisfaction Guaranteed</h3>
+          <p className="text-sm text-fitness-gray">
+            7-day money-back guarantee if you're not satisfied
+          </p>
+        </div>
+        
+        <div className="flex flex-col items-center">
+          <div className="bg-fitness-primary/10 p-3 rounded-full mb-3">
+            <Shield className="h-6 w-6 text-fitness-primary" />
+          </div>
+          <h3 className="font-medium mb-1">Privacy Protected</h3>
+          <p className="text-sm text-fitness-gray">
+            Your personal data is never shared with third parties
+          </p>
+        </div>
+      </div>
+      
+      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Payment Successful!</DialogTitle>
+            <DialogDescription>
+              Thank you for upgrading your FitTrack subscription
+            </DialogDescription>
+          </DialogHeader>
+          
+          {transactionDetails && (
+            <div className="space-y-4 my-4">
+              <div className="bg-green-50 text-green-700 p-4 rounded-lg flex items-center gap-3">
+                <Check className="h-6 w-6" />
+                <p>Your payment was successfully processed</p>
+              </div>
+              
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-fitness-gray">Plan:</span>
+                  <span className="font-medium">{transactionDetails.planName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-fitness-gray">Amount:</span>
+                  <span className="font-medium">₹{transactionDetails.amount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-fitness-gray">Order ID:</span>
+                  <span className="font-medium">{transactionDetails.orderId}</span>
+                </div>
+              </div>
+              
+              <p className="text-sm text-fitness-gray">
+                A receipt has been sent to your email address. Your premium features are now unlocked!
+              </p>
+            </div>
+          )}
+          
+          <Button onClick={() => setShowConfirmation(false)}>
+            Continue to Dashboard
+          </Button>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

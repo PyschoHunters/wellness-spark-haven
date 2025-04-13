@@ -1,24 +1,23 @@
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { User, Session } from '@supabase/supabase-js';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 
-type AuthContextType = {
+interface User {
+  id: string;
+  email: string;
+  avatar_url?: string;
+}
+
+interface AuthContextType {
   user: User | null;
-  session: Session | null;
-  isLoading: boolean;
-  signUp: (email: string, password: string, options?: { metadata?: { [key: string]: any } }) => Promise<{
-    user: User | null;
-    error: Error | null;
-  }>;
-  signIn: (email: string, password: string) => Promise<{
-    user: User | null;
-    error: Error | null;
-  }>;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  updateUserData: (data: { [key: string]: any }) => Promise<void>;
-};
+  updateUserAvatar: (avatarUrl: string) => void;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -30,120 +29,143 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Initial auth state check
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+    // Check for active session on mount
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          const { user } = session;
+          setUser({
+            id: user.id,
+            email: user.email || '',
+            avatar_url: (user as any).user_metadata?.avatar_url,
+          });
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
+    checkSession();
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session && session.user) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            avatar_url: (session.user as any).user_metadata?.avatar_url,
+          });
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
+    );
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
 
-  const signUp = async (
-    email: string,
-    password: string,
-    options?: { metadata?: { [key: string]: any } }
-  ) => {
+  const signIn = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options
-      });
-
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      
       if (error) {
-        showActionToast(`Error signing up: ${error.message}`);
-        return { user: null, error };
+        throw error;
       }
-
-      showActionToast('Signup successful! Check your email for confirmation.');
-      return { user: data.user, error: null };
-    } catch (error) {
-      showActionToast(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
-      return { user: null, error: error as Error };
+      
+      navigate('/');
+      showActionToast('Signed in successfully!');
+    } catch (error: any) {
+      showActionToast(error.message || 'Error signing in', { type: 'error' });
+      console.error('Error signing in:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
+      setLoading(true);
+      const { error } = await supabase.auth.signUp({ email, password });
+      
       if (error) {
-        showActionToast(`Error signing in: ${error.message}`);
-        return { user: null, error };
+        throw error;
       }
-
-      showActionToast('Signed in successfully!');
-      return { user: data.user, error: null };
-    } catch (error) {
-      showActionToast(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
-      return { user: null, error: error as Error };
+      
+      showActionToast('Signed up successfully! Check your email for confirmation.');
+    } catch (error: any) {
+      showActionToast(error.message || 'Error signing up', { type: 'error' });
+      console.error('Error signing up:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
+      setLoading(true);
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        showActionToast(`Error signing out: ${error.message}`);
-        return;
+        throw error;
       }
-
-      showActionToast('Signed out successfully');
-    } catch (error) {
-      showActionToast(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+      
+      navigate('/login');
+      showActionToast('Signed out successfully!');
+    } catch (error: any) {
+      showActionToast(error.message || 'Error signing out', { type: 'error' });
+      console.error('Error signing out:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateUserData = async (data: { [key: string]: any }) => {
-    try {
-      const { error } = await supabase.auth.updateUser({
-        data
+  const updateUserAvatar = (avatarUrl: string) => {
+    if (user) {
+      // Update local state
+      setUser({
+        ...user,
+        avatar_url: avatarUrl
       });
-
-      if (error) {
-        showActionToast(`Error updating user data: ${error.message}`);
-        return;
-      }
-
-      showActionToast('User data updated successfully');
-    } catch (error) {
-      showActionToast(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+      
+      // In a real app, you would also update this in your database
+      // For example with Supabase:
+      // supabase.from('profiles').update({ avatar_url: avatarUrl }).eq('id', user.id);
+      
+      // For now, we'll just store it in localStorage as a fallback
+      localStorage.setItem('userAvatarUrl', avatarUrl);
     }
+  };
+
+  const value = {
+    user,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    updateUserAvatar
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        isLoading,
-        signUp,
-        signIn,
-        signOut,
-        updateUserData
-      }}
-    >
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
