@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,10 +9,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { showActionToast } from '@/utils/toast-utils';
 
 const avatarStyles = [
-  { id: 1, name: 'Hero', image: '/lovable-uploads/2624c7ec-0c72-4a77-87e4-99577bdf17e3.png' },
-  { id: 2, name: 'Wizard', image: '/lovable-uploads/21f1cb59-c5f4-4268-9bf0-8f45deac3592.png' },
-  { id: 3, name: 'Ninja', image: '/lovable-uploads/11f24990-5ac1-4930-8ca7-eaea332a39ee.png' },
-  { id: 4, name: 'Robot', image: 'https://images.unsplash.com/photo-1537815749002-de6a533c64db?q=80&w=300&auto=format&fit=crop' }
+  { id: 1, name: 'Sporty', image: '/lovable-uploads/06928842-90bc-4aff-83fe-27a303331c3d.png' },
+  { id: 2, name: 'Casual', image: '/lovable-uploads/4249e777-53a3-4c1a-9a98-6290c5033521.png' },
+  { id: 3, name: 'Vibrant', image: '/lovable-uploads/74b6ebc2-f084-4008-a589-e7bcd8d6c481.png' },
+  { id: 4, name: 'Scholar', image: '/lovable-uploads/008981bd-9aed-4038-b04b-3498da8639f2.png' }
 ];
 
 const hairStyles = [
