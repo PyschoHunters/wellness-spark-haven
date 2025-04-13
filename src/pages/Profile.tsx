@@ -12,7 +12,6 @@ import MindfulnessWidget from '@/components/MindfulnessWidget';
 import YogaCard from '@/components/YogaCard';
 import MoodWorkout from '@/components/MoodWorkout';
 import EcoFitRewards from '@/components/EcoFitRewards';
-import SkillSwapMarketplace from '@/components/SkillSwapMarketplace';
 import { showActionToast } from '@/utils/toast-utils';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
@@ -122,10 +121,9 @@ const Profile = () => {
       />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="wellness">Wellness</TabsTrigger>
-          <TabsTrigger value="skillswap">Skill Swap</TabsTrigger>
         </TabsList>
         
         <TabsContent value="profile" className="mt-6">
@@ -243,10 +241,6 @@ const Profile = () => {
             
             <MoodWorkout className="shadow-sm" />
           </div>
-        </TabsContent>
-        
-        <TabsContent value="skillswap" className="mt-6">
-          <SkillSwapMarketplace />
         </TabsContent>
       </Tabs>
       
