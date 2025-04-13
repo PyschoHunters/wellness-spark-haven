@@ -10,7 +10,7 @@ import DailyTips from '@/components/DailyTips';
 import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
-import MindfulnessWidget from '@/components/MindfulnessWidget';
+import AvatarCreator from '@/components/AvatarCreator';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -231,7 +231,7 @@ const Home = () => {
       </section>
       
       <section className="mb-6">
-        <MindfulnessWidget />
+        <AvatarCreator />
       </section>
       
       <section>
