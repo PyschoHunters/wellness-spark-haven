@@ -11,7 +11,6 @@ import SleepTracker from '@/components/SleepTracker';
 import MindfulnessWidget from '@/components/MindfulnessWidget';
 import YogaCard from '@/components/YogaCard';
 import MoodWorkout from '@/components/MoodWorkout';
-import RazorpayPayment from '@/components/RazorpayPayment';
 import EcoFitRewards from '@/components/EcoFitRewards';
 import { showActionToast } from '@/utils/toast-utils';
 import { Progress } from '@/components/ui/progress';
@@ -21,7 +20,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
-  const [showPaymentPlans, setShowPaymentPlans] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [showAvatar, setShowAvatar] = useState(false);
   const [avatarImage, setAvatarImage] = useState<string | null>(null);
@@ -223,7 +221,7 @@ const Profile = () => {
             
             <button 
               className="flex items-center justify-center gap-2 w-full bg-fitness-primary text-white p-3 rounded-xl font-medium"
-              onClick={() => setShowPaymentPlans(true)}
+              onClick={() => showActionToast("Premium features coming soon!")}
             >
               <PlusCircle size={18} />
               Upgrade to Premium
@@ -286,19 +284,6 @@ const Profile = () => {
               <span className="text-gray-500">{caloriesGoal} kcal</span>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-      
-      <Dialog open={showPaymentPlans} onOpenChange={setShowPaymentPlans}>
-        <DialogContent className="sm:max-w-[90%] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Upgrade Your Membership</DialogTitle>
-            <DialogDescription>
-              Choose a plan that suits your fitness goals
-            </DialogDescription>
-          </DialogHeader>
-          
-          <RazorpayPayment />
         </DialogContent>
       </Dialog>
       
