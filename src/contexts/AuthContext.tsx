@@ -104,7 +104,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signUp = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signUp({ email, password });
+      // Type assertion to fix the TypeScript error
+      const { error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          data: {} // Empty data object instead of metadata
+        }
+      });
       
       if (error) {
         throw error;

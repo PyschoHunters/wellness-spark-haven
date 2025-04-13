@@ -10,6 +10,7 @@ import WaterTracker from '@/components/WaterTracker';
 import SleepTracker from '@/components/SleepTracker';
 import MindfulnessWidget from '@/components/MindfulnessWidget';
 import YogaCard from '@/components/YogaCard';
+import MoodWorkout from '@/components/MoodWorkout';
 import RazorpayPayment from '@/components/RazorpayPayment';
 import EcoFitRewards from '@/components/EcoFitRewards';
 import { showActionToast } from '@/utils/toast-utils';
@@ -239,6 +240,8 @@ const Profile = () => {
             <MindfulnessWidget />
             
             <YogaCard className="shadow-sm" />
+            
+            <MoodWorkout className="shadow-sm" />
           </div>
         </TabsContent>
       </Tabs>
