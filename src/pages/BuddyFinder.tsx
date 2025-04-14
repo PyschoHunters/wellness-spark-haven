@@ -4,7 +4,7 @@ import Navigation from '@/components/Navigation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, MapPin, Calendar, Shield, Check, X, Heart, UserCheck, Dumbbell, Flame, Trophy } from 'lucide-react';
+import { Search, Filter, MapPin, Calendar, Shield, Check, X, Heart, UserCheck, Dumbbell, Flame, Trophy, Users } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { showActionToast } from '@/utils/toast-utils';
 import { 
@@ -15,8 +15,6 @@ import {
   DialogFooter 
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
-import WorkoutBuddyFinderDialog from '@/components/WorkoutBuddyFinderDialog';
-import { Users } from 'lucide-react';
 
 const workoutBuddies = [
   {
