@@ -64,7 +64,7 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({ onClose }) => {
             {totalStats.map((stat, index) => (
               <div 
                 key={index}
-                className="bg-white p-4 rounded-xl shadow-sm"
+                className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <div className={cn(
                   "w-8 h-8 rounded-lg flex items-center justify-center mb-2",
@@ -78,11 +78,20 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({ onClose }) => {
             ))}
           </div>
           
-          <div className="bg-white p-4 rounded-xl shadow-sm mb-6">
-            <h3 className="font-medium mb-4">Weekly Activity</h3>
+          <div className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 mb-6">
+            <h3 className="font-medium mb-4 flex items-center">
+              <span className="w-2 h-2 rounded-full bg-fitness-primary mr-2"></span>
+              Weekly Activity
+            </h3>
             <div className="h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weeklyData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                  <defs>
+                    <linearGradient id="colorCaloriesStats" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4d94ff" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#4d94ff" stopOpacity={0.3}/>
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
                   <XAxis 
                     dataKey="name" 
@@ -105,12 +114,14 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({ onClose }) => {
                       padding: '8px 12px',
                     }}
                     itemStyle={{ color: '#1C1C1E' }}
-                    labelStyle={{ color: '#86868B', marginBottom: '5px' }}
+                    labelStyle={{ color: '#86868B', marginBottom: '5px', fontWeight: 'bold' }}
+                    formatter={(value) => [`${value} calories`, 'Burned']}
+                    cursor={{fill: 'rgba(77, 148, 255, 0.1)'}}
                   />
                   <Bar 
                     dataKey="calories" 
                     radius={[5, 5, 0, 0]} 
-                    fill="#6F7BF7" 
+                    fill="url(#colorCaloriesStats)" 
                     barSize={30} 
                     animationDuration={1500}
                   />
@@ -119,8 +130,11 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({ onClose }) => {
             </div>
           </div>
           
-          <div className="bg-white p-4 rounded-xl shadow-sm">
-            <h3 className="font-medium mb-2">Most Popular Workouts</h3>
+          <div className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+            <h3 className="font-medium mb-2 flex items-center">
+              <span className="w-2 h-2 rounded-full bg-fitness-primary mr-2"></span>
+              Most Popular Workouts
+            </h3>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
@@ -155,7 +169,7 @@ const WorkoutStats: React.FC<WorkoutStatsProps> = ({ onClose }) => {
         
         <div className="p-4 border-t border-gray-100">
           <button 
-            className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium"
+            className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium hover:bg-blue-500 transition-colors"
             onClick={onClose}
           >
             Close
