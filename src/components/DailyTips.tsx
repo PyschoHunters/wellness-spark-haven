@@ -73,8 +73,14 @@ const tips: Tip[] = [
 
 const categoryColors = {
   nutrition: 'bg-green-100 text-green-800',
-  workout: 'bg-blue-100 text-blue-800',
-  wellness: 'bg-purple-100 text-purple-800'
+  workout: 'bg-amber-100 text-amber-800',
+  wellness: 'bg-rose-100 text-rose-800'
+};
+
+const categoryGradients = {
+  nutrition: 'from-green-50 to-green-100',
+  workout: 'from-amber-50 to-amber-100',
+  wellness: 'from-rose-50 to-rose-100'
 };
 
 const DailyTips: React.FC = () => {
@@ -95,14 +101,18 @@ const DailyTips: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Daily Tips</h2>
+    <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300">
+      <div className="flex justify-between items-center mb-5">
+        <h2 className="text-lg font-semibold flex items-center">
+          <span className="w-2 h-2 rounded-full bg-amber-400 mr-2"></span>
+          Daily Tips
+        </h2>
         <button 
-          className="text-sm font-medium text-fitness-primary"
+          className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors flex items-center"
           onClick={handleSeeAllClick}
         >
           See All
+          <ArrowRight size={14} className="ml-1" />
         </button>
       </div>
       
@@ -110,7 +120,7 @@ const DailyTips: React.FC = () => {
         {displayedTips.map((tip) => (
           <div 
             key={tip.id} 
-            className="bg-fitness-gray-light p-3 rounded-xl flex gap-3 cursor-pointer hover:bg-fitness-gray-light/80 transition-colors"
+            className={`bg-gradient-to-r ${categoryGradients[tip.category]} p-3.5 rounded-xl flex gap-3 cursor-pointer hover:shadow-sm transition-all duration-300`}
             onClick={() => handleTipClick(tip)}
           >
             <div className={`w-10 h-10 rounded-full ${categoryColors[tip.category]} flex items-center justify-center flex-shrink-0`}>
@@ -118,10 +128,12 @@ const DailyTips: React.FC = () => {
             </div>
             <div className="flex-1">
               <h3 className="font-medium">{tip.title}</h3>
-              <p className="text-xs text-fitness-gray mt-1">{tip.description}</p>
+              <p className="text-xs text-gray-700 mt-1">{tip.description}</p>
             </div>
             <div className="flex items-center">
-              <ArrowRight size={18} className="text-fitness-gray" />
+              <div className="w-6 h-6 rounded-full bg-white/70 flex items-center justify-center">
+                <ArrowRight size={14} className="text-gray-700" />
+              </div>
             </div>
           </div>
         ))}
@@ -141,7 +153,7 @@ const DailyTips: React.FC = () => {
                   </div>
                   <DialogTitle>{selectedTip.title}</DialogTitle>
                 </div>
-                <span className="text-xs uppercase font-medium mt-2 inline-block px-2 py-1 rounded bg-gray-100">
+                <span className={`text-xs uppercase font-medium mt-2 inline-block px-2.5 py-1 rounded ${categoryColors[selectedTip.category]}`}>
                   {selectedTip.category}
                 </span>
               </DialogHeader>
@@ -153,7 +165,11 @@ const DailyTips: React.FC = () => {
               </div>
               
               <button 
-                className="w-full mt-6 bg-fitness-primary text-white py-2 rounded-xl font-medium"
+                className={`w-full mt-6 py-2.5 rounded-xl font-medium text-white ${
+                  selectedTip.category === 'nutrition' ? 'bg-green-600 hover:bg-green-700' : 
+                  selectedTip.category === 'workout' ? 'bg-amber-600 hover:bg-amber-700' : 
+                  'bg-rose-600 hover:bg-rose-700'
+                } transition-colors`}
                 onClick={() => {
                   showActionToast(`Saved "${selectedTip.title}" to favorites`);
                   setShowTipDetail(false);
