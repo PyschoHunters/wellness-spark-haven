@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dumbbell, Clock, Flame, ArrowRight, X, Search, Plus, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog';
@@ -6,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { showActionToast } from '@/utils/toast-utils';
 import { useAuth } from '@/contexts/AuthContext';
 
-// Exercise database organized by category and difficulty
 const exerciseDatabase = {
   cardio: {
     beginner: [
@@ -97,13 +95,10 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
   };
 
   const generateWorkoutPlan = () => {
-    // Simple algorithm to generate a workout plan based on user preferences
     const workoutPlan: any[] = [];
     
-    // Exercise count based on duration preference
     const exerciseCount = workoutDuration === 'short' ? 4 : workoutDuration === 'medium' ? 6 : 8;
     
-    // Determine exercise type distribution based on goals
     let cardioPercentage = 0.33;
     let strengthPercentage = 0.33;
     let flexibilityPercentage = 0.33;
@@ -132,19 +127,17 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
       cardioPercentage -= 0.1;
     }
     
-    // Calculate exercise counts by type
     const cardioCount = Math.round(exerciseCount * cardioPercentage);
     const strengthCount = Math.round(exerciseCount * strengthPercentage);
     const flexibilityCount = exerciseCount - cardioCount - strengthCount;
     
-    // Get exercises for each type based on level
     for (let i = 0; i < cardioCount; i++) {
       const exercises = exerciseDatabase.cardio[fitnessLevel];
       const randomExercise = exercises[Math.floor(Math.random() * exercises.length)];
       if (!workoutPlan.some(ex => ex.name === randomExercise.name)) {
         workoutPlan.push({...randomExercise, type: 'Cardio'});
       } else {
-        i--; // Try again if we already have this exercise
+        i--;
       }
     }
     
@@ -168,13 +161,9 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
       }
     }
     
-    // Reorder the exercises for a balanced workout
     const reorderedPlan = [];
-    // Start with cardio for warm up
     reorderedPlan.push(...workoutPlan.filter(ex => ex.type === 'Cardio'));
-    // Add strength exercises
     reorderedPlan.push(...workoutPlan.filter(ex => ex.type === 'Strength'));
-    // End with flexibility for cool down
     reorderedPlan.push(...workoutPlan.filter(ex => ex.type === 'Flexibility'));
     
     setGeneratedPlan(reorderedPlan);
@@ -195,7 +184,6 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
       const updatedPlans = [...savedPlans, newPlan];
       setSavedPlans(updatedPlans);
       
-      // Save to localStorage
       try {
         const existingPlans = JSON.parse(localStorage.getItem(`workoutPlans_${user?.id}`) || '[]');
         localStorage.setItem(`workoutPlans_${user?.id}`, JSON.stringify([...existingPlans, newPlan]));
@@ -241,13 +229,13 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
             setShowDialog(true);
             loadSavedPlans();
           }}
-          className="text-fitness-primary"
+          className="text-blue-600"
         >
           Create Plan
         </Button>
       </div>
       
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 rounded-xl">
+      <div className="bg-gradient-to-r from-blue-500 to-blue-400 text-white p-4 rounded-xl">
         <div className="flex items-center gap-3 mb-2">
           <Dumbbell size={24} />
           <h3 className="font-medium">Personal Workout Planner</h3>
@@ -260,7 +248,7 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
             setShowDialog(true);
             loadSavedPlans();
           }}
-          className="bg-white text-indigo-600 hover:bg-gray-100"
+          className="bg-white text-blue-600 hover:bg-blue-50"
         >
           Start Creating <ArrowRight size={16} className="ml-2" />
         </Button>
@@ -285,7 +273,7 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
                       key={level}
                       className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                         fitnessLevel === level 
-                          ? 'bg-fitness-primary text-white' 
+                          ? 'bg-blue-500 text-white' 
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                       onClick={() => setFitnessLevel(level as any)}
@@ -304,7 +292,7 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
                       key={goal}
                       className={`py-2 px-3 rounded-lg text-sm font-medium text-left transition-colors flex items-center ${
                         selectedGoals.includes(goal)
-                          ? 'bg-fitness-primary/20 text-fitness-primary border border-fitness-primary/50'
+                          ? 'bg-blue-500/20 text-blue-600 border border-blue-500/50'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-transparent'
                       }`}
                       onClick={() => toggleGoal(goal)}
@@ -328,7 +316,7 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
                       key={option.value}
                       className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                         workoutDuration === option.value 
-                          ? 'bg-fitness-primary text-white' 
+                          ? 'bg-blue-500 text-white' 
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                       onClick={() => setWorkoutDuration(option.value as any)}
@@ -347,7 +335,7 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
                       key={area}
                       className={`py-2 px-3 rounded-lg text-sm font-medium text-center transition-colors ${
                         focusAreas.includes(area)
-                          ? 'bg-fitness-primary/20 text-fitness-primary border border-fitness-primary/50'
+                          ? 'bg-blue-500/20 text-blue-600 border border-blue-500/50'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-transparent'
                       }`}
                       onClick={() => toggleArea(area)}
@@ -367,7 +355,7 @@ const WorkoutPlanGenerator: React.FC<WorkoutPlanGeneratorProps> = ({ className }
                   Reset
                 </Button>
                 <Button 
-                  className="flex-1 bg-fitness-primary"
+                  className="flex-1 bg-blue-500 hover:bg-blue-600"
                   onClick={generateWorkoutPlan}
                   disabled={selectedGoals.length === 0}
                 >
