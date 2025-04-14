@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +15,8 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithFacebook: () => Promise<void>;
   updateUserAvatar: (avatarUrl: string) => void;
 }
 
@@ -104,7 +105,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signUp = async (email: string, password: string) => {
     try {
       setLoading(true);
-      // Type assertion to fix the TypeScript error
       const { error } = await supabase.auth.signUp({ 
         email, 
         password,
@@ -121,6 +121,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error: any) {
       showActionToast(error.message || 'Error signing up');
       console.error('Error signing up:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      showActionToast(error.message || 'Error signing in with Google');
+      console.error('Error signing in with Google:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithFacebook = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'facebook',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        }
+      });
+      
+      if (error) {
+        throw error;
+      }
+    } catch (error: any) {
+      showActionToast(error.message || 'Error signing in with Facebook');
+      console.error('Error signing in with Facebook:', error);
     } finally {
       setLoading(false);
     }
@@ -147,17 +189,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const updateUserAvatar = (avatarUrl: string) => {
     if (user) {
-      // Update local state
       setUser({
         ...user,
         avatar_url: avatarUrl
       });
       
-      // In a real app, you would also update this in your database
-      // For example with Supabase:
-      // supabase.from('profiles').update({ avatar_url: avatarUrl }).eq('id', user.id);
-      
-      // For now, we'll just store it in localStorage as a fallback
       localStorage.setItem('userAvatarUrl', avatarUrl);
     }
   };
@@ -168,6 +204,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signIn,
     signUp,
     signOut,
+    signInWithGoogle,
+    signInWithFacebook,
     updateUserAvatar
   };
 

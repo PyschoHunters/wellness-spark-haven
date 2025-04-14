@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Facebook, Github } from 'lucide-react'
 
 const Login = () => {
-  const { signIn, signUp, loading } = useAuth()
+  const { signIn, signUp, signInWithGoogle, signInWithFacebook, loading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [activeTab, setActiveTab] = useState('login')
@@ -22,6 +22,14 @@ const Login = () => {
     } else {
       await signUp(email, password)
     }
+  }
+
+  const handleGoogleSignIn = async () => {
+    await signInWithGoogle()
+  }
+
+  const handleFacebookSignIn = async () => {
+    await signInWithFacebook()
   }
 
   return (
@@ -136,7 +144,8 @@ const Login = () => {
                       type="button" 
                       variant="outline" 
                       className="h-12 border-gray-200"
-                      onClick={() => alert("Google sign in coming soon")}
+                      onClick={handleGoogleSignIn}
+                      disabled={loading}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 mr-2">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.04 5.04 0 0 1-2.2 3.34v2.77h3.56c2.08-1.92 3.28-4.74 3.28-8.12z"/>
@@ -150,7 +159,8 @@ const Login = () => {
                       type="button" 
                       variant="outline" 
                       className="h-12 border-gray-200"
-                      onClick={() => alert("Facebook sign in coming soon")}
+                      onClick={handleFacebookSignIn}
+                      disabled={loading}
                     >
                       <Facebook size={20} className="text-blue-600 mr-2" />
                       Facebook
@@ -216,7 +226,8 @@ const Login = () => {
                       type="button" 
                       variant="outline" 
                       className="h-12 border-gray-200"
-                      onClick={() => alert("Google sign up coming soon")}
+                      onClick={handleGoogleSignIn}
+                      disabled={loading}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 mr-2">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.04 5.04 0 0 1-2.2 3.34v2.77h3.56c2.08-1.92 3.28-4.74 3.28-8.12z"/>
@@ -230,7 +241,8 @@ const Login = () => {
                       type="button" 
                       variant="outline" 
                       className="h-12 border-gray-200"
-                      onClick={() => alert("Facebook sign up coming soon")}
+                      onClick={handleFacebookSignIn}
+                      disabled={loading}
                     >
                       <Facebook size={20} className="text-blue-600 mr-2" />
                       Facebook
