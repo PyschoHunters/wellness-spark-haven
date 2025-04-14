@@ -16,8 +16,8 @@ import {
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import WorkoutBuddyFinderDialog from '@/components/WorkoutBuddyFinderDialog';
+import { Users } from 'lucide-react';
 
-// Enhanced workout buddies data with more detailed profiles
 const workoutBuddies = [
   {
     id: 1,
@@ -32,7 +32,7 @@ const workoutBuddies = [
     bio: 'Fitness enthusiast focused on mind-body balance. Love outdoor workouts and trying new routines!',
     matchPercentage: 87,
     achievements: ['10K Runner', 'Yoga Master'],
-    connectionStatus: 'none' // none, pending, connected
+    connectionStatus: 'none'
   },
   {
     id: 2,
@@ -114,34 +114,28 @@ const BuddyFinder = () => {
     level: 'all',
     interests: 'all',
     availability: 'all',
-    distance: 5 // default max distance in miles
+    distance: 5
   });
-  
-  // State for buddy selection and detailed view
+
   const [selectedBuddy, setSelectedBuddy] = useState(null);
   const [showBuddyDetail, setShowBuddyDetail] = useState(false);
-  
-  // State for managing buddies
+
   const [buddies, setBuddies] = useState(workoutBuddies);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [pendingRequests, setPendingRequests] = useState(0);
-  
-  // Advanced search controls
+
   const [advancedSearch, setAdvancedSearch] = useState(false);
-  
-  // Initialize pending requests count
+
   useEffect(() => {
     const pendingCount = buddies.filter(b => b.connectionStatus === 'pending').length;
     setPendingRequests(pendingCount);
   }, [buddies]);
 
-  // Handle connection request
   const handleConnect = (buddyId) => {
     try {
       setBuddies(prevBuddies => 
         prevBuddies.map(buddy => {
           if (buddy.id === buddyId) {
-            // Simulate different actions based on current status
             if (buddy.connectionStatus === 'none') {
               showActionToast(`Connection request sent to ${buddy.name}!`);
               return { ...buddy, connectionStatus: 'pending' };
@@ -162,22 +156,17 @@ const BuddyFinder = () => {
     }
   };
 
-  // Calculate compatibility score based on interests, level, and availability
   const calculateCompatibility = (buddy) => {
-    // Simplified algorithm for demo purposes
     let score = 0;
     
-    // Match based on level
     if (filters.level === 'all' || buddy.level === filters.level) {
       score += 30;
     }
     
-    // Match based on interests
     if (filters.interests === 'all' || buddy.interests.includes(filters.interests)) {
       score += 40;
     }
     
-    // Match based on availability
     if (filters.availability === 'all' || buddy.availability === filters.availability) {
       score += 30;
     }
@@ -185,30 +174,24 @@ const BuddyFinder = () => {
     return Math.min(score, 100);
   };
 
-  // Filter buddies based on search and filters
   const filteredBuddies = buddies.filter(buddy => {
-    // Search term filtering
     if (searchTerm && !buddy.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
         !buddy.interests.some(i => i.toLowerCase().includes(searchTerm.toLowerCase()))) {
       return false;
     }
     
-    // Filter by level
     if (filters.level !== 'all' && buddy.level !== filters.level) {
       return false;
     }
     
-    // Filter by interests
     if (filters.interests !== 'all' && !buddy.interests.includes(filters.interests)) {
       return false;
     }
     
-    // Filter by availability
     if (filters.availability !== 'all' && buddy.availability !== filters.availability) {
       return false;
     }
     
-    // Filter by distance
     const distanceMiles = parseFloat(buddy.location.split(' ')[0]);
     if (distanceMiles > filters.distance) {
       return false;
@@ -217,18 +200,15 @@ const BuddyFinder = () => {
     return true;
   });
 
-  // Sort buddies by compatibility for suggested tab
   const suggestedBuddies = [...filteredBuddies].sort((a, b) => {
     return b.matchPercentage - a.matchPercentage;
   });
 
-  // Handle buddy detail view
   const handleViewBuddyDetail = (buddy) => {
     setSelectedBuddy(buddy);
     setShowBuddyDetail(true);
   };
 
-  // Get connection button status and text
   const getConnectionStatus = (status) => {
     switch(status) {
       case 'none':
@@ -244,12 +224,21 @@ const BuddyFinder = () => {
 
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
-      <Header 
-        title="Find Workout Buddies" 
-        subtitle="Connect with fitness friends nearby" 
-      />
+      <div className="flex flex-col gap-4 mb-6">
+        <Header 
+          title="Find Workout Buddies" 
+          subtitle="Connect with fitness friends nearby" 
+        />
+        
+        <button
+          className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full p-3 shadow-lg flex items-center justify-center gap-2 hover:shadow-xl transition-all"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <Users size={20} />
+          <span className="font-medium">Find New Buddies</span>
+        </button>
+      </div>
       
-      {/* Pending requests indicator */}
       {pendingRequests > 0 && (
         <div className="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-100 flex items-center justify-between">
           <div className="flex items-center">
@@ -269,7 +258,6 @@ const BuddyFinder = () => {
         </div>
       )}
       
-      {/* Search bar */}
       <div className="mb-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
@@ -290,7 +278,6 @@ const BuddyFinder = () => {
         </div>
       </div>
 
-      {/* Filters section */}
       {showFilters && (
         <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg animate-in fade-in-50 duration-300">
           <div className="flex justify-between items-center mb-3">
@@ -365,7 +352,6 @@ const BuddyFinder = () => {
         </div>
       )}
 
-      {/* Tabs navigation */}
       <Tabs defaultValue="nearby" value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger value="nearby">Nearby</TabsTrigger>
@@ -380,7 +366,6 @@ const BuddyFinder = () => {
           </TabsTrigger>
         </TabsList>
         
-        {/* Nearby tab */}
         <TabsContent value="nearby" className="space-y-4">
           {filteredBuddies.length > 0 ? (
             filteredBuddies.map((buddy) => (
@@ -470,7 +455,6 @@ const BuddyFinder = () => {
           )}
         </TabsContent>
         
-        {/* Suggested tab */}
         <TabsContent value="suggested" className="space-y-4">
           {suggestedBuddies.length > 0 ? (
             suggestedBuddies.map((buddy) => (
@@ -562,7 +546,6 @@ const BuddyFinder = () => {
           )}
         </TabsContent>
         
-        {/* Pending tab */}
         <TabsContent value="pending" className="space-y-4">
           {buddies.filter(b => b.connectionStatus === 'pending').length > 0 ? (
             buddies
@@ -654,7 +637,6 @@ const BuddyFinder = () => {
         </TabsContent>
       </Tabs>
       
-      {/* Buddy detail dialog */}
       {selectedBuddy && (
         <Dialog open={showBuddyDetail} onOpenChange={setShowBuddyDetail}>
           <DialogContent className="sm:max-w-md">
