@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
@@ -233,13 +232,13 @@ const BuddyFinder = () => {
   const getConnectionStatus = (status) => {
     switch(status) {
       case 'none':
-        return { text: 'Connect', variant: 'default' };
+        return { text: 'Connect', variant: 'default' as const };
       case 'pending':
-        return { text: 'Accept', variant: 'secondary' };
+        return { text: 'Accept', variant: 'secondary' as const };
       case 'connected':
-        return { text: 'Disconnect', variant: 'outline' };
+        return { text: 'Disconnect', variant: 'outline' as const };
       default:
-        return { text: 'Connect', variant: 'default' };
+        return { text: 'Connect', variant: 'default' as const };
     }
   };
 
