@@ -7,10 +7,10 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Facebook, Github } from 'lucide-react'
+import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Github } from 'lucide-react'
 
 const Login = () => {
-  const { signIn, signUp, signInWithGoogle, signInWithFacebook, loading } = useAuth()
+  const { signIn, signUp, signInWithGithub, loading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [activeTab, setActiveTab] = useState('login')
@@ -24,12 +24,8 @@ const Login = () => {
     }
   }
 
-  const handleGoogleSignIn = async () => {
-    await signInWithGoogle()
-  }
-
-  const handleFacebookSignIn = async () => {
-    await signInWithFacebook()
+  const handleGithubSignIn = async () => {
+    await signInWithGithub()
   }
 
   return (
@@ -139,33 +135,16 @@ const Login = () => {
                     <div className="bg-white px-4 z-10 text-sm text-gray-500">or continue with</div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="h-12 border-gray-200"
-                      onClick={handleGoogleSignIn}
-                      disabled={loading}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 mr-2">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.04 5.04 0 0 1-2.2 3.34v2.77h3.56c2.08-1.92 3.28-4.74 3.28-8.12z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.77a6.98 6.98 0 0 1-3.72 1.06 6.86 6.86 0 0 1-6.43-4.72H2v2.86A11.98 11.98 0 0 0 12 23z"/>
-                        <path fill="#FBBC05" d="M5.57 13.91a6.72 6.72 0 0 1-.37-2.18c0-.76.14-1.5.37-2.18V6.69H2a11.82 11.82 0 0 0 0 10.44l3.57-3.22z"/>
-                        <path fill="#EA4335" d="M12 5.36c1.39 0 2.63.47 3.6 1.4l3.15-3.15A10.95 10.95 0 0 0 12 0C7.31 0 3.21 2.7 1.28 6.69l3.56 2.77a6.87 6.87 0 0 1 7.16-4.1z"/>
-                      </svg>
-                      Google
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="h-12 border-gray-200"
-                      onClick={handleFacebookSignIn}
-                      disabled={loading}
-                    >
-                      <Facebook size={20} className="text-blue-600 mr-2" />
-                      Facebook
-                    </Button>
-                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full h-12 border-gray-200"
+                    onClick={handleGithubSignIn}
+                    disabled={loading}
+                  >
+                    <Github size={20} className="mr-2" />
+                    GitHub
+                  </Button>
                 </CardContent>
               </form>
             </TabsContent>
@@ -221,33 +200,16 @@ const Login = () => {
                     <div className="bg-white px-4 z-10 text-sm text-gray-500">or continue with</div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="h-12 border-gray-200"
-                      onClick={handleGoogleSignIn}
-                      disabled={loading}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 mr-2">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.04 5.04 0 0 1-2.2 3.34v2.77h3.56c2.08-1.92 3.28-4.74 3.28-8.12z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.77a6.98 6.98 0 0 1-3.72 1.06 6.86 6.86 0 0 1-6.43-4.72H2v2.86A11.98 11.98 0 0 0 12 23z"/>
-                        <path fill="#FBBC05" d="M5.57 13.91a6.72 6.72 0 0 1-.37-2.18c0-.76.14-1.5.37-2.18V6.69H2a11.82 11.82 0 0 0 0 10.44l3.57-3.22z"/>
-                        <path fill="#EA4335" d="M12 5.36c1.39 0 2.63.47 3.6 1.4l3.15-3.15A10.95 10.95 0 0 0 12 0C7.31 0 3.21 2.7 1.28 6.69l3.56 2.77a6.87 6.87 0 0 1 7.16-4.1z"/>
-                      </svg>
-                      Google
-                    </Button>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="h-12 border-gray-200"
-                      onClick={handleFacebookSignIn}
-                      disabled={loading}
-                    >
-                      <Facebook size={20} className="text-blue-600 mr-2" />
-                      Facebook
-                    </Button>
-                  </div>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    className="w-full h-12 border-gray-200"
+                    onClick={handleGithubSignIn}
+                    disabled={loading}
+                  >
+                    <Github size={20} className="mr-2" />
+                    GitHub
+                  </Button>
                 </CardContent>
               </form>
             </TabsContent>

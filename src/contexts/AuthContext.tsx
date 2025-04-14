@@ -15,8 +15,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signInWithFacebook: () => Promise<void>;
+  signInWithGithub: () => Promise<void>;
   updateUserAvatar: (avatarUrl: string) => void;
 }
 
@@ -40,7 +39,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check for active session on mount
     const checkSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -62,7 +60,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     checkSession();
 
-    // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session && session.user) {
@@ -126,11 +123,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGithub = async () => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: 'github',
         options: {
           redirectTo: `${window.location.origin}/`,
         }
@@ -140,29 +137,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw error;
       }
     } catch (error: any) {
-      showActionToast(error.message || 'Error signing in with Google');
-      console.error('Error signing in with Google:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signInWithFacebook = async () => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        }
-      });
-      
-      if (error) {
-        throw error;
-      }
-    } catch (error: any) {
-      showActionToast(error.message || 'Error signing in with Facebook');
-      console.error('Error signing in with Facebook:', error);
+      showActionToast(error.message || 'Error signing in with GitHub');
+      console.error('Error signing in with GitHub:', error);
     } finally {
       setLoading(false);
     }
@@ -204,8 +180,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signIn,
     signUp,
     signOut,
-    signInWithGoogle,
-    signInWithFacebook,
+    signInWithGithub,
     updateUserAvatar
   };
 
