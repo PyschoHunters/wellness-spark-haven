@@ -7,10 +7,10 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Github } from 'lucide-react'
+import { Activity, ArrowRight, AtSign, Lock, CheckCircle2 } from 'lucide-react'
 
 const Login = () => {
-  const { signIn, signUp, signInWithGithub, loading } = useAuth()
+  const { signIn, signUp, loading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [activeTab, setActiveTab] = useState('login')
@@ -22,10 +22,6 @@ const Login = () => {
     } else {
       await signUp(email, password)
     }
-  }
-
-  const handleGithubSignIn = async () => {
-    await signInWithGithub()
   }
 
   return (
@@ -129,22 +125,6 @@ const Login = () => {
                     {loading ? 'Signing in...' : 'Sign In'}
                     {!loading && <ArrowRight className="ml-2" size={16} />}
                   </Button>
-                  
-                  <div className="relative flex items-center justify-center">
-                    <div className="border-t border-gray-200 absolute w-full"></div>
-                    <div className="bg-white px-4 z-10 text-sm text-gray-500">or continue with</div>
-                  </div>
-                  
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full h-12 border-gray-200"
-                    onClick={handleGithubSignIn}
-                    disabled={loading}
-                  >
-                    <Github size={20} className="mr-2" />
-                    GitHub
-                  </Button>
                 </CardContent>
               </form>
             </TabsContent>
@@ -193,22 +173,6 @@ const Login = () => {
                   >
                     {loading ? 'Creating account...' : 'Create Account'}
                     {!loading && <ArrowRight className="ml-2" size={16} />}
-                  </Button>
-                  
-                  <div className="relative flex items-center justify-center">
-                    <div className="border-t border-gray-200 absolute w-full"></div>
-                    <div className="bg-white px-4 z-10 text-sm text-gray-500">or continue with</div>
-                  </div>
-                  
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    className="w-full h-12 border-gray-200"
-                    onClick={handleGithubSignIn}
-                    disabled={loading}
-                  >
-                    <Github size={20} className="mr-2" />
-                    GitHub
                   </Button>
                 </CardContent>
               </form>
