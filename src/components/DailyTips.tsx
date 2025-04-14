@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
-import { Info, ArrowRight, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Info, ArrowRight, X, Bookmark, Search, CheckCircle } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface Tip {
   id: number;
@@ -10,6 +12,7 @@ interface Tip {
   description: string;
   category: 'nutrition' | 'workout' | 'wellness';
   fullContent?: string;
+  bookmarked?: boolean;
 }
 
 const tips: Tip[] = [
@@ -72,9 +75,27 @@ const tips: Tip[] = [
 ];
 
 const categoryColors = {
-  nutrition: 'bg-green-100 text-green-800',
-  workout: 'bg-blue-100 text-blue-800',
-  wellness: 'bg-purple-100 text-purple-800'
+  nutrition: {
+    bg: 'bg-emerald-100',
+    text: 'text-emerald-800',
+    light: 'bg-emerald-50',
+    border: 'border-emerald-200',
+    icon: 'text-emerald-600'
+  },
+  workout: {
+    bg: 'bg-blue-100',
+    text: 'text-blue-800',
+    light: 'bg-blue-50',
+    border: 'border-blue-200',
+    icon: 'text-blue-600'
+  },
+  wellness: {
+    bg: 'bg-purple-100',
+    text: 'text-purple-800',
+    light: 'bg-purple-50',
+    border: 'border-purple-200',
+    icon: 'text-purple-600'
+  }
 };
 
 const DailyTips: React.FC = () => {
@@ -82,9 +103,31 @@ const DailyTips: React.FC = () => {
   const [showTipDetail, setShowTipDetail] = useState(false);
   const [showAllTips, setShowAllTips] = useState(false);
   const [displayedTips, setDisplayedTips] = useState(tips.slice(0, 4));
+  const [bookmarkedTips, setBookmarkedTips] = useState<number[]>([]);
+  const [activeCategory, setActiveCategory] = useState<'all' | 'nutrition' | 'workout' | 'wellness'>('all');
+  const [fadeIn, setFadeIn] = useState(false);
+
+  useEffect(() => {
+    // Load bookmarks from localStorage
+    try {
+      const saved = localStorage.getItem('bookmarkedTips');
+      if (saved) {
+        setBookmarkedTips(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Error loading bookmarks:', e);
+    }
+    
+    // Add animation delay
+    const timer = setTimeout(() => setFadeIn(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleTipClick = (tip: Tip) => {
-    setSelectedTip(tip);
+    setSelectedTip({
+      ...tip,
+      bookmarked: bookmarkedTips.includes(tip.id)
+    });
     setShowTipDetail(true);
   };
 
@@ -94,38 +137,156 @@ const DailyTips: React.FC = () => {
     showActionToast("Viewing all tips");
   };
 
+  const handleBookmark = (tipId: number) => {
+    let newBookmarks;
+    if (bookmarkedTips.includes(tipId)) {
+      newBookmarks = bookmarkedTips.filter(id => id !== tipId);
+      showActionToast("Tip removed from favorites");
+    } else {
+      newBookmarks = [...bookmarkedTips, tipId];
+      showActionToast("Tip saved to favorites");
+    }
+    setBookmarkedTips(newBookmarks);
+    
+    // Update the selected tip if it's open
+    if (selectedTip && selectedTip.id === tipId) {
+      setSelectedTip({
+        ...selectedTip,
+        bookmarked: !bookmarkedTips.includes(tipId)
+      });
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('bookmarkedTips', JSON.stringify(newBookmarks));
+  };
+
+  const filterTipsByCategory = (category: 'all' | 'nutrition' | 'workout' | 'wellness') => {
+    setActiveCategory(category);
+    if (category === 'all') {
+      setDisplayedTips(showAllTips ? tips : tips.slice(0, 4));
+    } else {
+      const filtered = tips.filter(tip => tip.category === category);
+      setDisplayedTips(filtered);
+    }
+  };
+
+  const getTodaysTip = () => {
+    // Get a "random" tip based on the day of the month
+    const day = new Date().getDate();
+    return tips[day % tips.length];
+  };
+
+  const todaysTip = getTodaysTip();
+
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Daily Tips</h2>
-        <button 
-          className="text-sm font-medium text-fitness-primary"
-          onClick={handleSeeAllClick}
-        >
-          See All
-        </button>
-      </div>
-      
-      <div className="space-y-3">
-        {displayedTips.map((tip) => (
-          <div 
-            key={tip.id} 
-            className="bg-fitness-gray-light p-3 rounded-xl flex gap-3 cursor-pointer hover:bg-fitness-gray-light/80 transition-colors"
-            onClick={() => handleTipClick(tip)}
+    <Card className={`border-0 shadow-md overflow-hidden transition-all duration-300 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-5 text-white">
+        <h2 className="text-xl font-semibold mb-2">Daily Wellness Tips</h2>
+        <p className="text-white/80 text-sm mb-4">Expert advice to improve your fitness journey</p>
+        
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+          <Button 
+            className={`${activeCategory === 'all' ? 'bg-white text-indigo-700' : 'bg-white/20 text-white'} rounded-full text-xs px-4 hover:bg-white hover:text-indigo-700`}
+            onClick={() => filterTipsByCategory('all')}
           >
-            <div className={`w-10 h-10 rounded-full ${categoryColors[tip.category]} flex items-center justify-center flex-shrink-0`}>
-              <Info size={18} />
+            All Tips
+          </Button>
+          <Button 
+            className={`${activeCategory === 'nutrition' ? 'bg-white text-emerald-600' : 'bg-white/20 text-white'} rounded-full text-xs px-4 hover:bg-white hover:text-emerald-600`}
+            onClick={() => filterTipsByCategory('nutrition')}
+          >
+            Nutrition
+          </Button>
+          <Button 
+            className={`${activeCategory === 'workout' ? 'bg-white text-blue-600' : 'bg-white/20 text-white'} rounded-full text-xs px-4 hover:bg-white hover:text-blue-600`}
+            onClick={() => filterTipsByCategory('workout')}
+          >
+            Workout
+          </Button>
+          <Button 
+            className={`${activeCategory === 'wellness' ? 'bg-white text-purple-600' : 'bg-white/20 text-white'} rounded-full text-xs px-4 hover:bg-white hover:text-purple-600`}
+            onClick={() => filterTipsByCategory('wellness')}
+          >
+            Wellness
+          </Button>
+        </div>
+        
+        <div className="mt-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl">
+          <div className="flex gap-3">
+            <div className={`h-12 w-12 rounded-full ${categoryColors[todaysTip.category].bg} ${categoryColors[todaysTip.category].text} flex items-center justify-center flex-shrink-0`}>
+              <Info size={24} />
             </div>
-            <div className="flex-1">
-              <h3 className="font-medium">{tip.title}</h3>
-              <p className="text-xs text-fitness-gray mt-1">{tip.description}</p>
-            </div>
-            <div className="flex items-center">
-              <ArrowRight size={18} className="text-fitness-gray" />
+            <div>
+              <span className="text-xs font-medium bg-white/20 px-2 py-1 rounded-full text-white">Today's Tip</span>
+              <h3 className="font-medium mt-1">{todaysTip.title}</h3>
+              <p className="text-xs text-white/80 mt-1 line-clamp-2">{todaysTip.description}</p>
             </div>
           </div>
-        ))}
+          <Button
+            className="w-full mt-3 bg-white/20 hover:bg-white/30 text-white text-sm"
+            onClick={() => handleTipClick(todaysTip)}
+          >
+            Read More <ArrowRight size={14} className="ml-1" />
+          </Button>
+        </div>
       </div>
+      
+      <CardContent className="p-4">
+        {displayedTips.length === 0 ? (
+          <div className="text-center py-6 text-gray-500">
+            <Search size={40} className="mx-auto mb-2 opacity-30" />
+            <p>No tips found in this category</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {displayedTips.map((tip) => (
+              <div 
+                key={tip.id} 
+                className={`${categoryColors[tip.category].light} p-4 rounded-xl flex gap-3 cursor-pointer hover:shadow-md transition-all border ${categoryColors[tip.category].border}`}
+                onClick={() => handleTipClick(tip)}
+              >
+                <div className={`w-10 h-10 rounded-full ${categoryColors[tip.category].bg} flex items-center justify-center flex-shrink-0`}>
+                  <Info size={18} className={categoryColors[tip.category].icon} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <h3 className="font-medium">{tip.title}</h3>
+                    {bookmarkedTips.includes(tip.id) && (
+                      <Bookmark size={16} className="text-amber-500 fill-amber-500" />
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-600 mt-1 line-clamp-2">{tip.description}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${categoryColors[tip.category].bg} ${categoryColors[tip.category].text}`}>
+                      {tip.category}
+                    </span>
+                    <ArrowRight size={16} className="text-gray-400" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {!showAllTips && displayedTips.length >= 4 && (
+          <Button
+            variant="outline"
+            className="w-full mt-4 border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+            onClick={handleSeeAllClick}
+          >
+            View All Tips
+          </Button>
+        )}
+        
+        {bookmarkedTips.length > 0 && (
+          <div className="mt-4 text-center">
+            <span className="text-xs text-gray-500 flex items-center justify-center gap-1">
+              <Bookmark size={12} className="text-amber-500 fill-amber-500" /> 
+              {bookmarkedTips.length} tips saved to favorites
+            </span>
+          </div>
+        )}
+      </CardContent>
       
       <Dialog open={showTipDetail} onOpenChange={setShowTipDetail}>
         <DialogContent className="max-w-md">
@@ -136,36 +297,67 @@ const DailyTips: React.FC = () => {
             <>
               <DialogHeader>
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full ${categoryColors[selectedTip.category]} flex items-center justify-center`}>
-                    <Info size={18} />
+                  <div className={`w-12 h-12 rounded-full ${categoryColors[selectedTip.category].bg} flex items-center justify-center`}>
+                    <Info size={22} className={categoryColors[selectedTip.category].icon} />
                   </div>
-                  <DialogTitle>{selectedTip.title}</DialogTitle>
+                  <DialogTitle className="text-xl">{selectedTip.title}</DialogTitle>
                 </div>
-                <span className="text-xs uppercase font-medium mt-2 inline-block px-2 py-1 rounded bg-gray-100">
-                  {selectedTip.category}
-                </span>
+                <div className="flex items-center gap-2 mt-3">
+                  <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full ${categoryColors[selectedTip.category].bg} ${categoryColors[selectedTip.category].text}`}>
+                    {selectedTip.category}
+                  </span>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className={`text-xs ${selectedTip.bookmarked ? 'text-amber-500' : 'text-gray-500'}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookmark(selectedTip.id);
+                    }}
+                  >
+                    {selectedTip.bookmarked ? (
+                      <><Bookmark size={14} className="mr-1 fill-amber-500" /> Saved</>
+                    ) : (
+                      <><Bookmark size={14} className="mr-1" /> Save to Favorites</>
+                    )}
+                  </Button>
+                </div>
               </DialogHeader>
               
               <div className="mt-4">
-                <p className="text-sm text-gray-700 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed">
                   {selectedTip.fullContent || selectedTip.description}
                 </p>
               </div>
               
-              <button 
-                className="w-full mt-6 bg-fitness-primary text-white py-2 rounded-xl font-medium"
-                onClick={() => {
-                  showActionToast(`Saved "${selectedTip.title}" to favorites`);
-                  setShowTipDetail(false);
-                }}
-              >
-                Save to Favorites
-              </button>
+              <div className="mt-6 flex gap-3">
+                {selectedTip.bookmarked ? (
+                  <Button 
+                    className="flex-1 bg-amber-500 hover:bg-amber-600 text-white"
+                    onClick={() => {
+                      handleBookmark(selectedTip.id);
+                      setShowTipDetail(false);
+                    }}
+                  >
+                    <CheckCircle size={16} className="mr-2" /> Saved to Favorites
+                  </Button>
+                ) : (
+                  <Button 
+                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white"
+                    onClick={() => {
+                      handleBookmark(selectedTip.id);
+                      setShowTipDetail(false);
+                    }}
+                  >
+                    <Bookmark size={16} className="mr-2" /> Save to Favorites
+                  </Button>
+                )}
+              </div>
             </>
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </Card>
   );
 };
 
