@@ -90,7 +90,7 @@ const workoutBuddies = [
     availabilityDays: ['Tuesday', 'Thursday', 'Friday'],
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80',
     level: 'Intermediate',
-    bio: 'Dance fitness enthusiast. Love high-energy workouts that make you forget you're exercising!',
+    bio: 'Dance fitness enthusiast. Love high-energy workouts that make you forget you\'re exercising!',
     matchPercentage: 85,
     achievements: ['Dance Master', 'Flexibility Pro'],
     connectionStatus: 'none'
