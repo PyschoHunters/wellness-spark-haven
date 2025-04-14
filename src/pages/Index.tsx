@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
 import AvatarCreator from '@/components/AvatarCreator';
+import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -224,6 +225,10 @@ const Home = () => {
           </button>
         </div>
         <ActivityChart data={weeklyActivity} />
+      </section>
+      
+      <section className="mb-6">
+        <WorkoutPlanGenerator />
       </section>
       
       <section className="mb-6">
