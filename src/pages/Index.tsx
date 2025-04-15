@@ -12,11 +12,6 @@ import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
 import AvatarCreator from '@/components/AvatarCreator';
 import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
-import AIPoseAnalysis from '@/components/AIPoseAnalysis';
-import Tabs from '@/components/Tabs';
-import TabsList from '@/components/TabsList';
-import TabsTrigger from '@/components/TabsTrigger';
-import TabsContent from '@/components/TabsContent';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -198,91 +193,78 @@ const Home = () => {
         }
       />
       
-      <Tabs defaultValue="home" className="w-full mb-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="home">Home</TabsTrigger>
-          <TabsTrigger value="pose-analysis">AI Form Check</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="home">
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <StatsCard 
-              title="Calories" 
-              value="350 kcal" 
-              icon={<Flame size={20} className="text-fitness-secondary" />}
-              trend={{ value: 12, isPositive: true }}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <StatsCard 
+          title="Calories" 
+          value="350 kcal" 
+          icon={<Flame size={20} className="text-fitness-secondary" />}
+          trend={{ value: 12, isPositive: true }}
+        />
+        <StatsCard 
+          title="Heart Rate" 
+          value="86 bpm" 
+          icon={<Heart size={20} className="text-fitness-secondary" />}
+        />
+        <StatsCard 
+          title="Workouts" 
+          value="12" 
+          icon={<Activity size={20} className="text-fitness-primary" />}
+          trend={{ value: 8, isPositive: true }}
+          className="col-span-2"
+        />
+      </div>
+      
+      <section className="mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Today Activity</h2>
+          <button 
+            className="text-sm font-medium text-fitness-primary"
+            onClick={handleSeeAllActivity}
+          >
+            See All
+          </button>
+        </div>
+        <ActivityChart data={weeklyActivity} />
+      </section>
+      
+      <section className="mb-6">
+        <WorkoutPlanGenerator />
+      </section>
+      
+      <section className="mb-6">
+        <DailyTips />
+      </section>
+      
+      <section className="mb-6">
+        <AvatarCreator />
+      </section>
+      
+      <section>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Recommended Workouts</h2>
+          <button 
+            className="text-sm font-medium text-fitness-primary"
+            onClick={handleSeeAllWorkouts}
+          >
+            See All
+          </button>
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          {workouts.map((workout, index) => (
+            <WorkoutCard 
+              key={workout.id}
+              title={workout.title}
+              subtitle={workout.subtitle}
+              image={workout.image}
+              difficulty={workout.difficulty}
+              duration={workout.duration}
+              className="delay-100"
+              style={{ animationDelay: `${index * 100}ms` }}
+              onClick={() => handleWorkoutClick(workout.id)}
             />
-            <StatsCard 
-              title="Heart Rate" 
-              value="86 bpm" 
-              icon={<Heart size={20} className="text-fitness-secondary" />}
-            />
-            <StatsCard 
-              title="Workouts" 
-              value="12" 
-              icon={<Activity size={20} className="text-fitness-primary" />}
-              trend={{ value: 8, isPositive: true }}
-              className="col-span-2"
-            />
-          </div>
-          
-          <section className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Today Activity</h2>
-              <button 
-                className="text-sm font-medium text-fitness-primary"
-                onClick={handleSeeAllActivity}
-              >
-                See All
-              </button>
-            </div>
-            <ActivityChart data={weeklyActivity} />
-          </section>
-          
-          <section className="mb-6">
-            <WorkoutPlanGenerator />
-          </section>
-          
-          <section className="mb-6">
-            <DailyTips />
-          </section>
-          
-          <section className="mb-6">
-            <AvatarCreator />
-          </section>
-          
-          <section>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Recommended Workouts</h2>
-              <button 
-                className="text-sm font-medium text-fitness-primary"
-                onClick={handleSeeAllWorkouts}
-              >
-                See All
-              </button>
-            </div>
-            <div className="grid grid-cols-1 gap-4">
-              {workouts.map((workout, index) => (
-                <WorkoutCard 
-                  key={workout.id}
-                  title={workout.title}
-                  subtitle={workout.subtitle}
-                  image={workout.image}
-                  difficulty={workout.difficulty}
-                  duration={workout.duration}
-                  className="delay-100"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => handleWorkoutClick(workout.id)}
-                />
-              ))}
-            </div>
-          </section>
-        </TabsContent>
-        
-        <TabsContent value="pose-analysis">
-          <AIPoseAnalysis />
-        </TabsContent>
-      </Tabs>
+          ))}
+        </div>
+      </section>
       
       {selectedWorkout !== null && getWorkoutDetails(selectedWorkout) && (
         <WorkoutDetail
