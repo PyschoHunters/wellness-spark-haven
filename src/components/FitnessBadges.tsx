@@ -15,7 +15,7 @@ const badges = [
     icon: <Timer className="h-6 w-6" />,
     progress: 3,
     total: 5,
-    color: "bg-gradient-to-br from-amber-400 to-amber-600"
+    color: "bg-gradient-to-br from-amber-300 to-amber-500"
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const badges = [
     icon: <Dumbbell className="h-6 w-6" />,
     progress: 7,
     total: 10,
-    color: "bg-gradient-to-br from-purple-400 to-purple-600"
+    color: "bg-gradient-to-br from-indigo-300 to-indigo-500"
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const badges = [
     icon: <Footprints className="h-6 w-6" />,
     progress: 35000,
     total: 50000,
-    color: "bg-gradient-to-br from-emerald-400 to-emerald-600"
+    color: "bg-gradient-to-br from-emerald-300 to-emerald-500"
   },
   {
     id: 4,
@@ -42,7 +42,7 @@ const badges = [
     icon: <Zap className="h-6 w-6" />,
     progress: 12,
     total: 20,
-    color: "bg-gradient-to-br from-rose-400 to-rose-600"
+    color: "bg-gradient-to-br from-rose-300 to-rose-500"
   },
   {
     id: 5,
@@ -51,7 +51,7 @@ const badges = [
     icon: <Trophy className="h-6 w-6" />,
     progress: 4,
     total: 10,
-    color: "bg-gradient-to-br from-blue-400 to-blue-600"
+    color: "bg-gradient-to-br from-sky-300 to-sky-500"
   }
 ];
 
@@ -60,8 +60,8 @@ const FitnessBadges = () => {
   const displayedBadges = showAllBadges ? badges : badges.slice(0, 2);
 
   return (
-    <Card className="w-full bg-white shadow-lg rounded-xl overflow-hidden border-0">
-      <CardHeader className="bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6">
+    <Card className="w-full bg-white shadow-xl rounded-2xl overflow-hidden border-0 hover:shadow-2xl transition-shadow duration-300">
+      <CardHeader className="bg-gradient-to-r from-sky-500 to-blue-600 p-6">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-bold flex items-center gap-2 text-white">
             <Award className="h-6 w-6" />
@@ -80,7 +80,7 @@ const FitnessBadges = () => {
             <div 
               key={badge.id}
               className={cn(
-                "bg-gray-50 p-5 rounded-xl transition-all duration-300 hover:shadow-md group hover:bg-white",
+                "bg-gray-50 p-5 rounded-2xl transition-all duration-300 hover:shadow-lg group hover:bg-white",
                 "animate-fade-in"
               )}
             >
@@ -127,9 +127,9 @@ const FitnessBadges = () => {
         <Button
           onClick={() => setShowAllBadges(!showAllBadges)}
           className={cn(
-            "w-full mt-6 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white",
+            "w-full mt-6 bg-gradient-to-r from-sky-500 to-blue-600 text-white",
             "hover:opacity-90 transition-all duration-300",
-            "flex items-center justify-center gap-2"
+            "flex items-center justify-center gap-2 rounded-2xl"
           )}
         >
           <Medal className="h-4 w-4" />
