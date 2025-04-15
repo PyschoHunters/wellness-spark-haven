@@ -19,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ElderFitness from '@/components/ElderFitness';
 import KidsFitness from '@/components/KidsFitness';
 import FamilyFitness from '@/components/FamilyFitness';
+import FitnessJourneyVisualizer from '@/components/FitnessJourneyVisualizer';
 
 const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
@@ -106,6 +107,39 @@ const Profile = () => {
   const caloriesBurned = 480;
   const caloriesGoal = 6000;
   const caloriesProgress = (caloriesBurned / caloriesGoal) * 100;
+  
+  const fitnessAchievements = [
+    {
+      title: "First 5K Run",
+      date: "Jan 2025",
+      type: "cardio" as const
+    },
+    {
+      title: "100 Push-ups",
+      date: "Feb 2025",
+      type: "strength" as const
+    },
+    {
+      title: "Advanced Yoga",
+      date: "Mar 2025",
+      type: "flexibility" as const
+    },
+    {
+      title: "Marathon Ready",
+      date: "Apr 2025",
+      type: "milestone" as const
+    },
+    {
+      title: "Deadlift PR",
+      date: "May 2025",
+      type: "strength" as const
+    },
+    {
+      title: "30-Day Challenge",
+      date: "Jun 2025",
+      type: "milestone" as const
+    }
+  ];
 
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
@@ -171,6 +205,11 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
+            </div>
+            
+            <div className="bg-white rounded-2xl p-4 shadow-sm">
+              <h2 className="text-lg font-semibold mb-4">Your Fitness Journey</h2>
+              <FitnessJourneyVisualizer achievements={fitnessAchievements} />
             </div>
             
             <EcoFitRewards />
