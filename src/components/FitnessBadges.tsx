@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Fire, Target, Dumbbell, Timer, Footprints, Medal } from 'lucide-react';
+import { Flame, Target, Dumbbell, Timer, Footprints, Medal } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 const badges = [
@@ -46,7 +46,7 @@ const FitnessBadges = () => {
             Fitness Badges
           </CardTitle>
           <Badge variant="outline" className="bg-white/20 text-white">
-            <Fire className="h-3 w-3 mr-1" />
+            <Flame className="h-3 w-3 mr-1" />
             Level 3
           </Badge>
         </div>
