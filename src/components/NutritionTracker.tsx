@@ -10,8 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Activity, Heart, Thermometer } from 'lucide-react';
+import { Activity, Heart, Thermometer, User, Ruler, Weight, Clock } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 interface FormData {
   gender: string;
@@ -36,6 +37,7 @@ const initialFormData: FormData = {
 const NutritionTracker: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [calories, setCalories] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({
@@ -44,30 +46,103 @@ const NutritionTracker: React.FC = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (!formData.gender) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please select your gender"
+      });
+      return false;
+    }
+
+    const numericFields = {
+      age: "Age",
+      height: "Height",
+      weight: "Weight",
+      duration: "Exercise Duration",
+      heartRate: "Heart Rate",
+      bodyTemp: "Body Temperature"
+    };
+
+    for (const [field, label] of Object.entries(numericFields)) {
+      const value = parseFloat(formData[field as keyof FormData]);
+      if (isNaN(value) || value <= 0) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: `Please enter a valid ${label}`
+        });
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleSubmit = async () => {
-    // For now, we'll use a simplified calculation as a placeholder
-    // In a real implementation, this would call an API endpoint with the ML model
-    const baseMetabolicRate = parseFloat(formData.weight) * 10;
-    const activityFactor = parseFloat(formData.duration) / 30;
-    const estimatedCalories = Math.round(baseMetabolicRate * activityFactor);
-    
-    setCalories(estimatedCalories);
+    if (!validateForm()) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch('https://nutrition-tracker-z35m.onrender.com/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          gender: formData.gender,
+          age: parseInt(formData.age),
+          height: parseFloat(formData.height),
+          weight: parseFloat(formData.weight),
+          duration: parseInt(formData.duration),
+          heartRate: parseInt(formData.heartRate),
+          bodyTemp: parseFloat(formData.bodyTemp)
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to predict calories');
+      }
+
+      const data = await response.json();
+      setCalories(Math.round(data.calories_burnt));
+      toast({
+        title: "Success!",
+        description: "Calories burned calculated successfully"
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to calculate calories. Please try again."
+      });
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-white shadow-lg animate-fade-in">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Nutrition Tracker</CardTitle>
+    <Card className="w-full max-w-2xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
+      <CardHeader className="space-y-1 bg-gradient-to-r from-fitness-primary/10 to-fitness-secondary/10 p-6">
+        <CardTitle className="text-2xl font-bold flex items-center gap-2">
+          <Activity className="w-6 h-6 text-fitness-primary" />
+          Nutrition Tracker
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent className="space-y-6 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Gender</label>
+            <label className="text-sm font-medium flex items-center gap-2">
+              <User className="w-4 h-4 text-fitness-primary" />
+              Gender
+            </label>
             <Select
               value={formData.gender}
               onValueChange={(value) => handleInputChange('gender', value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent>
@@ -78,7 +153,10 @@ const NutritionTracker: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Age</label>
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4 text-fitness-primary" />
+              Age
+            </label>
             <Input
               type="number"
               placeholder="Enter age"
@@ -90,7 +168,10 @@ const NutritionTracker: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Height (cm)</label>
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Ruler className="w-4 h-4 text-fitness-primary" />
+              Height (cm)
+            </label>
             <Input
               type="number"
               placeholder="Enter height"
@@ -102,7 +183,10 @@ const NutritionTracker: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Weight (kg)</label>
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Weight className="w-4 h-4 text-fitness-primary" />
+              Weight (kg)
+            </label>
             <Input
               type="number"
               placeholder="Enter weight"
@@ -115,7 +199,7 @@ const NutritionTracker: React.FC = () => {
 
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
-              <Activity className="w-4 h-4" />
+              <Activity className="w-4 h-4 text-fitness-primary" />
               Exercise Duration (minutes)
             </label>
             <Input
@@ -130,7 +214,7 @@ const NutritionTracker: React.FC = () => {
 
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
-              <Heart className="w-4 h-4" />
+              <Heart className="w-4 h-4 text-fitness-primary" />
               Heart Rate (bpm)
             </label>
             <Input
@@ -145,7 +229,7 @@ const NutritionTracker: React.FC = () => {
 
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm font-medium flex items-center gap-2">
-              <Thermometer className="w-4 h-4" />
+              <Thermometer className="w-4 h-4 text-fitness-primary" />
               Body Temperature (°C)
             </label>
             <Input
@@ -162,21 +246,26 @@ const NutritionTracker: React.FC = () => {
         </div>
 
         <Button 
-          className="w-full bg-fitness-primary hover:bg-fitness-primary/90" 
+          className={cn(
+            "w-full bg-fitness-primary hover:bg-fitness-primary/90",
+            "transition-all duration-300 transform hover:scale-[1.02]"
+          )}
           onClick={handleSubmit}
+          disabled={loading}
         >
-          Calculate Calories Burned
+          {loading ? "Calculating..." : "Calculate Calories Burned"}
         </Button>
 
         {calories !== null && (
           <div className={cn(
-            "mt-4 p-4 rounded-lg text-center",
-            "bg-gradient-to-r from-fitness-primary/10 to-fitness-secondary/10"
+            "mt-4 p-6 rounded-xl text-center",
+            "bg-gradient-to-r from-fitness-primary/10 to-fitness-secondary/10",
+            "transform transition-all duration-300"
           )}>
-            <p className="text-lg font-semibold">
+            <p className="text-lg font-semibold text-gray-700">
               Estimated calories burned:
             </p>
-            <p className="text-3xl font-bold text-fitness-primary">
+            <p className="text-4xl font-bold text-fitness-primary mt-2">
               {calories} kcal
             </p>
           </div>
