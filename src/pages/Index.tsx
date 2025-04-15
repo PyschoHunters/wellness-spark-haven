@@ -12,6 +12,8 @@ import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
 import AvatarCreator from '@/components/AvatarCreator';
 import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
+import KidsFitness from '@/components/KidsFitness';
+import FamilyFitness from '@/components/FamilyFitness';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -215,20 +217,11 @@ const Home = () => {
       </div>
       
       <section className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Today Activity</h2>
-          <button 
-            className="text-sm font-medium text-fitness-primary"
-            onClick={handleSeeAllActivity}
-          >
-            See All
-          </button>
-        </div>
-        <ActivityChart data={weeklyActivity} />
+        <FamilyFitness />
       </section>
       
       <section className="mb-6">
-        <WorkoutPlanGenerator />
+        <KidsFitness />
       </section>
       
       <section className="mb-6">
