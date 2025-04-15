@@ -55,7 +55,7 @@ const AchievementNode: React.FC<{ achievement: Achievement; position: [number, n
 };
 
 const FitnessJourneyVisualizer: React.FC<FitnessJourneyVisualizerProps> = ({ achievements }) => {
-  const groupRef = useRef();
+  const groupRef = useRef<THREE.Group>(null);
 
   return (
     <div className="w-full h-[400px] bg-gradient-to-b from-gray-900 to-gray-800 rounded-lg overflow-hidden">
