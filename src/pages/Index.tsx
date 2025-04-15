@@ -12,6 +12,7 @@ import { showActionToast } from '@/utils/toast-utils';
 import ExerciseTimer from '@/components/ExerciseTimer';
 import AvatarCreator from '@/components/AvatarCreator';
 import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
+import ExpertAdvice from '@/components/ExpertAdvice';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -225,6 +226,10 @@ const Home = () => {
           </button>
         </div>
         <ActivityChart data={weeklyActivity} />
+      </section>
+      
+      <section className="mb-8">
+        <ExpertAdvice />
       </section>
       
       <section className="mb-6">
