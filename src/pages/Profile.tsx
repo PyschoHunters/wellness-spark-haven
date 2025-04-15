@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ElderFitness from '@/components/ElderFitness';
 import KidsFitness from '@/components/KidsFitness';
 import FamilyFitness from '@/components/FamilyFitness';
-import CaloriePredictor from '@/components/NutritionTracker';
+import NutritionTracker from '@/components/NutritionTracker';
 
 const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
@@ -237,7 +237,7 @@ const Profile = () => {
         
         <TabsContent value="wellness" className="mt-6">
           <div className="flex flex-col gap-6">
-            <CaloriePredictor />
+            <NutritionTracker />
             
             <WaterTracker />
             
