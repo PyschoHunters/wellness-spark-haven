@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Play, Clock, VolumeX, Volume2, SkipBack, SkipForward, Pause, Save, Share2, Award, Settings, Moon, Sun, RotateCcw } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -64,8 +63,8 @@ const meditationSessions = [
 const breathingPatterns = [
   { id: 1, name: "4-7-8 Breathing", inhale: 4, hold: 7, exhale: 8, description: "Calming breath for anxiety" },
   { id: 2, name: "Box Breathing", inhale: 4, hold: 4, exhale: 4, description: "For focus and stress relief" },
-  { id: 3, name: "Deep Belly Breathing", inhale: 5, hold: 0, exhale: 5, description: "Natural relaxation" },
-  { id: 4, name: "Energizing Breath", inhale: 2, hold: 0, exhale: 2, description: "Quick energy boost" }
+  { id: 3, name: "Deep Belly Breathing", inhale: 5, hold: 2, exhale: 5, description: "Natural relaxation" },
+  { id: 4, name: "Energizing Breath", inhale: 2, hold: 1, exhale: 2, description: "Quick energy boost" }
 ];
 
 const backgroundSounds = [
@@ -106,7 +105,6 @@ const MindfulnessWidget: React.FC = () => {
   const [showSessionHistory, setShowSessionHistory] = useState(false);
   
   useEffect(() => {
-    // Load user preferences and history from localStorage or Supabase
     const loadUserData = async () => {
       if (user) {
         try {
@@ -124,7 +122,6 @@ const MindfulnessWidget: React.FC = () => {
             setSelectedBackgroundSound(selectedSound);
           }
           
-          // Load user's favorite sessions
           const { data: favoritesData, error: favoritesError } = await supabase
             .from('mindfulness_favorites')
             .select('session_id')
@@ -134,7 +131,6 @@ const MindfulnessWidget: React.FC = () => {
             setFavoriteSessionIds(favoritesData.map(f => f.session_id));
           }
           
-          // Load completed sessions
           const { data: completedData, error: completedError } = await supabase
             .from('mindfulness_completed')
             .select('session_id, completed_at')
@@ -147,12 +143,10 @@ const MindfulnessWidget: React.FC = () => {
               timestamp: c.completed_at
             })));
             
-            // Calculate streak
             calculateStreak(completedData);
           }
         } catch (error) {
           console.error("Error loading mindfulness data", error);
-          // Fallback to default values if there's an error
         }
       }
     };
@@ -166,7 +160,6 @@ const MindfulnessWidget: React.FC = () => {
       return;
     }
     
-    // Sort by date (newest first)
     const sortedSessions = [...completedData].sort((a, b) => 
       new Date(b.completed_at).getTime() - new Date(a.completed_at).getTime()
     );
@@ -175,7 +168,6 @@ const MindfulnessWidget: React.FC = () => {
     let currentDate = new Date(sortedSessions[0].completed_at);
     currentDate.setHours(0, 0, 0, 0);
     
-    // Check if the most recent session was today or yesterday
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const yesterday = new Date(today);
@@ -187,7 +179,6 @@ const MindfulnessWidget: React.FC = () => {
       return;
     }
     
-    // Calculate streak by checking consecutive days
     for (let i = 1; i < sortedSessions.length; i++) {
       const sessionDate = new Date(sortedSessions[i].completed_at);
       sessionDate.setHours(0, 0, 0, 0);
@@ -207,7 +198,6 @@ const MindfulnessWidget: React.FC = () => {
   };
   
   useEffect(() => {
-    // Clear any existing timers when component unmounts
     return () => {
       if (breathAnimationRef.current) clearInterval(breathAnimationRef.current);
       if (sessionTimerRef.current) clearInterval(sessionTimerRef.current);
@@ -218,7 +208,6 @@ const MindfulnessWidget: React.FC = () => {
     if (breathAnimationRef.current) clearInterval(breathAnimationRef.current);
     
     if (isPlaying) {
-      // Create a breathing animation timer based on the selected pattern
       const { inhale, hold, exhale } = selectedPattern;
       const totalCycleTime = (inhale + hold + exhale) * 1000;
       
@@ -226,13 +215,13 @@ const MindfulnessWidget: React.FC = () => {
         const timeInCycle = Date.now() % totalCycleTime;
         
         if (timeInCycle < inhale * 1000) {
-          setBreatheIn(true);
+          setBreatheIn('inhale');
         } else if (timeInCycle < (inhale + hold) * 1000) {
-          // Holding breath - no state change
+          setBreatheIn('hold');
         } else {
-          setBreatheIn(false);
+          setBreatheIn('exhale');
         }
-      }, 100); // Check breathing state frequently for smooth transitions
+      }, 100);
     }
     
     return () => {
@@ -265,7 +254,6 @@ const MindfulnessWidget: React.FC = () => {
     
     if (user) {
       try {
-        // Record completed session
         await supabase.from('mindfulness_completed').insert({
           user_id: user.id,
           session_id: selectedSession.id,
@@ -273,13 +261,11 @@ const MindfulnessWidget: React.FC = () => {
           duration: selectedSession.duration
         });
         
-        // Update completed sessions state
         setCompletedSessions(prev => [
           { id: selectedSession.id, timestamp: new Date().toISOString() },
           ...prev
         ]);
         
-        // Recalculate streak
         const { data } = await supabase
           .from('mindfulness_completed')
           .select('session_id, completed_at')
@@ -304,9 +290,8 @@ const MindfulnessWidget: React.FC = () => {
   const handlePatternSelect = (pattern: typeof breathingPatterns[0]) => {
     setSelectedPattern(pattern);
     if (isPlaying) {
-      // Reset the breathing animation with the new pattern
       if (breathAnimationRef.current) clearInterval(breathAnimationRef.current);
-      setBreatheIn(true); // Start with inhale
+      setBreatheIn('inhale');
     }
   };
   
@@ -334,7 +319,6 @@ const MindfulnessWidget: React.FC = () => {
     }
     
     if (user) {
-      // Save volume preference to Supabase (debounced in real implementation)
       saveUserPreferences({ volume: value[0] });
     }
   };
@@ -348,7 +332,6 @@ const MindfulnessWidget: React.FC = () => {
     
     try {
       if (isFavorite) {
-        // Remove from favorites
         await supabase
           .from('mindfulness_favorites')
           .delete()
@@ -358,7 +341,6 @@ const MindfulnessWidget: React.FC = () => {
         setFavoriteSessionIds(prev => prev.filter(id => id !== sessionId));
         showActionToast("Removed from favorites");
       } else {
-        // Add to favorites
         await supabase
           .from('mindfulness_favorites')
           .insert({
@@ -391,13 +373,11 @@ const MindfulnessWidget: React.FC = () => {
       };
       
       if (existingData?.id) {
-        // Update existing preferences
         await supabase
           .from('mindfulness_preferences')
           .update(updatedPreferences)
           .eq('id', existingData.id);
       } else {
-        // Insert new preferences
         await supabase
           .from('mindfulness_preferences')
           .insert(updatedPreferences);
@@ -430,7 +410,6 @@ const MindfulnessWidget: React.FC = () => {
   };
   
   const handleShareSession = () => {
-    // In a real app, this would generate a shareable link
     const shareText = `I'm meditating with ${selectedSession.title} on FitTrack! Join me for ${formatTime(selectedSession.duration)} of mindfulness.`;
     navigator.clipboard.writeText(shareText);
     showActionToast("Share text copied to clipboard");
@@ -541,12 +520,14 @@ const MindfulnessWidget: React.FC = () => {
               <div className="mx-auto w-40 h-40 rounded-full border-4 border-fitness-primary/20 flex items-center justify-center mb-4 relative">
                 <div 
                   className={`w-32 h-32 rounded-full bg-fitness-primary/10 flex items-center justify-center transition-all duration-2000 ease-in-out ${
-                    breatheIn ? 'scale-110' : 'scale-90'
+                    breatheIn === 'inhale' ? 'scale-110' : breatheIn === 'hold' ? 'scale-90' : 'scale-100'
                   }`}
                 >
                   <div className="text-center">
                     <div className={`${darkMode ? 'text-blue-400' : 'text-fitness-primary'} font-medium`}>
-                      {breatheIn ? 'Breathe In' : 'Breathe Out'}
+                      {breatheIn === 'inhale' ? 'Breathe In' : 
+                       breatheIn === 'hold' ? 'Hold' : 
+                       'Breathe Out'}
                     </div>
                     <div className={`text-sm ${subTextClassName}`}>
                       {isPlaying ? formatTime(currentTime) : '0:00'}

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Activity, Heart, Thermometer, User, Ruler, Weight, Clock } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
@@ -34,7 +33,7 @@ const initialFormData: FormData = {
   bodyTemp: ''
 };
 
-const NutritionTracker: React.FC = () => {
+const CaloriePredictor: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [calories, setCalories] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -116,14 +115,14 @@ const NutritionTracker: React.FC = () => {
       setCalories(Math.round(data.calories_burnt));
       toast({
         title: "Success!",
-        description: "Calories burned calculated successfully"
+        description: "Calories burnt calculated successfully"
       });
     } catch (error) {
       console.error('Error:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to calculate calories. Please try again."
+        description: "Failed to calculate calories burnt. Please try again."
       });
     } finally {
       setLoading(false);
@@ -135,7 +134,7 @@ const NutritionTracker: React.FC = () => {
       <CardHeader className="space-y-1 bg-gradient-to-r from-fitness-primary/10 to-fitness-secondary/10 p-6">
         <CardTitle className="text-2xl font-bold flex items-center gap-2">
           <Activity className="w-6 h-6 text-fitness-primary" />
-          Nutrition Tracker
+          Calorie Predictor
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 p-6">
@@ -260,7 +259,7 @@ const NutritionTracker: React.FC = () => {
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading ? "Calculating..." : "Calculate Calories Burned"}
+          {loading ? "Calculating..." : "Calculate Calories Burnt"}
         </Button>
 
         {calories !== null && (
@@ -270,7 +269,7 @@ const NutritionTracker: React.FC = () => {
             "transform transition-all duration-300"
           )}>
             <p className="text-lg font-semibold text-gray-700">
-              Estimated calories burned:
+              Estimated calories burnt:
             </p>
             <p className="text-4xl font-bold text-fitness-primary mt-2">
               {calories} kcal
@@ -282,4 +281,4 @@ const NutritionTracker: React.FC = () => {
   );
 };
 
-export default NutritionTracker;
+export default CaloriePredictor;
