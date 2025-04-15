@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Flame, Target, Dumbbell, Timer, Footprints, Medal } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Flame, Target, Dumbbell, Timer, Footprints, Medal, Trophy, Award, Zap } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 const badges = [
@@ -33,20 +34,41 @@ const badges = [
     progress: 35000,
     total: 50000,
     color: "bg-gradient-to-br from-emerald-400 to-emerald-600"
+  },
+  {
+    id: 4,
+    name: "Ultimate Warrior",
+    description: "Complete 20 HIIT workouts",
+    icon: <Zap className="h-6 w-6" />,
+    progress: 12,
+    total: 20,
+    color: "bg-gradient-to-br from-rose-400 to-rose-600"
+  },
+  {
+    id: 5,
+    name: "Champion",
+    description: "Earn 10 achievement badges",
+    icon: <Trophy className="h-6 w-6" />,
+    progress: 4,
+    total: 10,
+    color: "bg-gradient-to-br from-blue-400 to-blue-600"
   }
 ];
 
 const FitnessBadges = () => {
+  const [showAllBadges, setShowAllBadges] = useState(false);
+  const displayedBadges = showAllBadges ? badges : badges.slice(0, 2);
+
   return (
-    <Card className="w-full bg-white shadow-lg rounded-xl overflow-hidden">
-      <CardHeader className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white p-6">
+    <Card className="w-full bg-white shadow-lg rounded-xl overflow-hidden border-0">
+      <CardHeader className="bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-bold flex items-center gap-2">
-            <Medal className="h-6 w-6" />
+          <CardTitle className="text-xl font-bold flex items-center gap-2 text-white">
+            <Award className="h-6 w-6" />
             Achievement Badges
           </CardTitle>
           <Badge variant="outline" className="bg-white/20 text-white border-white/40">
-            <Flame className="h-3 w-3 mr-1" />
+            <Trophy className="h-3 w-3 mr-1" />
             Level 3
           </Badge>
         </div>
@@ -54,10 +76,13 @@ const FitnessBadges = () => {
       
       <CardContent className="p-6">
         <div className="grid gap-6">
-          {badges.map((badge) => (
+          {displayedBadges.map((badge) => (
             <div 
               key={badge.id}
-              className="bg-gray-50 p-5 rounded-xl transition-all duration-300 hover:shadow-md group hover:bg-white"
+              className={cn(
+                "bg-gray-50 p-5 rounded-xl transition-all duration-300 hover:shadow-md group hover:bg-white",
+                "animate-fade-in"
+              )}
             >
               <div className="flex items-center gap-4">
                 <div className={cn(
@@ -98,6 +123,18 @@ const FitnessBadges = () => {
             </div>
           ))}
         </div>
+
+        <Button
+          onClick={() => setShowAllBadges(!showAllBadges)}
+          className={cn(
+            "w-full mt-6 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white",
+            "hover:opacity-90 transition-all duration-300",
+            "flex items-center justify-center gap-2"
+          )}
+        >
+          <Medal className="h-4 w-4" />
+          {showAllBadges ? "Show Less Badges" : "View All Badges"}
+        </Button>
       </CardContent>
     </Card>
   );
