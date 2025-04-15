@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import BuddyFinder from "./pages/BuddyFinder";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import ExpertAdvicePage, { BlogPostDetail } from "./pages/ExpertAdvicePage";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,8 @@ const App = () => (
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/buddy-finder" element={<BuddyFinder />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/expert-advice" element={<ExpertAdvicePage />} />
+              <Route path="/expert-advice/:id" element={<BlogPostDetail />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
