@@ -20,6 +20,7 @@ import ElderFitness from '@/components/ElderFitness';
 import KidsFitness from '@/components/KidsFitness';
 import FamilyFitness from '@/components/FamilyFitness';
 import NutritionTracker from '@/components/NutritionTracker';
+import FitnessBadges from '@/components/FitnessBadges';
 
 const Profile = () => {
   const [showAchievements, setShowAchievements] = useState(false);
@@ -124,9 +125,10 @@ const Profile = () => {
       />
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="wellness">Wellness</TabsTrigger>
+          <TabsTrigger value="badges" className="text-xs">Badges</TabsTrigger>
           <TabsTrigger value="elders" className="text-xs">Elders</TabsTrigger>
           <TabsTrigger value="kids" className="text-xs">Kids</TabsTrigger>
           <TabsTrigger value="family" className="text-xs">Family</TabsTrigger>
@@ -248,6 +250,12 @@ const Profile = () => {
             <YogaCard className="shadow-sm" />
             
             <MoodWorkout className="shadow-sm" />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="badges" className="mt-6">
+          <div className="flex flex-col gap-6">
+            <FitnessBadges />
           </div>
         </TabsContent>
         
