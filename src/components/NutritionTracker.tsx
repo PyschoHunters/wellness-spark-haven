@@ -85,20 +85,27 @@ const NutritionTracker: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://nutrition-tracker-z35m.onrender.com/predict', {
+      const apiUrl = 'https://nutrition-tracker-z35m.onrender.com/predict';
+      console.log("Sending request to:", apiUrl);
+      
+      const requestData = {
+        gender: formData.gender,
+        age: parseInt(formData.age),
+        height: parseFloat(formData.height),
+        weight: parseFloat(formData.weight),
+        duration: parseInt(formData.duration),
+        heartRate: parseInt(formData.heartRate),
+        bodyTemp: parseFloat(formData.bodyTemp)
+      };
+      
+      console.log("Request data:", JSON.stringify(requestData));
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          gender: formData.gender,
-          age: parseInt(formData.age),
-          height: parseFloat(formData.height),
-          weight: parseFloat(formData.weight),
-          duration: parseInt(formData.duration),
-          heartRate: parseInt(formData.heartRate),
-          bodyTemp: parseFloat(formData.bodyTemp)
-        })
+        body: JSON.stringify(requestData)
       });
 
       if (!response.ok) {
@@ -112,12 +119,12 @@ const NutritionTracker: React.FC = () => {
         description: "Calories burned calculated successfully"
       });
     } catch (error) {
+      console.error('Error:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "Failed to calculate calories. Please try again."
       });
-      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
