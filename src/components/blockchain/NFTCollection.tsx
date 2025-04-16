@@ -65,7 +65,7 @@ export const NFTCollection: React.FC = () => {
       id: 3,
       name: "Marathon Finisher Badge",
       description: "Limited edition NFT badge for completing the virtual marathon",
-      image: "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/B079/production/_133177154_gettyimages-1484427391.jpg",
+      image: "http://images2.minutemediacdn.com/image/upload/c_fill,w_1200,ar_4:3,f_auto,q_auto,g_auto/shape/cover/sport/dataimagewebpbase64UklGRohWAwBXRUJQVlA4IHxWAwCwVg2-ca83f7f99ed018b25d5a9c2adf902cac.jpg",
       rarity: 'rare',
       category: 'limited',
       unlocked: true,
