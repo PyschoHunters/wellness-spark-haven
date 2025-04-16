@@ -3,9 +3,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Dumbbell, Flame, Heart, Award, Clock, Users, ChevronRight, Lock } from 'lucide-react';
+import { Dumbbell, Flame, Heart, Award, Clock, Users, ChevronRight, Lock, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Coins } from '@/components/blockchain/Coins';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface Challenge {
   id: number;
@@ -26,6 +28,9 @@ interface Challenge {
 
 export const ChallengeBoard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
+  const [showChallengeDetails, setShowChallengeDetails] = useState(false);
+  const { toast } = useToast();
   
   const challenges: Challenge[] = [
     {
@@ -137,9 +142,16 @@ export const ChallengeBoard: React.FC = () => {
   };
 
   const joinChallenge = (id: number) => {
-    // In a real app, this would connect to a blockchain smart contract
     console.log(`Joining challenge ${id}`);
-    // Show success toast
+    toast({
+      title: "Challenge Joined",
+      description: "You have successfully joined the challenge!"
+    });
+  };
+
+  const viewChallengeDetails = (challenge: Challenge) => {
+    setSelectedChallenge(challenge);
+    setShowChallengeDetails(true);
   };
 
   return (
@@ -276,7 +288,11 @@ export const ChallengeBoard: React.FC = () => {
                   Completed
                 </Button>
               ) : challenge.joined ? (
-                <Button className="w-full" variant="outline">
+                <Button 
+                  className="w-full" 
+                  variant="outline"
+                  onClick={() => viewChallengeDetails(challenge)}
+                >
                   View Details <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               ) : (
@@ -291,6 +307,104 @@ export const ChallengeBoard: React.FC = () => {
           </Card>
         ))}
       </div>
+      
+      <Dialog open={showChallengeDetails} onOpenChange={setShowChallengeDetails}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {selectedChallenge && (
+                <>
+                  <div className={`p-2 rounded-full bg-gradient-to-br ${selectedChallenge.color} text-white`}>
+                    {selectedChallenge.icon}
+                  </div>
+                  {selectedChallenge.title}
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedChallenge?.description}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedChallenge && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Difficulty</p>
+                  <Badge variant="outline" className={getDifficultyColor(selectedChallenge.difficulty)}>
+                    {selectedChallenge.difficulty.charAt(0).toUpperCase() + selectedChallenge.difficulty.slice(1)}
+                  </Badge>
+                </div>
+                
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Category</p>
+                  <Badge variant="outline" className="flex w-fit items-center">
+                    {getCategoryIcon(selectedChallenge.category)}
+                    {selectedChallenge.category.charAt(0).toUpperCase() + selectedChallenge.category.slice(1)}
+                  </Badge>
+                </div>
+                
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Reward</p>
+                  <div className="flex items-center text-amber-600 font-medium">
+                    <Coins className="h-4 w-4 mr-1" />
+                    {selectedChallenge.reward} FTK
+                  </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">Time Remaining</p>
+                  <div className="flex items-center text-sm">
+                    <Clock className="h-4 w-4 mr-1 text-muted-foreground" />
+                    {selectedChallenge.timeRemaining}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Progress</p>
+                <div className="flex justify-between text-sm">
+                  <span>{selectedChallenge.progress}/{selectedChallenge.total} {selectedChallenge.id === 5 ? 'km' : 'days'}</span>
+                  <span>{Math.round((selectedChallenge.progress / selectedChallenge.total) * 100)}%</span>
+                </div>
+                <Progress 
+                  value={(selectedChallenge.progress / selectedChallenge.total) * 100}
+                  className="h-2"
+                  indicatorClassName={`bg-gradient-to-r ${selectedChallenge.color}`}
+                />
+              </div>
+              
+              <div className="rounded-lg border p-3 bg-gray-50">
+                <h4 className="font-medium mb-1">Challenge Rules</h4>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Complete {selectedChallenge.total} {selectedChallenge.id === 5 ? 'kilometers' : 'workout sessions'}</li>
+                  <li>• Each session must be at least 20 minutes long</li>
+                  <li>• Track your progress through the app</li>
+                  <li>• Earn {selectedChallenge.reward} FTK upon completion</li>
+                </ul>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex sm:justify-between gap-2">
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+            <Button 
+              className={`bg-gradient-to-r ${selectedChallenge?.color}`}
+              onClick={() => {
+                toast({
+                  title: "Workout Logged",
+                  description: "Your progress has been updated!"
+                });
+                setShowChallengeDetails(false);
+              }}
+            >
+              Log Workout
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

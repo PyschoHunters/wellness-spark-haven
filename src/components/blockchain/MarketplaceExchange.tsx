@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, Coins, ShoppingBag, Tag, Search, ListFilter, Clock, ArrowUpDown } from 'lucide-react';
+import { TrendingUp, Coins, ShoppingBag, Tag, Search, ListFilter, Clock, ArrowUpDown, CheckCircle } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 
 interface MarketItem {
   id: number;
@@ -29,6 +31,11 @@ export const MarketplaceExchange: React.FC = () => {
   const [filterType, setFilterType] = useState('all');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [walletBalance, setWalletBalance] = useState(1250); // Starting balance
+  const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MarketItem | null>(null);
+  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
+  const { toast } = useToast();
   
   const marketItems: MarketItem[] = [
     {
@@ -170,8 +177,33 @@ export const MarketplaceExchange: React.FC = () => {
     console.log("Searching for:", searchQuery);
   };
   
-  const handlePurchase = (itemId: number) => {
-    console.log(`Purchasing item ${itemId}`);
+  const handlePurchase = (item: MarketItem) => {
+    setSelectedItem(item);
+    setShowPurchaseDialog(true);
+    setPurchaseSuccess(false);
+  };
+  
+  const confirmPurchase = () => {
+    if (selectedItem && walletBalance >= selectedItem.price) {
+      // Deduct the price from wallet balance
+      setWalletBalance(prevBalance => prevBalance - selectedItem.price);
+      
+      // Show success message
+      setPurchaseSuccess(true);
+      
+      // Show toast notification
+      toast({
+        title: "Purchase Successful",
+        description: `You have purchased ${selectedItem.name} for ${selectedItem.price} FTK.`,
+      });
+    } else {
+      // Show error message
+      toast({
+        title: "Purchase Failed",
+        description: "You don't have enough FTK to purchase this item.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -184,6 +216,14 @@ export const MarketplaceExchange: React.FC = () => {
         
         <TabsContent value="browse" className="space-y-6 pt-4">
           <div className="flex flex-col space-y-4">
+            {/* Wallet Balance Display */}
+            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-3 text-white">
+              <div className="flex items-center justify-between">
+                <span className="font-medium">Your FTK Balance</span>
+                <span className="text-lg font-bold">{walletBalance} FTK</span>
+              </div>
+            </div>
+            
             <form onSubmit={handleSearch} className="flex w-full space-x-2">
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -319,9 +359,10 @@ export const MarketplaceExchange: React.FC = () => {
                   <CardFooter>
                     <Button 
                       className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90"
-                      onClick={() => handlePurchase(item.id)}
+                      onClick={() => handlePurchase(item)}
+                      disabled={walletBalance < item.price}
                     >
-                      Purchase
+                      {walletBalance < item.price ? "Insufficient FTK" : "Purchase"}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -390,6 +431,125 @@ export const MarketplaceExchange: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Purchase Confirmation Dialog */}
+      <Dialog open={showPurchaseDialog} onOpenChange={setShowPurchaseDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {purchaseSuccess ? "Purchase Complete" : "Confirm Purchase"}
+            </DialogTitle>
+            <DialogDescription>
+              {purchaseSuccess 
+                ? "Your purchase has been completed successfully." 
+                : "Please confirm that you want to purchase this item."}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedItem && !purchaseSuccess && (
+            <div className="space-y-4">
+              <div className="flex space-x-4 items-center">
+                <div className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
+                  <img 
+                    src={selectedItem.image} 
+                    alt={selectedItem.name} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium">{selectedItem.name}</h3>
+                  <p className="text-sm text-muted-foreground">{selectedItem.description}</p>
+                  <div className="flex items-center mt-1">
+                    <Badge variant="outline" className={getTypeColor(selectedItem.type)}>
+                      {getTypeIcon(selectedItem.type)}
+                      {selectedItem.type.charAt(0).toUpperCase() + selectedItem.type.slice(1)}
+                    </Badge>
+                    {selectedItem.rarity && (
+                      <Badge variant="outline" className={`ml-2 ${getRarityColor(selectedItem.rarity)}`}>
+                        {selectedItem.rarity.charAt(0).toUpperCase() + selectedItem.rarity.slice(1)}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t border-b py-3 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Price</span>
+                  <div className="flex items-center font-medium">
+                    <Coins className="h-4 w-4 mr-1 text-amber-600" />
+                    {selectedItem.price} FTK
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Your Balance</span>
+                  <div className="flex items-center font-medium">
+                    <Coins className="h-4 w-4 mr-1 text-indigo-600" />
+                    {walletBalance} FTK
+                  </div>
+                </div>
+                <div className="flex justify-between items-center font-medium">
+                  <span className="text-sm">Balance After Purchase</span>
+                  <div className="flex items-center">
+                    <Coins className="h-4 w-4 mr-1 text-indigo-600" />
+                    {walletBalance - selectedItem.price} FTK
+                  </div>
+                </div>
+              </div>
+              
+              {walletBalance < selectedItem.price && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                  <div className="flex items-start space-x-2">
+                    <div className="text-red-600">⚠️</div>
+                    <div className="text-sm text-red-800">
+                      You don't have enough FTK to complete this purchase. You need {selectedItem.price - walletBalance} more FTK.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          
+          {selectedItem && purchaseSuccess && (
+            <div className="py-6 flex flex-col items-center justify-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                <CheckCircle className="h-8 w-8" />
+              </div>
+              <div className="text-center">
+                <h3 className="font-medium text-lg">Transaction Complete</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {selectedItem.name} has been added to your collection.
+                </p>
+                <div className="flex items-center justify-center mt-2 font-medium text-indigo-600">
+                  <Coins className="h-4 w-4 mr-1" />
+                  New Balance: {walletBalance} FTK
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex gap-2">
+            {!purchaseSuccess ? (
+              <>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogClose>
+                <Button 
+                  onClick={confirmPurchase}
+                  disabled={walletBalance < (selectedItem?.price || 0)}
+                  className="bg-gradient-to-r from-amber-500 to-orange-600"
+                >
+                  Confirm Purchase
+                </Button>
+              </>
+            ) : (
+              <DialogClose asChild>
+                <Button className="w-full">Done</Button>
+              </DialogClose>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
