@@ -54,7 +54,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1536623975707-c4b3b2af565d?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "QS2yDmWk0vs",
+    embedId: "3pGVU-yLQR4",
     forSymptoms: ["Pain", "Tension", "Insomnia"]
   },
   {
@@ -71,7 +71,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "9Tg2hpb4WV8",
+    embedId: "Tpq8AvwDpDA",
     forSymptoms: ["Mood Swings", "Low Energy", "Self-Doubt"]
   },
   {
@@ -88,7 +88,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://hallow.com/wp-content/uploads/2019/04/indian-yogi-yogi-madhav-727510-unsplash.jpg",
     audioUrl: "#",
-    embedId: "EiYTb4GgJNY",
+    embedId: "N4qYjY0poQE",
     forSymptoms: ["Insomnia", "Restlessness", "Anxiety"]
   },
   {
@@ -160,7 +160,7 @@ const MindfulnessTips = () => {
   };
   
   const getYouTubeEmbedUrl = (videoId: string) => {
-    return `https://www.youtube.com/embed/${videoId}`;
+    return `https://www.youtube.com/embed/${videoId}?rel=0`;
   };
   
   return (
