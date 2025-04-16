@@ -97,7 +97,7 @@ export const NFTCollection: React.FC = () => {
       id: 5,
       name: "Ironman Legend",
       description: "Complete the legendary Ironman challenge consisting of swimming, cycling, and running",
-      image: "https://images.unsplash.com/photo-1546483875-ad9014c88eba?w=500&h=500&fit=crop",
+      image: "https://media.bleacherreport.com/image/upload/v1633965483/qkezskngtavug1crcfts.jpg",
       rarity: 'legendary',
       category: 'challenge',
       unlocked: false,
