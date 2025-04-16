@@ -257,14 +257,14 @@ const DietaryRemedies = () => {
       </Card>
       
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-[400px]">
           <DialogHeader>
             <DialogTitle>{selectedRemedy?.name}</DialogTitle>
           </DialogHeader>
           
           {selectedRemedy && (
-            <div className="space-y-4 mt-2">
-              <div className="aspect-video rounded-lg overflow-hidden">
+            <div className="space-y-3 mt-2">
+              <div className="aspect-video rounded-lg overflow-hidden max-h-[160px]">
                 <img 
                   src={selectedRemedy.imageUrl} 
                   alt={selectedRemedy.name} 
@@ -273,58 +273,58 @@ const DietaryRemedies = () => {
               </div>
               
               <div>
-                <h3 className="font-medium mb-2 flex items-center">
-                  <Heart className="h-4 w-4 mr-1 text-amber-500" />
+                <h3 className="font-medium mb-1 flex items-center text-sm">
+                  <Heart className="h-3.5 w-3.5 mr-1 text-amber-500" />
                   Benefits
                 </h3>
-                <ul className="list-disc pl-5 space-y-1">
+                <ul className="list-disc pl-5 space-y-0.5">
                   {selectedRemedy.benefits.map((benefit, index) => (
-                    <li key={index} className="text-sm">{benefit}</li>
+                    <li key={index} className="text-xs">{benefit}</li>
                   ))}
                 </ul>
               </div>
               
               <div>
-                <h3 className="font-medium mb-2 flex items-center">
-                  <Utensils className="h-4 w-4 mr-1 text-amber-500" />
+                <h3 className="font-medium mb-1 flex items-center text-sm">
+                  <Utensils className="h-3.5 w-3.5 mr-1 text-amber-500" />
                   Ingredients
                 </h3>
-                <ul className="list-disc pl-5 space-y-1">
+                <ul className="list-disc pl-5 space-y-0.5">
                   {selectedRemedy.ingredients.map((ingredient, index) => (
-                    <li key={index} className="text-sm">{ingredient}</li>
+                    <li key={index} className="text-xs">{ingredient}</li>
                   ))}
                 </ul>
               </div>
               
               <div>
-                <h3 className="font-medium mb-2 flex items-center">
-                  <BookOpen className="h-4 w-4 mr-1 text-amber-500" />
+                <h3 className="font-medium mb-1 flex items-center text-sm">
+                  <BookOpen className="h-3.5 w-3.5 mr-1 text-amber-500" />
                   Preparation
                 </h3>
-                <p className="text-sm">{selectedRemedy.preparation}</p>
+                <p className="text-xs">{selectedRemedy.preparation}</p>
               </div>
               
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {selectedRemedy.tags.map((tag, index) => (
-                  <Badge key={index} className="bg-amber-100 text-amber-800 hover:bg-amber-200">
+                  <Badge key={index} className="bg-amber-100 text-amber-800 hover:bg-amber-200 text-[10px] px-1.5 py-0">
                     {tag}
                   </Badge>
                 ))}
               </div>
               
-              <div className="pt-2 flex space-x-3">
+              <div className="pt-1 flex space-x-2">
                 <Button 
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 text-xs h-8"
                   onClick={() => setDetailsOpen(false)}
                 >
                   Close
                 </Button>
                 <Button 
-                  className="flex-1 bg-amber-500 hover:bg-amber-600"
+                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-xs h-8"
                   onClick={handleSave}
                 >
-                  <ThumbsUp className="h-4 w-4 mr-2" />
+                  <ThumbsUp className="h-3.5 w-3.5 mr-1.5" />
                   Save
                 </Button>
               </div>
