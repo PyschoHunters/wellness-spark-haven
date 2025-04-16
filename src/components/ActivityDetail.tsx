@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { X, Clock, Flame, Calendar, BarChart2 } from 'lucide-react';
+import { X, Clock, Flame, Calendar, BarChart2, Heart, Activity, CheckCircle, ArrowUpRight, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 interface ActivityDetailProps {
   id: number;
@@ -51,7 +52,7 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col animate-scale-up">
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-fitness-primary/10 to-white">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-fitness-gray-light flex items-center justify-center">
               {getActivityIcon(type)}
@@ -62,7 +63,7 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
             </div>
           </div>
           <button 
-            className="w-8 h-8 bg-fitness-gray-light rounded-full flex items-center justify-center"
+            className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm hover:bg-fitness-gray-light transition-colors"
             onClick={onClose}
           >
             <X size={18} />
@@ -70,10 +71,10 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
         </div>
         
         <div className="p-4 overflow-y-auto flex-1">
-          <div className="bg-fitness-gray-light rounded-2xl p-4 mb-4">
+          <div className="bg-gradient-to-r from-fitness-gray-light to-fitness-gray-light/40 rounded-2xl p-4 mb-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <Clock size={16} className="text-fitness-gray" />
+                <Clock size={16} className="text-fitness-primary" />
                 <span className="text-sm font-medium">{duration}</span>
               </div>
               <div className="flex items-center gap-2">
@@ -83,7 +84,7 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
             </div>
             <div className="mt-3 h-2 bg-white rounded-full overflow-hidden">
               <div 
-                className="h-full bg-fitness-primary rounded-full"
+                className="h-full bg-gradient-to-r from-fitness-primary to-fitness-secondary rounded-full"
                 style={{ width: `${Math.min(100, (calories / 600) * 100)}%` }}
               ></div>
             </div>
@@ -91,10 +92,13 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
           
           {stats.length > 0 && (
             <div>
-              <h3 className="text-sm font-medium text-fitness-gray mb-3">Activity Stats</h3>
+              <h3 className="text-sm font-medium text-fitness-gray mb-3 flex items-center">
+                <Activity size={16} className="mr-2 text-fitness-primary" />
+                Activity Stats
+              </h3>
               <div className="grid grid-cols-2 gap-3">
                 {stats.map((stat, index) => (
-                  <div key={index} className="bg-fitness-gray-light p-3 rounded-xl">
+                  <div key={index} className="bg-fitness-gray-light/50 p-3 rounded-xl hover:shadow-sm transition-all">
                     <p className="text-xs text-fitness-gray">{stat.label}</p>
                     <p className="font-medium">{stat.value}</p>
                   </div>
@@ -102,14 +106,59 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
               </div>
             </div>
           )}
+          
+          <div className="mt-6">
+            <h3 className="text-sm font-medium text-fitness-gray mb-3 flex items-center">
+              <CheckCircle size={16} className="mr-2 text-fitness-primary" />
+              Achievements
+            </h3>
+            <div className="bg-white border border-fitness-gray-light/50 rounded-xl p-3 flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-fitness-primary/10 flex items-center justify-center">
+                  <Flame size={18} className="text-fitness-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Calorie Burner</p>
+                  <p className="text-xs text-fitness-gray">300+ calories burned</p>
+                </div>
+              </div>
+              <Badge className="bg-fitness-primary/10 text-fitness-primary hover:bg-fitness-primary/20">
+                +5 pts
+              </Badge>
+            </div>
+            
+            {type === 'running' && (
+              <div className="bg-white border border-fitness-gray-light/50 rounded-xl p-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-fitness-secondary/10 flex items-center justify-center">
+                    <Calendar size={18} className="text-fitness-secondary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Distance Runner</p>
+                    <p className="text-xs text-fitness-gray">3+ km in a single run</p>
+                  </div>
+                </div>
+                <Badge className="bg-fitness-secondary/10 text-fitness-secondary hover:bg-fitness-secondary/20">
+                  +8 pts
+                </Badge>
+              </div>
+            )}
+          </div>
         </div>
         
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 flex gap-2">
           <button 
-            className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium"
+            className="flex-1 py-3 rounded-xl font-medium border border-fitness-gray-light text-fitness-gray bg-white hover:bg-fitness-gray-light/50 transition-colors flex items-center justify-center gap-2"
             onClick={onClose}
           >
             Close
+          </button>
+          <button 
+            className="flex-1 bg-gradient-to-r from-fitness-primary to-fitness-primary/80 text-white py-3 rounded-xl font-medium shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2"
+            onClick={onClose}
+          >
+            <span>Share Activity</span>
+            <ArrowUpRight size={16} />
           </button>
         </div>
       </div>
