@@ -29,8 +29,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Calendar className="h-6 w-6" />,
     progress: 2,
     total: 3,
-    color: "bg-gradient-to-br from-rose-300 via-pink-400 to-rose-500",
-    glowColor: "hover:shadow-rose-200",
+    color: "bg-gradient-to-br from-rose-400 to-rose-600",
+    glowColor: "hover:shadow-rose-300",
     unlocked: false
   },
   {
@@ -40,8 +40,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Brain className="h-6 w-6" />,
     progress: 7,
     total: 10,
-    color: "bg-gradient-to-br from-violet-300 via-purple-400 to-indigo-500",
-    glowColor: "hover:shadow-violet-200",
+    color: "bg-gradient-to-br from-purple-400 to-indigo-600",
+    glowColor: "hover:shadow-purple-300",
     unlocked: false
   },
   {
@@ -51,8 +51,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <BookOpen className="h-6 w-6" />,
     progress: 3,
     total: 5,
-    color: "bg-gradient-to-br from-amber-300 via-orange-400 to-amber-500",
-    glowColor: "hover:shadow-amber-200",
+    color: "bg-gradient-to-br from-amber-400 to-orange-600",
+    glowColor: "hover:shadow-amber-300",
     unlocked: false
   },
   {
@@ -62,8 +62,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Dumbbell className="h-6 w-6" />,
     progress: 12,
     total: 15,
-    color: "bg-gradient-to-br from-emerald-300 to-emerald-500",
-    glowColor: "hover:shadow-emerald-200",
+    color: "bg-gradient-to-br from-emerald-400 to-green-600",
+    glowColor: "hover:shadow-emerald-300",
     unlocked: false
   },
   {
@@ -73,8 +73,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Utensils className="h-6 w-6" />,
     progress: 14,
     total: 20,
-    color: "bg-gradient-to-br from-amber-300 to-amber-500",
-    glowColor: "hover:shadow-amber-200",
+    color: "bg-gradient-to-br from-yellow-400 to-amber-600",
+    glowColor: "hover:shadow-yellow-300",
     unlocked: false
   },
   {
@@ -84,8 +84,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Droplet className="h-6 w-6" />,
     progress: 9,
     total: 14,
-    color: "bg-gradient-to-br from-sky-300 to-sky-500",
-    glowColor: "hover:shadow-sky-200",
+    color: "bg-gradient-to-br from-sky-400 to-blue-600",
+    glowColor: "hover:shadow-sky-300",
     unlocked: false
   },
   {
@@ -95,8 +95,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Heart className="h-6 w-6" />,
     progress: 18,
     total: 30,
-    color: "bg-gradient-to-br from-pink-300 to-pink-500",
-    glowColor: "hover:shadow-pink-200",
+    color: "bg-gradient-to-br from-pink-400 to-fuchsia-600",
+    glowColor: "hover:shadow-pink-300",
     unlocked: false
   },
   {
@@ -106,8 +106,8 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Moon className="h-6 w-6" />,
     progress: 1,
     total: 3,
-    color: "bg-gradient-to-br from-slate-300 to-slate-500",
-    glowColor: "hover:shadow-slate-200",
+    color: "bg-gradient-to-br from-slate-400 to-gray-600",
+    glowColor: "hover:shadow-slate-300",
     unlocked: false
   }
 ];
@@ -122,7 +122,7 @@ const WellnessBadges = () => {
   };
   
   return (
-    <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white">
+    <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white animate-fade-in">
       <CardHeader className="bg-gradient-to-r from-violet-100 to-indigo-100 pb-4">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-semibold flex items-center gap-2 text-indigo-800">
