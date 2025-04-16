@@ -56,7 +56,7 @@ export const MarketplaceExchange: React.FC = () => {
       id: 3,
       name: "Marathon Finisher Badge",
       description: "Limited edition NFT badge for completing the virtual marathon",
-      image: "/lovable-uploads/861ed3cd-92f4-42d1-a458-90518886789d.png",
+      image: "https://images2.minutemediacdn.com/image/upload/c_fill,w_1200,ar_4:3,f_auto,q_auto,g_auto/shape/cover/sport/dataimagewebpbase64UklGRohWAwBXRUJQVlA4IHxWAwCwVg2-ca83f7f99ed018b25d5a9c2adf902cac.jpg",
       type: 'nft',
       price: 350,
       seller: "0xRunFast123",
