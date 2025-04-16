@@ -12,6 +12,7 @@ import { ArrowLeft } from 'lucide-react';
 
 const FitChain = () => {
   const navigate = useNavigate();
+  const [walletBalance, setWalletBalance] = useState(1250);
 
   return (
     <Layout>
@@ -33,7 +34,7 @@ const FitChain = () => {
           </p>
         </div>
         
-        <FitChainOverview />
+        <FitChainOverview balance={walletBalance} />
         
         <Tabs defaultValue="challenges" className="w-full">
           <TabsList className="grid grid-cols-4 w-full max-w-2xl mx-auto">
@@ -56,7 +57,7 @@ const FitChain = () => {
           </TabsContent>
           
           <TabsContent value="marketplace" className="mt-6">
-            <MarketplaceExchange />
+            <MarketplaceExchange walletBalance={walletBalance} setWalletBalance={setWalletBalance} />
           </TabsContent>
         </Tabs>
       </div>

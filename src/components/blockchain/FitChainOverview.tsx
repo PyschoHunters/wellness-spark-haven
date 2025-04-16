@@ -4,7 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Coins, Trophy, Users, TrendingUp } from 'lucide-react';
 
-export const FitChainOverview: React.FC = () => {
+interface FitChainOverviewProps {
+  balance: number;
+}
+
+export const FitChainOverview: React.FC<FitChainOverviewProps> = ({ balance }) => {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       <Card className="overflow-hidden bg-gradient-to-br from-purple-500 to-indigo-600 border-0 text-white">
@@ -16,8 +20,8 @@ export const FitChainOverview: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col">
-            <span className="text-3xl font-bold">1,250 FTK</span>
-            <span className="text-xs opacity-80 mt-1">≈ $125.00 USD</span>
+            <span className="text-3xl font-bold">{balance} FTK</span>
+            <span className="text-xs opacity-80 mt-1">≈ ${(balance * 0.1).toFixed(2)} USD</span>
             <div className="flex items-center mt-2 text-xs">
               <TrendingUp className="h-3 w-3 mr-1" />
               <span>+128 FTK this week</span>

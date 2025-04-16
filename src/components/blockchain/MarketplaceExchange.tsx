@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,11 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 
+interface MarketplaceExchangeProps {
+  walletBalance: number;
+  setWalletBalance: (balance: number) => void;
+}
+
 interface MarketItem {
   id: number;
   name: string;
@@ -24,14 +28,13 @@ interface MarketItem {
   listedSince: string;
 }
 
-export const MarketplaceExchange: React.FC = () => {
+export const MarketplaceExchange: React.FC<MarketplaceExchangeProps> = ({ walletBalance, setWalletBalance }) => {
   const [activeTab, setActiveTab] = useState('browse');
   const [sortOption, setSortOption] = useState('recent');
   const [filterRarity, setFilterRarity] = useState('all');
   const [filterType, setFilterType] = useState('all');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [searchQuery, setSearchQuery] = useState('');
-  const [walletBalance, setWalletBalance] = useState(1250); // Starting balance
   const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MarketItem | null>(null);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
@@ -185,19 +188,13 @@ export const MarketplaceExchange: React.FC = () => {
   
   const confirmPurchase = () => {
     if (selectedItem && walletBalance >= selectedItem.price) {
-      // Deduct the price from wallet balance
-      setWalletBalance(prevBalance => prevBalance - selectedItem.price);
-      
-      // Show success message
+      setWalletBalance(walletBalance - selectedItem.price);
       setPurchaseSuccess(true);
-      
-      // Show toast notification
       toast({
         title: "Purchase Successful",
         description: `You have purchased ${selectedItem.name} for ${selectedItem.price} FTK.`,
       });
     } else {
-      // Show error message
       toast({
         title: "Purchase Failed",
         description: "You don't have enough FTK to purchase this item.",
@@ -216,14 +213,6 @@ export const MarketplaceExchange: React.FC = () => {
         
         <TabsContent value="browse" className="space-y-6 pt-4">
           <div className="flex flex-col space-y-4">
-            {/* Wallet Balance Display */}
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg p-3 text-white">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">Your FTK Balance</span>
-                <span className="text-lg font-bold">{walletBalance} FTK</span>
-              </div>
-            </div>
-            
             <form onSubmit={handleSearch} className="flex w-full space-x-2">
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -432,7 +421,6 @@ export const MarketplaceExchange: React.FC = () => {
         </TabsContent>
       </Tabs>
       
-      {/* Purchase Confirmation Dialog */}
       <Dialog open={showPurchaseDialog} onOpenChange={setShowPurchaseDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
