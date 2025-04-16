@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Award, Star, Calendar, Moon, Droplet, Heart, Utensils, BookOpen, Dumbbell, Brain } from 'lucide-react';
+import { Award, Star, Calendar, Moon, Droplet, Heart, Utensils, BookOpen, Dumbbell, Brain, Target } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -36,7 +36,7 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Brain className="h-6 w-6" />,
     progress: 7,
     total: 10,
-    color: "bg-gradient-to-br from-indigo-300 via-purple-400 to-indigo-500",
+    color: "bg-gradient-to-br from-violet-300 via-purple-400 to-indigo-500",
     unlocked: false
   },
   {
@@ -111,71 +111,81 @@ const WellnessBadges = () => {
   };
   
   return (
-    <>
-      <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white">
-        <CardHeader className="bg-gradient-to-r from-pink-100 to-pink-200 pb-4">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2 text-pink-800">
-              <Award className="h-5 w-5" />
-              Wellness Badges
-            </CardTitle>
-            <Badge variant="outline" className="bg-white/80 text-pink-700 border-pink-200">
-              <Star className="h-3 w-3 mr-1" />
-              Level 2
-            </Badge>
-          </div>
-        </CardHeader>
-        
-        <CardContent className="p-4">
-          <div className="grid grid-cols-4 gap-3 mb-3">
-            {wellnessBadges.slice(0, 4).map((badge) => (
-              <div 
-                key={badge.id}
-                className="flex flex-col items-center text-center cursor-pointer"
-                onClick={() => handleBadgeClick(badge)}
-              >
-                <div className={cn(
-                  "w-14 h-14 rounded-full flex items-center justify-center text-white mb-2 shadow-sm",
-                  badge.progress >= badge.total ? badge.color : "bg-gray-200"
-                )}>
-                  {badge.icon}
-                </div>
-                <span className="text-xs font-medium line-clamp-1">{badge.name}</span>
+    <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white">
+      <CardHeader className="bg-gradient-to-r from-pink-100 to-pink-200 pb-4">
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-lg font-semibold flex items-center gap-2 text-pink-800">
+            <Award className="h-5 w-5" />
+            Wellness Badges
+          </CardTitle>
+          <Badge variant="outline" className="bg-white/80 text-pink-700 border-pink-200">
+            <Star className="h-3 w-3 mr-1" />
+            Level 2
+          </Badge>
+        </div>
+      </CardHeader>
+      
+      <CardContent className="p-4">
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          {wellnessBadges.slice(0, 6).map((badge) => (
+            <div 
+              key={badge.id}
+              onClick={() => handleBadgeClick(badge)}
+              className="flex flex-col items-center text-center cursor-pointer transition-all duration-300 hover:scale-105"
+            >
+              <div className={cn(
+                "w-16 h-16 rounded-full flex items-center justify-center text-white mb-2 shadow-lg",
+                "transform transition-all duration-300 hover:scale-110",
+                badge.progress >= badge.total ? badge.color : "bg-gray-200"
+              )}>
+                {badge.icon}
               </div>
-            ))}
-          </div>
-          
-          <div className="bg-gray-50 p-3 rounded-xl mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium">Next Badge: {wellnessBadges[3].name}</h3>
-              <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200">
-                {wellnessBadges[3].progress}/{wellnessBadges[3].total}
+              <span className="text-sm font-medium mb-1">{badge.name}</span>
+              <Badge variant="outline" className={cn(
+                "text-xs px-2 py-0.5",
+                badge.progress >= badge.total 
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                  : "bg-gray-50 text-gray-700 border-gray-200"
+              )}>
+                {badge.progress}/{badge.total}
               </Badge>
             </div>
-            <Progress 
-              value={(wellnessBadges[3].progress / wellnessBadges[3].total) * 100} 
-              className="h-2 bg-gray-100"
-              indicatorClassName={wellnessBadges[3].color}
-            />
-            <p className="text-xs text-gray-500 mt-2">
-              {wellnessBadges[3].description}
-            </p>
+          ))}
+        </div>
+
+        <div className="bg-gray-50 p-4 rounded-xl mb-4 animate-fade-in">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-medium flex items-center gap-2">
+              <Target className="h-4 w-4 text-pink-500" />
+              Next Badge: {wellnessBadges[2].name}
+            </h3>
+            <Badge variant="outline" className="text-xs bg-pink-50 text-pink-700 border-pink-200">
+              {wellnessBadges[2].progress}/{wellnessBadges[2].total}
+            </Badge>
           </div>
-          
-          <Button
-            onClick={() => setDetailsOpen(true)}
-            className={cn(
-              "w-full bg-gradient-to-r from-pink-400 to-pink-500 text-white",
-              "hover:opacity-90 transition-all duration-300",
-              "flex items-center justify-center gap-2 rounded-xl"
-            )}
-          >
-            <Award className="h-4 w-4" />
-            View All Badges
-          </Button>
-        </CardContent>
-      </Card>
-      
+          <Progress 
+            value={(wellnessBadges[2].progress / wellnessBadges[2].total) * 100} 
+            className="h-2 bg-gray-100"
+            indicatorClassName={wellnessBadges[2].color}
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            {wellnessBadges[2].description}
+          </p>
+        </div>
+
+        <Button
+          onClick={() => setDetailsOpen(true)}
+          className={cn(
+            "w-full bg-gradient-to-r from-pink-400 to-pink-500 text-white",
+            "hover:opacity-90 transition-all duration-300",
+            "flex items-center justify-center gap-2 rounded-xl"
+          )}
+        >
+          <Award className="h-4 w-4" />
+          View All Badges
+        </Button>
+      </CardContent>
+
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -262,7 +272,7 @@ const WellnessBadges = () => {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </Card>
   );
 };
 
