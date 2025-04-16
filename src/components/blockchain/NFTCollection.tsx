@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,7 @@ export const NFTCollection: React.FC = () => {
       id: 1,
       name: "Marathon Master",
       description: "Awarded to fitness enthusiasts who completed the 42.2km Marathon Challenge",
-      image: "/lovable-uploads/861ed3cd-92f4-42d1-a458-90518886789d.png",
+      image: "https://hips.hearstapps.com/hmg-prod/images/2cm2t8k-d-upscaled-1605715287.jpg",
       rarity: 'rare',
       category: 'achievement',
       unlocked: true,
@@ -50,7 +49,7 @@ export const NFTCollection: React.FC = () => {
       id: 2,
       name: "Strength Champion",
       description: "Awarded for completing 50 strength training workouts",
-      image: "/lovable-uploads/7c751cbf-2b39-420b-9639-176ab08a03b4.png",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4FX8BMZeEloeIX0JOpyGFbapfvWjTThTe2w&s",
       rarity: 'uncommon',
       category: 'achievement',
       unlocked: true,
@@ -126,7 +125,7 @@ export const NFTCollection: React.FC = () => {
       id: 7,
       name: "First Edition Badge",
       description: "Limited edition badge for founding members of the FitChain community",
-      image: "https://images.unsplash.com/photo-1567013127542-490d757e6349?w=500&h=500&fit=crop",
+      image: "https://img.freepik.com/free-photo/3d-rendering-blockchain-technology_23-2151480182.jpg?semt=ais_hybrid&w=740",
       rarity: 'legendary',
       category: 'limited',
       unlocked: true,
