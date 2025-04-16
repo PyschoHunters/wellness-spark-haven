@@ -33,7 +33,7 @@ export const NFTCollection: React.FC = () => {
       id: 1,
       name: "Marathon Master",
       description: "Awarded to fitness enthusiasts who completed the 42.2km Marathon Challenge",
-      image: "https://hips.hearstapps.com/hmg-prod/images/2cm2t8k-d-upscaled-1605715287.jpg",
+      image: "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/B079/production/_133177154_gettyimages-1484427391.jpg",
       rarity: 'rare',
       category: 'achievement',
       unlocked: true,
@@ -136,6 +136,20 @@ export const NFTCollection: React.FC = () => {
         { name: "Power", value: "+15% All Stats" }
       ],
       acquiredDate: "2025-01-01"
+    },
+    {
+      id: 8,
+      name: "First Steps",
+      description: "Awarded for starting your fitness journey and completing your first workout",
+      image: "https://media.istockphoto.com/id/490670924/photo/composite-image-of-cheering-rugby-player-with-cup.jpg?s=612x612&w=0&k=20&c=MDNOLs2bAuc5XeTWZrCNVi7B7txciuEXMuwJQGDBe5A=",
+      rarity: 'epic',
+      category: 'achievement',
+      unlocked: false,
+      attributes: [
+        { name: "Collection", value: "Achievement Series" },
+        { name: "Season", value: "Spring 2025" },
+        { name: "Power", value: "+20% Motivation" }
+      ]
     }
   ];
   
