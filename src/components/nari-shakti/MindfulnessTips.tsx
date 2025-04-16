@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -52,7 +53,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1536623975707-c4b3b2af565d?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "t1rRo6cgM_E",
+    embedId: "BlWo7sqWLNk", // Updated video ID as requested
     forSymptoms: ["Pain", "Tension", "Insomnia"]
   },
   {
