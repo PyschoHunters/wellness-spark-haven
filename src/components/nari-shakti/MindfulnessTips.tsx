@@ -70,7 +70,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "zs0sEUkPqVE",
+    embedId: "kQjzL7rON9k", // Updated video ID
     forSymptoms: ["Mood Swings", "Low Energy", "Self-Doubt"]
   },
   {
@@ -87,7 +87,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://hallow.com/wp-content/uploads/2019/04/indian-yogi-yogi-madhav-727510-unsplash.jpg",
     audioUrl: "#",
-    embedId: "aEqlQvczMVQ",
+    embedId: "lu_cLaBTXio", // Updated video ID
     forSymptoms: ["Insomnia", "Restlessness", "Anxiety"]
   },
   {
