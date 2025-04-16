@@ -63,19 +63,14 @@ export const NFTCollection: React.FC = () => {
     },
     {
       id: 3,
-      name: "Weekly Warrior",
-      description: "Awarded for completing all weekly challenges for 4 consecutive weeks",
-      image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=500&h=500&fit=crop",
-      rarity: 'uncommon',
-      category: 'challenge',
-      unlocked: true,
-      tokenId: "3692",
-      attributes: [
-        { name: "Collection", value: "Challenge Series" },
-        { name: "Season", value: "Winter 2025" },
-        { name: "Power", value: "+5% XP Boost" }
-      ],
-      acquiredDate: "2025-02-10"
+      name: "Marathon Finisher Badge",
+      description: "Limited edition NFT badge for completing the virtual marathon",
+      image: "https://ichef.bbci.co.uk/ace/standard/1024/cpsprodpb/B079/production/_133177154_gettyimages-1484427391.jpg",
+      type: 'nft',
+      price: 350,
+      seller: "0xRunFast123",
+      rarity: 'rare',
+      listedSince: "1 week ago"
     },
     {
       id: 4,
@@ -141,7 +136,7 @@ export const NFTCollection: React.FC = () => {
       id: 8,
       name: "First Steps",
       description: "Awarded for starting your fitness journey and completing your first workout",
-      image: "https://media.istockphoto.com/id/490670924/photo/composite-image-of-cheering-rugby-player-with-cup.jpg?s=612x612&w=0&k=20&c=MDNOLs2bAuc5XeTWZrCNVi7B7txciuEXMuwJQGDBe5A=",
+      image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=500&h=500&fit=crop",
       rarity: 'epic',
       category: 'achievement',
       unlocked: false,
