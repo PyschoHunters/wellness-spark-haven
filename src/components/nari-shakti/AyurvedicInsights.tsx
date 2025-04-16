@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -50,7 +49,7 @@ const ayurvedicRemedies: AyurvedicRemedy[] = [
     dosha: 'pitta',
     research: "Research suggests Shatavari contains steroidal saponins that may help regulate estrogen levels. Studies have shown it can help reduce PMS symptoms and menstrual discomfort due to its anti-inflammatory properties.",
     category: "Herbal Remedy",
-    imageUrl: "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://static.euronews.com/articles/stories/04/42/71/80/808x508_cmsv2_bfbdf62a-7b8d-5f0c-8d1a-6e1cd7855585-4427180.jpg"
   },
   {
     id: 3,
@@ -65,7 +64,7 @@ const ayurvedicRemedies: AyurvedicRemedy[] = [
     dosha: 'all',
     research: "Triphala has been studied for its antioxidant and anti-inflammatory properties. Research suggests it helps optimize digestion and elimination, which can indirectly ease menstrual discomfort related to constipation or bloating.",
     category: "Digestive Support",
-    imageUrl: "https://images.unsplash.com/photo-1611241893603-3c359704e0ee?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://media.post.rvohealth.io/wp-content/uploads/2020/09/triphala-ayurvedic-fruits-thumb-732x549.jpg"
   },
   {
     id: 4,
@@ -80,7 +79,7 @@ const ayurvedicRemedies: AyurvedicRemedy[] = [
     dosha: 'pitta',
     research: "Studies suggest Ashoka contains compounds that may help reduce prostaglandins (pain-causing compounds) and have hemostatic properties that help control excessive bleeding during menstruation.",
     category: "Herbal Decoction",
-    imageUrl: "https://images.unsplash.com/photo-1605560464677-e91a950de0c0?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://media.post.rvohealth.io/wp-content/uploads/2024/02/Ayurvedic-header.jpg"
   },
   {
     id: 5,
@@ -95,7 +94,7 @@ const ayurvedicRemedies: AyurvedicRemedy[] = [
     dosha: 'vata',
     research: "Traditional Ayurvedic texts cite Dashamoola's effectiveness for pain relief. Modern studies suggest its anti-inflammatory and antispasmodic properties may help reduce menstrual cramping and discomfort.",
     category: "Herbal Tea",
-    imageUrl: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=500&auto=format&fit=crop"
+    imageUrl: "https://static.toiimg.com/photo/76751713.cms"
   }
 ];
 
@@ -111,7 +110,6 @@ const AyurvedicInsights = () => {
     
     let results = ayurvedicRemedies;
     
-    // Filter by search query
     if (query) {
       const searchTerm = query.toLowerCase();
       results = results.filter(remedy => 
@@ -122,7 +120,6 @@ const AyurvedicInsights = () => {
       );
     }
     
-    // Filter by active dosha
     if (activeDosha) {
       results = results.filter(remedy => 
         remedy.dosha === activeDosha || remedy.dosha === 'all'
@@ -136,12 +133,10 @@ const AyurvedicInsights = () => {
     if (activeDosha === dosha) {
       setActiveDosha(null);
       
-      // Update filtered results when removing dosha filter
       handleSearch(searchQuery);
     } else {
       setActiveDosha(dosha as any);
       
-      // Filter results by new dosha and existing search query
       let results = ayurvedicRemedies;
       
       if (searchQuery) {
