@@ -1,12 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, CalendarDays, Heart, Thermometer, Moon, AlertCircle, BadgeCheck } from 'lucide-react';
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as CalendarIcon, Clock, CalendarDays, Heart, Thermometer, Moon, AlertCircle, BadgeCheck } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { showActionToast } from '@/utils/toast-utils';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { showActionToast } from '@/utils/toast-utils';
 
 interface CycleDay {
   date: string;
@@ -189,8 +191,8 @@ const PeriodTracker = () => {
     return Math.min(Math.max((daysPassed / totalDays) * 100, 0), 100);
   };
   
-  const handleStartDateSelect = (date: Date) => {
-    if (currentCycle) {
+  const handleStartDateSelect = (date: Date | undefined) => {
+    if (date && currentCycle) {
       const updatedCycle = {
         ...currentCycle,
         startDate: date.toISOString().split('T')[0]
@@ -212,7 +214,7 @@ const PeriodTracker = () => {
         <CardHeader className="bg-gradient-to-r from-rose-100 to-rose-200 pb-4">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-semibold flex items-center gap-2 text-rose-800">
-              <Calendar className="h-5 w-5" />
+              <CalendarIcon className="h-5 w-5" />
               Period Tracker
             </CardTitle>
             <Badge variant="outline" className="bg-white/80 text-rose-700 border-rose-200">
@@ -251,14 +253,14 @@ const PeriodTracker = () => {
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Calendar className="h-4 w-4 text-rose-400" />
+                          <CalendarIcon className="h-4 w-4 text-rose-400" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
                           selected={new Date(currentCycle.startDate)}
-                          onSelect={(date) => date && handleStartDateSelect(date)}
+                          onSelect={handleStartDateSelect}
                           className="rounded-md border pointer-events-auto"
                         />
                       </PopoverContent>
@@ -317,7 +319,7 @@ const PeriodTracker = () => {
                 className="w-full bg-gradient-to-r from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white rounded-xl"
                 onClick={() => handleOpenLogging(new Date().toISOString().split('T')[0])}
               >
-                <Calendar className="h-4 w-4 mr-2" />
+                <CalendarIcon className="h-4 w-4 mr-2" />
                 Log Today
               </Button>
             </>
