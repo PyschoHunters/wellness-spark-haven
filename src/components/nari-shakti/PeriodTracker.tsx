@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { showActionToast } from '@/utils/toast-utils';
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 interface CycleDay {
   date: string;
@@ -189,6 +189,23 @@ const PeriodTracker = () => {
     return Math.min(Math.max((daysPassed / totalDays) * 100, 0), 100);
   };
   
+  const handleStartDateSelect = (date: Date) => {
+    if (currentCycle) {
+      const updatedCycle = {
+        ...currentCycle,
+        startDate: date.toISOString().split('T')[0]
+      };
+      setCurrentCycle(updatedCycle);
+      
+      const updatedCycles = cycles.map(cycle => 
+        cycle.id === currentCycle.id ? updatedCycle : cycle
+      );
+      
+      setCycles(updatedCycles);
+      showActionToast("Period start date updated");
+    }
+  };
+  
   return (
     <>
       <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white">
@@ -221,13 +238,32 @@ const PeriodTracker = () => {
               
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="bg-rose-50 p-3 rounded-xl">
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                    <Clock className="h-3 w-3 text-rose-400" />
-                    <span>Current Period</span>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+                        <Clock className="h-3 w-3 text-rose-400" />
+                        <span>Current Period</span>
+                      </div>
+                      <p className="font-medium">
+                        Started {new Date(currentCycle.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </p>
+                    </div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Calendar className="h-4 w-4 text-rose-400" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={new Date(currentCycle.startDate)}
+                          onSelect={(date) => date && handleStartDateSelect(date)}
+                          className="rounded-md border pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
-                  <p className="font-medium">
-                    Started {new Date(currentCycle.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </p>
                 </div>
                 
                 {predictedCycle && (

@@ -13,7 +13,6 @@ import ExerciseTimer from '@/components/ExerciseTimer';
 import AvatarCreator from '@/components/AvatarCreator';
 import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
 import ExpertAdvice from '@/components/ExpertAdvice';
-import FitnessBadges from '@/components/FitnessBadges';
 import WellnessHub from '@/components/WellnessHub';
 
 const weeklyActivity = [
@@ -216,10 +215,6 @@ const Home = () => {
           className="col-span-2"
         />
       </div>
-      
-      <section className="mb-6">
-        <FitnessBadges />
-      </section>
       
       <section className="mb-6">
         <div className="flex justify-between items-center mb-4">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +26,7 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Calendar className="h-6 w-6" />,
     progress: 2,
     total: 3,
-    color: "bg-gradient-to-br from-rose-300 to-rose-500",
+    color: "bg-gradient-to-br from-rose-300 via-pink-400 to-rose-500",
     unlocked: false
   },
   {
@@ -37,7 +36,7 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <Brain className="h-6 w-6" />,
     progress: 7,
     total: 10,
-    color: "bg-gradient-to-br from-indigo-300 to-indigo-500",
+    color: "bg-gradient-to-br from-indigo-300 via-purple-400 to-indigo-500",
     unlocked: false
   },
   {
@@ -47,7 +46,7 @@ const wellnessBadges: WellnessBadge[] = [
     icon: <BookOpen className="h-6 w-6" />,
     progress: 3,
     total: 5,
-    color: "bg-gradient-to-br from-purple-300 to-purple-500",
+    color: "bg-gradient-to-br from-amber-300 via-orange-400 to-amber-500",
     unlocked: false
   },
   {

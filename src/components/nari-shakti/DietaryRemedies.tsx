@@ -45,54 +45,54 @@ const remedies: DietaryRemedy[] = [
       "Improves digestion and relieves bloating"
     ],
     preparation: "Heat the milk in a small saucepan over medium heat until it's warm but not boiling. Add turmeric, cinnamon, and black pepper. Stir well. Simmer for 1-2 minutes. Remove from heat and add honey if desired.",
-    imageUrl: "https://images.unsplash.com/photo-1615485500704-8e990f9481f9?q=80&w=500&auto=format&fit=crop",
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlwM4d4bCi1qFXLuurlMK9fZkKX38V9lVUyw&s",
     forSymptoms: ["Cramps", "Inflammation", "Mood Swings"],
     tags: ["Warm", "Beverage", "Anti-inflammatory"]
   },
   {
     id: 3,
-    name: "Chamomile Tea",
-    ingredients: ["Dried chamomile flowers (1 tbsp) or tea bag", "Hot water (1 cup)", "Honey (optional)", "Lemon (optional)"],
+    name: "Shatavari Herbal Supplement",
+    ingredients: ["Shatavari powder (1/2 tsp)", "Warm water or milk"],
     benefits: [
-      "Reduces menstrual cramps and spasms",
-      "Has calming effects to reduce anxiety and irritability",
-      "Improves sleep quality",
-      "Has anti-inflammatory properties"
+      "Balances hormones",
+      "Reduces menstrual cramps",
+      "Supports reproductive health",
+      "Boosts immunity"
     ],
-    preparation: "Boil water and pour over chamomile flowers or tea bag. Cover and steep for 5 minutes. Strain if using loose flowers. Add honey or lemon if desired.",
-    imageUrl: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=500&auto=format&fit=crop",
-    forSymptoms: ["Insomnia", "Mood Swings", "Cramps"],
-    tags: ["Calming", "Beverage", "Evening"]
+    preparation: "Mix Shatavari powder with warm water or milk. Can be taken twice daily.",
+    imageUrl: "https://medlineplus.gov/images/HerbalMedicine_share.jpg",
+    forSymptoms: ["Hormonal Imbalance", "Cramps", "Fatigue"],
+    tags: ["Supplement", "Ayurvedic", "Daily"]
   },
   {
     id: 4,
-    name: "Dark Chocolate (70%+ Cacao)",
-    ingredients: ["Dark chocolate with at least 70% cacao"],
+    name: "Triphala",
+    ingredients: ["Triphala powder (1/2 tsp)", "Warm water"],
     benefits: [
-      "Rich in magnesium which helps reduce cramps",
-      "Releases endorphins that improve mood",
-      "Contains antioxidants",
-      "May help reduce inflammation"
+      "Improves digestion",
+      "Reduces bloating",
+      "Detoxifies body",
+      "Supports overall health"
     ],
-    preparation: "Consume 1-2 small squares of high-quality dark chocolate when experiencing symptoms. Best consumed slowly, allowing it to melt in your mouth.",
-    imageUrl: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?q=80&w=500&auto=format&fit=crop",
-    forSymptoms: ["Mood Swings", "Cravings", "Fatigue"],
-    tags: ["Snack", "Quick", "Mood Booster"]
+    preparation: "Mix Triphala powder with warm water. Best taken before bedtime.",
+    imageUrl: "https://www.healthline.com/nutrition/triphala",
+    forSymptoms: ["Bloating", "Digestion", "Detox"],
+    tags: ["Supplement", "Ayurvedic", "Evening"]
   },
   {
     id: 5,
-    name: "Peppermint Tea",
-    ingredients: ["Fresh peppermint leaves (handful) or tea bag", "Hot water (1 cup)", "Honey (optional)"],
+    name: "Ashoka Bark Decoction",
+    ingredients: ["Ashoka bark powder (1 tsp)", "Water (2 cups)"],
     benefits: [
-      "Relieves menstrual cramps",
-      "Reduces bloating and digestive discomfort",
-      "Has cooling effect that helps with headaches",
-      "Refreshes and energizes"
+      "Regulates menstrual cycle",
+      "Reduces heavy bleeding",
+      "Alleviates menstrual pain",
+      "Supports reproductive health"
     ],
-    preparation: "Boil water and pour over peppermint leaves or tea bag. Cover and steep for 5-7 minutes. Strain if using fresh leaves. Add honey if desired.",
-    imageUrl: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?q=80&w=500&auto=format&fit=crop",
-    forSymptoms: ["Bloating", "Headache", "Nausea"],
-    tags: ["Beverage", "Cooling", "Digestive"]
+    preparation: "Boil Ashoka bark powder in water until reduced to half. Strain and drink twice daily.",
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvlyM_20VMICP6kst2F1FUBVsx_ga8JAZrJQ&s",
+    forSymptoms: ["Heavy Flow", "Irregular Cycles", "Pain"],
+    tags: ["Decoction", "Ayurvedic", "Traditional"]
   }
 ];
 

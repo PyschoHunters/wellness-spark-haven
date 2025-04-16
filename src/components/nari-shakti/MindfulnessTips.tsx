@@ -85,7 +85,7 @@ const sessions: MindfulnessSession[] = [
       "Calms an active mind",
       "Creates bedtime routine"
     ],
-    coverImage: "https://images.unsplash.com/photo-1455642305367-68834a9c7356?q=80&w=500&auto=format&fit=crop",
+    coverImage: "https://hallow.com/wp-content/uploads/2019/04/indian-yogi-yogi-madhav-727510-unsplash.jpg",
     audioUrl: "#",
     embedId: "acTNdQJUb5A",
     forSymptoms: ["Insomnia", "Restlessness", "Anxiety"]
