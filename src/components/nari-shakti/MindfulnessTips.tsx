@@ -7,8 +7,6 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { showActionToast } from '@/utils/toast-utils';
 
-const YOUTUBE_API_KEY = "AIzaSyBdFJxHBH7QDmG15jqV3ovQH11Y4ZJRE-s";
-
 interface MindfulnessSession {
   id: number;
   title: string;
@@ -54,7 +52,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1536623975707-c4b3b2af565d?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "3pGVU-yLQR4",
+    embedId: "t1rRo6cgM_E",
     forSymptoms: ["Pain", "Tension", "Insomnia"]
   },
   {
@@ -71,7 +69,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "Tpq8AvwDpDA",
+    embedId: "zs0sEUkPqVE",
     forSymptoms: ["Mood Swings", "Low Energy", "Self-Doubt"]
   },
   {
@@ -88,7 +86,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://hallow.com/wp-content/uploads/2019/04/indian-yogi-yogi-madhav-727510-unsplash.jpg",
     audioUrl: "#",
-    embedId: "N4qYjY0poQE",
+    embedId: "aEqlQvczMVQ",
     forSymptoms: ["Insomnia", "Restlessness", "Anxiety"]
   },
   {
