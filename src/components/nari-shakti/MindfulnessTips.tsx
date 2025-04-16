@@ -37,7 +37,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1497561813398-8fcc7a37b567?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "aEqlQvczMVQ",
+    embedId: "wfDTp2GogaQ",
     forSymptoms: ["Stress", "Cramps", "Anxiety"]
   },
   {
@@ -54,7 +54,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1536623975707-c4b3b2af565d?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "bLpChrgS5AY",
+    embedId: "QS2yDmWk0vs",
     forSymptoms: ["Pain", "Tension", "Insomnia"]
   },
   {
@@ -71,7 +71,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "TK_P8oTDvRY",
+    embedId: "9Tg2hpb4WV8",
     forSymptoms: ["Mood Swings", "Low Energy", "Self-Doubt"]
   },
   {
@@ -88,7 +88,7 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://hallow.com/wp-content/uploads/2019/04/indian-yogi-yogi-madhav-727510-unsplash.jpg",
     audioUrl: "#",
-    embedId: "acTNdQJUb5A",
+    embedId: "EiYTb4GgJNY",
     forSymptoms: ["Insomnia", "Restlessness", "Anxiety"]
   },
   {
@@ -105,16 +105,16 @@ const sessions: MindfulnessSession[] = [
     ],
     coverImage: "https://images.unsplash.com/photo-1476611317561-60117649dd94?q=80&w=500&auto=format&fit=crop",
     audioUrl: "#",
-    embedId: "WUTklA4Qspg",
+    embedId: "inpok4MKVLM",
     forSymptoms: ["Fatigue", "Low Energy", "Brain Fog"]
   }
 ];
 
 const MindfulnessTips = () => {
-  const [selectedSession, setSelectedSession] = useState<MindfulnessSession | null>(null);
+  const [selectedSession, setSelectedSession] = useState<any>(null);
   const [savedSessions, setSavedSessions] = useState<number[]>([]);
   const [activeFilter, setActiveFilter] = useState<string>('all');
-  const [filteredSessions, setFilteredSessions] = useState<MindfulnessSession[]>(sessions);
+  const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [sessionOpen, setSessionOpen] = useState(false);
   
   useEffect(() => {
@@ -160,7 +160,7 @@ const MindfulnessTips = () => {
   };
   
   const getYouTubeEmbedUrl = (videoId: string) => {
-    return `https://www.youtube.com/embed/${videoId}?key=${YOUTUBE_API_KEY}`;
+    return `https://www.youtube.com/embed/${videoId}`;
   };
   
   return (
