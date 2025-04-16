@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -87,7 +86,7 @@ export const MarketplaceExchange: React.FC = () => {
       id: 6,
       name: "First Steps Badge",
       description: "Beginner's achievement badge for completing your first 10 workouts",
-      image: "https://images.unsplash.com/photo-1567013127542-490d757e6349?w=500&h=300&fit=crop",
+      image: "https://media.istockphoto.com/id/488764966/photo/happy-athlete-holding-trophy-looking-up.jpg?s=612x612&w=0&k=20&c=CNSvJXoRqFCpjPfxeJbtLliamnsFJSL-IsTWlS5QCsw=",
       type: 'nft',
       price: 50,
       seller: "0xFitBeginner",
@@ -125,25 +124,20 @@ export const MarketplaceExchange: React.FC = () => {
     }
   };
   
-  // Apply filters and sorting
   const filteredItems = marketItems.filter(item => {
-    // Filter by search query
     if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
         !item.description.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false;
     }
     
-    // Filter by rarity
     if (filterRarity !== 'all' && item.rarity !== filterRarity) {
       return false;
     }
     
-    // Filter by type
     if (filterType !== 'all' && item.type !== filterType) {
       return false;
     }
     
-    // Filter by price range
     if (priceRange.min && Number(priceRange.min) > item.price) {
       return false;
     }
@@ -154,7 +148,6 @@ export const MarketplaceExchange: React.FC = () => {
     return true;
   });
   
-  // Apply sorting
   const sortedItems = [...filteredItems].sort((a, b) => {
     switch (sortOption) {
       case 'priceAsc':
@@ -167,20 +160,16 @@ export const MarketplaceExchange: React.FC = () => {
         return b.name.localeCompare(a.name);
       case 'recent':
       default:
-        // This is a simplified sort for the example
-        // In a real app, you'd parse the dates properly
         return a.id < b.id ? 1 : -1;
     }
   });
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search is already applied as we type, so nothing needs to be done here
     console.log("Searching for:", searchQuery);
   };
   
   const handlePurchase = (itemId: number) => {
-    // In a real app, this would integrate with a blockchain smart contract
     console.log(`Purchasing item ${itemId}`);
   };
 
