@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +6,8 @@ import { Headphones, Clock, CalendarDays, Play, Bookmark, BookmarkCheck, Heart, 
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { showActionToast } from '@/utils/toast-utils';
+
+const YOUTUBE_API_KEY = "AIzaSyBdFJxHBH7QDmG15jqV3ovQH11Y4ZJRE-s";
 
 interface MindfulnessSession {
   id: number;
@@ -158,6 +159,10 @@ const MindfulnessTips = () => {
     return `${minutes} min`;
   };
   
+  const getYouTubeEmbedUrl = (videoId: string) => {
+    return `https://www.youtube.com/embed/${videoId}?key=${YOUTUBE_API_KEY}`;
+  };
+  
   return (
     <>
       <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white">
@@ -301,7 +306,7 @@ const MindfulnessTips = () => {
                   <iframe
                     width="100%"
                     height="100%"
-                    src={`https://www.youtube.com/embed/${selectedSession.embedId}`}
+                    src={getYouTubeEmbedUrl(selectedSession.embedId)}
                     title={selectedSession.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
