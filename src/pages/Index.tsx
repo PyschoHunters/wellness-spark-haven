@@ -14,6 +14,7 @@ import AvatarCreator from '@/components/AvatarCreator';
 import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
 import ExpertAdvice from '@/components/ExpertAdvice';
 import FitnessBadges from '@/components/FitnessBadges';
+import WellnessHub from '@/components/WellnessHub';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -231,6 +232,10 @@ const Home = () => {
           </button>
         </div>
         <ActivityChart data={weeklyActivity} />
+      </section>
+      
+      <section className="mb-6">
+        <WellnessHub />
       </section>
       
       <section className="mb-8">
