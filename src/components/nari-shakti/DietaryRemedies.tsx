@@ -75,7 +75,7 @@ const remedies: DietaryRemedy[] = [
       "Supports overall health"
     ],
     preparation: "Mix Triphala powder with warm water. Best taken before bedtime.",
-    imageUrl: "public/lovable-uploads/b644a126-23a1-4dbe-a31f-4ce75340260e.png",
+    imageUrl: "https://media.post.rvohealth.io/wp-content/uploads/2020/09/triphala-ayurvedic-fruits-thumb-732x549.jpg",
     forSymptoms: ["Bloating", "Digestion", "Detox"],
     tags: ["Supplement", "Ayurvedic", "Evening"]
   },
