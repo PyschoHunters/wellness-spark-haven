@@ -1,12 +1,27 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Award, Star, Calendar, Moon, Droplet, Heart, Utensils, BookOpen, Dumbbell, Brain, Target } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-const wellnessBadges = [
+// Define the WellnessBadge type
+interface WellnessBadge {
+  id: number;
+  name: string;
+  description: string;
+  icon: React.ReactNode;
+  progress: number;
+  total: number;
+  color: string;
+  glowColor: string;
+  unlocked: boolean;
+}
+
+const wellnessBadges: WellnessBadge[] = [
   {
     id: 1,
     name: "Cycle Tracker",
