@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Yoga, Info, Clock, RotateCcw, Play, Pause, ArrowRight } from 'lucide-react';
+import { Dumbbell, Info, Clock, RotateCcw, Play, Pause, ArrowRight } from 'lucide-react';
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -211,7 +211,7 @@ const YogaRecommendations = () => {
         <CardHeader className="bg-gradient-to-r from-emerald-100 to-emerald-200 pb-4">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-semibold flex items-center gap-2 text-emerald-800">
-              <Yoga className="h-5 w-5" />
+              <Dumbbell className="h-5 w-5" />
               Yoga Remedies
             </CardTitle>
             

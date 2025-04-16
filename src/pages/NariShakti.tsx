@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, Activity, Utensils, Headphones, MessageCircle, Leaf, Award, Heart } from 'lucide-react';
+import { ArrowLeft, Calendar, Activity, Utensils, Headphones, MessageCircle, Leaf, Award, Heart, Dumbbell } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
