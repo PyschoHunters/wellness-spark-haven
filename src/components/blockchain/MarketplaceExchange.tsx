@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,7 +87,7 @@ export const MarketplaceExchange: React.FC = () => {
       id: 6,
       name: "First Steps Badge",
       description: "Beginner's achievement badge for completing your first 10 workouts",
-      image: "https://media.istockphoto.com/id/488764966/photo/happy-athlete-holding-trophy-looking-up.jpg?s=612x612&w=0&k=20&c=CNSvJXoRqFCpjPfxeJbtLliamnsFJSL-IsTWlS5QCsw=",
+      image: "https://media.istockphoto.com/id/490670924/photo/composite-image-of-cheering-rugby-player-with-cup.jpg?s=612x612&w=0&k=20&c=MDNOLs2bAuc5XeTWZrCNVi7B7txciuEXMuwJQGDBe5A=",
       type: 'nft',
       price: 50,
       seller: "0xFitBeginner",
