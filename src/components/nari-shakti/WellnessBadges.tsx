@@ -5,20 +5,8 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Award, Star, Calendar, Moon, Droplet, Heart, Utensils, BookOpen, Dumbbell, Brain, Target } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-interface WellnessBadge {
-  id: number;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  progress: number;
-  total: number;
-  color: string;
-  unlocked: boolean;
-}
-
-const wellnessBadges: WellnessBadge[] = [
+const wellnessBadges = [
   {
     id: 1,
     name: "Cycle Tracker",
@@ -27,6 +15,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 2,
     total: 3,
     color: "bg-gradient-to-br from-rose-300 via-pink-400 to-rose-500",
+    glowColor: "hover:shadow-rose-200",
     unlocked: false
   },
   {
@@ -37,6 +26,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 7,
     total: 10,
     color: "bg-gradient-to-br from-violet-300 via-purple-400 to-indigo-500",
+    glowColor: "hover:shadow-violet-200",
     unlocked: false
   },
   {
@@ -47,6 +37,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 3,
     total: 5,
     color: "bg-gradient-to-br from-amber-300 via-orange-400 to-amber-500",
+    glowColor: "hover:shadow-amber-200",
     unlocked: false
   },
   {
@@ -57,6 +48,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 12,
     total: 15,
     color: "bg-gradient-to-br from-emerald-300 to-emerald-500",
+    glowColor: "hover:shadow-emerald-200",
     unlocked: false
   },
   {
@@ -67,6 +59,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 14,
     total: 20,
     color: "bg-gradient-to-br from-amber-300 to-amber-500",
+    glowColor: "hover:shadow-amber-200",
     unlocked: false
   },
   {
@@ -77,6 +70,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 9,
     total: 14,
     color: "bg-gradient-to-br from-sky-300 to-sky-500",
+    glowColor: "hover:shadow-sky-200",
     unlocked: false
   },
   {
@@ -87,6 +81,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 18,
     total: 30,
     color: "bg-gradient-to-br from-pink-300 to-pink-500",
+    glowColor: "hover:shadow-pink-200",
     unlocked: false
   },
   {
@@ -97,6 +92,7 @@ const wellnessBadges: WellnessBadge[] = [
     progress: 1,
     total: 3,
     color: "bg-gradient-to-br from-slate-300 to-slate-500",
+    glowColor: "hover:shadow-slate-200",
     unlocked: false
   }
 ];
@@ -112,13 +108,13 @@ const WellnessBadges = () => {
   
   return (
     <Card className="border-0 shadow-md rounded-2xl overflow-hidden bg-white">
-      <CardHeader className="bg-gradient-to-r from-pink-100 to-pink-200 pb-4">
+      <CardHeader className="bg-gradient-to-r from-violet-100 to-indigo-100 pb-4">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-semibold flex items-center gap-2 text-pink-800">
+          <CardTitle className="text-lg font-semibold flex items-center gap-2 text-indigo-800">
             <Award className="h-5 w-5" />
             Wellness Badges
           </CardTitle>
-          <Badge variant="outline" className="bg-white/80 text-pink-700 border-pink-200">
+          <Badge variant="outline" className="bg-white/80 text-indigo-700 border-indigo-200">
             <Star className="h-3 w-3 mr-1" />
             Level 2
           </Badge>
@@ -131,21 +127,27 @@ const WellnessBadges = () => {
             <div 
               key={badge.id}
               onClick={() => handleBadgeClick(badge)}
-              className="flex flex-col items-center text-center cursor-pointer transition-all duration-300 hover:scale-105"
+              className={cn(
+                "flex flex-col items-center text-center cursor-pointer",
+                "transition-all duration-300 p-4 rounded-xl",
+                "hover:scale-105 hover:shadow-lg",
+                badge.glowColor
+              )}
             >
               <div className={cn(
-                "w-16 h-16 rounded-full flex items-center justify-center text-white mb-2 shadow-lg",
-                "transform transition-all duration-300 hover:scale-110",
+                "w-16 h-16 rounded-full flex items-center justify-center text-white mb-2",
+                "transform transition-all duration-300 hover:scale-110 shadow-md",
                 badge.progress >= badge.total ? badge.color : "bg-gray-200"
               )}>
                 {badge.icon}
               </div>
-              <span className="text-sm font-medium mb-1">{badge.name}</span>
+              <span className="text-sm font-medium mb-1 line-clamp-1">{badge.name}</span>
               <Badge variant="outline" className={cn(
                 "text-xs px-2 py-0.5",
                 badge.progress >= badge.total 
-                  ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                  : "bg-gray-50 text-gray-700 border-gray-200"
+                  ? "bg-indigo-50 text-indigo-700 border-indigo-200" 
+                  : "bg-gray-50 text-gray-700 border-gray-200",
+                "animate-fade-in"
               )}>
                 {badge.progress}/{badge.total}
               </Badge>
@@ -153,20 +155,23 @@ const WellnessBadges = () => {
           ))}
         </div>
 
-        <div className="bg-gray-50 p-4 rounded-xl mb-4 animate-fade-in">
+        <div className="bg-gradient-to-r from-violet-50 to-indigo-50 p-4 rounded-xl mb-4 animate-fade-in">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium flex items-center gap-2">
-              <Target className="h-4 w-4 text-pink-500" />
+              <Target className="h-4 w-4 text-indigo-500" />
               Next Badge: {wellnessBadges[2].name}
             </h3>
-            <Badge variant="outline" className="text-xs bg-pink-50 text-pink-700 border-pink-200">
+            <Badge variant="outline" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200">
               {wellnessBadges[2].progress}/{wellnessBadges[2].total}
             </Badge>
           </div>
           <Progress 
             value={(wellnessBadges[2].progress / wellnessBadges[2].total) * 100} 
             className="h-2 bg-gray-100"
-            indicatorClassName={wellnessBadges[2].color}
+            indicatorClassName={cn(
+              "transition-all duration-500",
+              wellnessBadges[2].color
+            )}
           />
           <p className="text-xs text-gray-500 mt-2">
             {wellnessBadges[2].description}
@@ -176,7 +181,7 @@ const WellnessBadges = () => {
         <Button
           onClick={() => setDetailsOpen(true)}
           className={cn(
-            "w-full bg-gradient-to-r from-pink-400 to-pink-500 text-white",
+            "w-full bg-gradient-to-r from-violet-400 to-indigo-500 text-white",
             "hover:opacity-90 transition-all duration-300",
             "flex items-center justify-center gap-2 rounded-xl"
           )}

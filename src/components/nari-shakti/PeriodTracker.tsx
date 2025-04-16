@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -202,6 +201,16 @@ const PeriodTracker = () => {
       const updatedCycles = cycles.map(cycle => 
         cycle.id === currentCycle.id ? updatedCycle : cycle
       );
+      
+      // Update predicted cycle based on new start date
+      const avgCycleLength = 28;
+      const nextStartDate = new Date(date);
+      nextStartDate.setDate(nextStartDate.getDate() + avgCycleLength);
+      
+      setPredictedCycle({
+        start: nextStartDate.toISOString().split('T')[0],
+        end: new Date(nextStartDate.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
       
       setCycles(updatedCycles);
       showActionToast("Period start date updated");
