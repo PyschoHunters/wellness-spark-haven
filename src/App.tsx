@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import ExpertAdvicePage, { BlogPostDetail } from "./pages/ExpertAdvicePage";
 import NariShakti from "./pages/NariShakti";
+import FitChain from "./pages/FitChain";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/expert-advice" element={<ExpertAdvicePage />} />
               <Route path="/expert-advice/:id" element={<BlogPostDetail />} />
               <Route path="/nari-shakti" element={<NariShakti />} />
+              <Route path="/fitchain" element={<FitChain />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
