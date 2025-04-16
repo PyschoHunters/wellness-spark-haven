@@ -11,6 +11,7 @@ interface StatsCardProps {
     isPositive: boolean;
   };
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ 
@@ -18,13 +19,17 @@ const StatsCard: React.FC<StatsCardProps> = ({
   value, 
   icon, 
   trend,
-  className 
+  className,
+  style
 }) => {
   return (
-    <div className={cn(
-      "flex items-start p-4 bg-white rounded-2xl animate-fade-up", 
-      className
-    )}>
+    <div 
+      className={cn(
+        "flex items-start p-4 bg-white rounded-2xl animate-fade-up", 
+        className
+      )}
+      style={style}
+    >
       <div className="flex-1">
         <h3 className="text-sm text-fitness-gray mb-1">{title}</h3>
         <div className="flex items-center">
