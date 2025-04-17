@@ -1,5 +1,8 @@
 
 project_id = "zrzkpoysgsybrkuennkd"
 
-[functions.pose-analysis]
+[functions.gemini-ai]
+verify_jwt = false
+
+[functions.razorpay]
 verify_jwt = true
