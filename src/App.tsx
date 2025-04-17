@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,7 @@ import Login from "./pages/Login";
 import ExpertAdvicePage, { BlogPostDetail } from "./pages/ExpertAdvicePage";
 import NariShakti from "./pages/NariShakti";
 import FitChain from "./pages/FitChain";
+import FormAnalysis from "./pages/FormAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +39,7 @@ const App = () => (
               <Route path="/expert-advice/:id" element={<BlogPostDetail />} />
               <Route path="/nari-shakti" element={<NariShakti />} />
               <Route path="/fitchain" element={<FitChain />} />
+              <Route path="/form-analysis" element={<FormAnalysis />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
