@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Layout from '@/components/Layout';
+import { Layout } from '@/components/Layout';
 import FormAnalyzer from '@/components/FormAnalyzer';
 import { Dumbbell, Camera, Award, PieChart } from 'lucide-react';
 

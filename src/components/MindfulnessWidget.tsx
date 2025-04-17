@@ -1,13 +1,22 @@
+
 import React, { useState, useEffect } from 'react';
 import { Bell, CheckCircle, Cloud, Sun, Volume2 } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
-import { supabase } from '@/integrations/supabase/client';
 
 interface MindfulnessTip {
   id: number;
   tip: string;
   category: string;
 }
+
+// Mock data for mindfulness tips
+const mockMindfulnessTips: MindfulnessTip[] = [
+  { id: 1, tip: "Take a moment to focus on your breath. Inhale for 4 counts, hold for 4, exhale for 4.", category: "breathing" },
+  { id: 2, tip: "Scan your body from head to toe, noticing any tension and consciously relaxing each part.", category: "awareness" },
+  { id: 3, tip: "When feeling overwhelmed, focus on five things you can see, four you can touch, three you can hear, two you can smell, and one you can taste.", category: "grounding" },
+  { id: 4, tip: "Practice gratitude by listing three things you're thankful for today.", category: "gratitude" },
+  { id: 5, tip: "Set an intention for your day each morning to provide focus and purpose.", category: "intention" }
+];
 
 const MindfulnessWidget: React.FC = () => {
   const [mindfulnessTip, setMindfulnessTip] = useState<MindfulnessTip | null>(null);
@@ -21,19 +30,9 @@ const MindfulnessWidget: React.FC = () => {
 
   const fetchMindfulnessTip = async () => {
     try {
-      const { data, error } = await supabase
-        .from('mindfulness_tips')
-        .select('*')
-        .order('id', { ascending: false })
-        .limit(1);
-
-      if (error) {
-        throw error;
-      }
-
-      if (data && data.length > 0) {
-        setMindfulnessTip(data[0] as MindfulnessTip);
-      }
+      // Using mock data instead of Supabase query
+      const randomIndex = Math.floor(Math.random() * mockMindfulnessTips.length);
+      setMindfulnessTip(mockMindfulnessTips[randomIndex]);
     } catch (error: any) {
       console.error('Error fetching mindfulness tip:', error.message);
       showActionToast('Failed to load mindfulness tip.');
@@ -42,6 +41,14 @@ const MindfulnessWidget: React.FC = () => {
 
   const fetchWeather = async () => {
     try {
+      // Mock weather data since we can't use the actual API key
+      setWeather({
+        description: "partly cloudy",
+        temperature: 28,
+      });
+      
+      // Commented out actual API call for reference
+      /*
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=Mumbai&appid=YOUR_OPENWEATHERMAP_API_KEY&units=metric`
       );
@@ -55,6 +62,7 @@ const MindfulnessWidget: React.FC = () => {
         description: data.weather[0].description,
         temperature: data.main.temp,
       });
+      */
     } catch (error: any) {
       console.error('Error fetching weather:', error.message);
     }
@@ -71,7 +79,10 @@ const MindfulnessWidget: React.FC = () => {
         <h2 className="text-lg font-semibold">Mindfulness Moment</h2>
         <button
           className="text-sm font-medium text-fitness-primary"
-          onClick={() => showActionToast('Refreshing mindfulness tip')}
+          onClick={() => {
+            fetchMindfulnessTip();
+            showActionToast('Refreshing mindfulness tip');
+          }}
         >
           Refresh
         </button>
