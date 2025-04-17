@@ -2,7 +2,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = "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";
+const openAIApiKey = "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";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
