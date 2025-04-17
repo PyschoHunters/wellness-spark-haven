@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, Clock, Flame, Calendar, BarChart2, Heart, Activity, CheckCircle, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { X, Clock, Flame, Calendar, BarChart2, Heart, Activity, CheckCircle, ArrowUpRight, ArrowRight, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 

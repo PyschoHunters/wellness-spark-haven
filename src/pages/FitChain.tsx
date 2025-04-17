@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
@@ -8,9 +7,9 @@ import { FitTokenWallet } from '@/components/blockchain/FitTokenWallet';
 import { NFTCollection } from '@/components/blockchain/NFTCollection';
 import { MarketplaceExchange } from '@/components/blockchain/MarketplaceExchange';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Coins, Trophy, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Coins as CoinsIcon, Trophy, AlertCircle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-import { StatsCard } from '@/components/StatsCard';
+import StatsCard from '@/components/StatsCard';
 
 const FitChain = () => {
   const navigate = useNavigate();
@@ -65,7 +64,7 @@ const FitChain = () => {
             
             <div className="flex items-center gap-2 bg-indigo-50 p-2 rounded-lg">
               <div className="flex gap-1 items-center text-indigo-600 font-medium">
-                <Coins className="h-4 w-4" />
+                <CoinsIcon className="h-4 w-4" />
                 <span>{walletBalance} FTK</span>
               </div>
               
@@ -85,7 +84,7 @@ const FitChain = () => {
           <StatsCard
             title="Weekly Token Earnings"
             value="325 FTK"
-            icon={<Coins className="h-5 w-5 text-indigo-500" />}
+            icon={<CoinsIcon className="h-5 w-5 text-indigo-500" />}
             trend={{ value: 12, isPositive: true }}
             className="border-l-4 border-indigo-500"
           />

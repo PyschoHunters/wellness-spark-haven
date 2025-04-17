@@ -15,7 +15,7 @@ interface StatsCardProps {
   indicatorClassName?: string;
 }
 
-const StatsCard: React.FC<StatsCardProps> = ({ 
+export const StatsCard: React.FC<StatsCardProps> = ({ 
   title, 
   value, 
   icon, 
@@ -54,4 +54,5 @@ const StatsCard: React.FC<StatsCardProps> = ({
   );
 };
 
+// Default export for backward compatibility
 export default StatsCard;
