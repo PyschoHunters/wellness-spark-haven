@@ -68,7 +68,7 @@ const FormAnalysis = () => {
       console.error("Analysis error:", error);
       setError(error.message || "Failed to analyze your workout form");
       toast.error("Analysis failed", {
-        description: error.message || "Failed to analyze form. Please try again with a different image."
+        description: "Please try again with a different image. Our AI will try to analyze any image quality."
       });
     } finally {
       setAnalyzing(false);
@@ -169,7 +169,7 @@ const FormAnalysis = () => {
       <div className="max-w-3xl mx-auto px-4 pb-12">
         <Header 
           title="AI Workout Form Analysis" 
-          subtitle="Get professional feedback on your exercise form" 
+          subtitle="Get professional feedback on your exercise form using Gemini AI" 
         />
         
         <div className="mt-6 space-y-6">
@@ -185,7 +185,7 @@ const FormAnalysis = () => {
               <div>
                 <h3 className="text-xl font-semibold text-gray-800">Analyze Your Workout Form</h3>
                 <p className="text-gray-500 mt-2">
-                  Upload a photo of your workout form and our AI will provide personalized feedback
+                  Upload a photo of your workout form and our Gemini AI will provide personalized feedback
                 </p>
               </div>
               
@@ -253,7 +253,7 @@ const FormAnalysis = () => {
                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm">
                   <p className="font-medium mb-1">Analysis Error</p>
                   <p>{error}</p>
-                  <p className="mt-2 text-xs">Try uploading a clearer image or a different angle of your exercise form</p>
+                  <p className="mt-2 text-xs">Our AI will try to analyze any image, but if you continue to have issues, try a different angle or lighting</p>
                 </div>
               )}
             </div>
@@ -262,7 +262,7 @@ const FormAnalysis = () => {
           {feedback && (
             <div className="bg-white p-6 rounded-2xl shadow-sm animate-fade-up space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-fitness-primary">AI Form Analysis</h3>
+                <h3 className="text-lg font-semibold text-fitness-primary">Gemini AI Form Analysis</h3>
                 <Button 
                   variant="ghost" 
                   size="sm"
@@ -288,7 +288,7 @@ const FormAnalysis = () => {
               </div>
               
               <div className="pt-2 text-sm text-gray-500 italic">
-                <p>This analysis is provided by AI and should not replace professional advice from a certified trainer.</p>
+                <p>This analysis is provided by Gemini AI and should not replace professional advice from a certified trainer.</p>
               </div>
             </div>
           )}
