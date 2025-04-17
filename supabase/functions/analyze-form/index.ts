@@ -17,6 +17,16 @@ serve(async (req) => {
   try {
     const { image } = await req.json();
 
+    if (!image) {
+      console.error('Missing image data in request');
+      return new Response(
+        JSON.stringify({ error: 'Missing image data' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
+    console.log('Sending request to OpenAI API...');
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -28,7 +38,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert fitness trainer specialized in analyzing workout form. Provide detailed, constructive feedback on exercise form from images/videos.'
+            content: 'You are an expert fitness trainer specialized in analyzing workout form. Provide detailed, constructive feedback on exercise form from images/videos. Focus on form improvements, safety concerns, and practical tips to enhance performance. Your feedback should be organized in clear sections with bullet points where appropriate.'
           },
           {
             role: 'user',
@@ -39,7 +49,7 @@ serve(async (req) => {
               },
               {
                 type: 'text',
-                text: 'Please analyze this workout form and provide specific feedback on: 1. Overall form quality 2. Key areas for improvement 3. Safety concerns if any 4. Tips for better form'
+                text: 'Please analyze this workout form and provide specific feedback on: 1. Overall form quality 2. Key areas for improvement 3. Safety concerns if any 4. Tips for better form. Be thorough but concise.'
               }
             ]
           }
@@ -47,7 +57,26 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
+      return new Response(
+        JSON.stringify({ error: `OpenAI API error: ${response.status}` }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: response.status }
+      );
+    }
+
     const data = await response.json();
+    console.log('OpenAI API response received successfully');
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+      console.error('Unexpected response format from OpenAI:', data);
+      return new Response(
+        JSON.stringify({ error: 'Invalid response from AI service' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
+    
     const feedback = data.choices[0].message.content;
 
     return new Response(
@@ -55,9 +84,9 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in analyze-form function:', error);
     return new Response(
-      JSON.stringify({ error: 'Failed to analyze form' }),
+      JSON.stringify({ error: 'Failed to analyze form', details: error.message }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
     );
   }
