@@ -26,6 +26,7 @@ serve(async (req) => {
     }
 
     console.log('Sending request to OpenAI API...');
+    console.log('API Key length:', openAIApiKey.length);
     
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -38,7 +39,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert fitness trainer specialized in analyzing workout form. Provide detailed, constructive feedback on exercise form from images/videos. Focus on form improvements, safety concerns, and practical tips to enhance performance. Your feedback should be organized in clear sections with bullet points where appropriate.'
+            content: 'You are an expert fitness trainer specialized in analyzing workout form. Provide detailed, constructive feedback on exercise form from images/videos. Focus on form improvements, safety concerns, and practical tips to enhance performance. Your feedback should be organized in clear sections with bullet points where appropriate. BE GENEROUS with your analysis - if the image is low quality or unclear, make reasonable assumptions and provide general advice that would be helpful for most people doing that exercise. NEVER refuse to analyze an image due to quality issues.'
           },
           {
             role: 'user',
@@ -51,7 +52,7 @@ serve(async (req) => {
               },
               {
                 type: 'text',
-                text: 'Please analyze this workout form and provide specific feedback on: 1. Overall form quality 2. Key areas for improvement 3. Safety concerns if any 4. Tips for better form. Be thorough but concise.'
+                text: 'Please analyze this workout form and provide specific feedback on: 1. Overall form quality 2. Key areas for improvement 3. Safety concerns if any 4. Tips for better form. Be thorough but concise. If the image is not perfectly clear, make your best assessment and provide general guidance.'
               }
             ]
           }
@@ -59,17 +60,27 @@ serve(async (req) => {
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
+    const responseText = await response.text();
+    console.log('Raw OpenAI API response:', responseText);
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (error) {
+      console.error('Failed to parse OpenAI response as JSON:', error);
       return new Response(
-        JSON.stringify({ error: `OpenAI API error: ${response.status}`, details: errorText }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: response.status }
+        JSON.stringify({ error: 'Invalid response format from AI service', details: responseText }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
 
-    const data = await response.json();
-    console.log('OpenAI API response received successfully');
+    if (!response.ok) {
+      console.error('OpenAI API error:', response.status, data);
+      return new Response(
+        JSON.stringify({ error: `OpenAI API error: ${response.status}`, details: data?.error?.message || 'Unknown error' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: response.status }
+      );
+    }
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
       console.error('Unexpected response format from OpenAI:', data);
@@ -80,6 +91,7 @@ serve(async (req) => {
     }
     
     const feedback = data.choices[0].message.content;
+    console.log('Analysis complete, returning feedback');
 
     return new Response(
       JSON.stringify({ feedback }),

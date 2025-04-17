@@ -5,7 +5,6 @@ import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Camera, Upload, Image as ImageIcon, RotateCcw, Copy, CheckCircle } from 'lucide-react';
 import { toast } from "sonner";
-import { supabase } from '@/lib/supabase';
 
 const FormAnalysis = () => {
   const [analyzing, setAnalyzing] = useState(false);
@@ -25,6 +24,9 @@ const FormAnalysis = () => {
       const base64Image = await convertToBase64(file);
       
       console.log("Sending image for analysis...");
+      toast.info("Analyzing your form...", {
+        description: "This may take up to 30 seconds. Please be patient."
+      });
       
       const response = await fetch('https://zrzkpoysgsybrkuennkd.supabase.co/functions/v1/analyze-form', {
         method: 'POST',
@@ -38,15 +40,22 @@ const FormAnalysis = () => {
 
       console.log("Response status:", response.status);
       
+      const textResponse = await response.text();
+      console.log("Raw response:", textResponse);
+      
+      let data;
+      try {
+        data = JSON.parse(textResponse);
+      } catch (e) {
+        console.error("Error parsing response:", e);
+        throw new Error(`Invalid response from server: ${textResponse}`);
+      }
+      
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error("Error response:", errorData);
-        throw new Error(`Server responded with ${response.status}: ${errorData.error || errorData.details || 'Unknown error'}`);
+        console.error("Error response:", data);
+        throw new Error(data.error || data.details || `Server responded with ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("Analysis completed successfully");
-      
       if (data.feedback) {
         setFeedback(data.feedback);
         toast.success("Analysis complete!", {
@@ -244,7 +253,7 @@ const FormAnalysis = () => {
                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm">
                   <p className="font-medium mb-1">Analysis Error</p>
                   <p>{error}</p>
-                  <p className="mt-2 text-xs">Try uploading a clearer image of your exercise form</p>
+                  <p className="mt-2 text-xs">Try uploading a clearer image or a different angle of your exercise form</p>
                 </div>
               )}
             </div>
