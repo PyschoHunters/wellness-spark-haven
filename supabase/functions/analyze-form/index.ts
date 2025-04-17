@@ -44,8 +44,10 @@ serve(async (req) => {
             role: 'user',
             content: [
               {
-                type: 'image',
-                image_url: image
+                type: 'image_url',
+                image_url: {
+                  url: image
+                }
               },
               {
                 type: 'text',
@@ -61,7 +63,7 @@ serve(async (req) => {
       const errorText = await response.text();
       console.error('OpenAI API error:', response.status, errorText);
       return new Response(
-        JSON.stringify({ error: `OpenAI API error: ${response.status}` }),
+        JSON.stringify({ error: `OpenAI API error: ${response.status}`, details: errorText }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: response.status }
       );
     }

@@ -39,9 +39,9 @@ const FormAnalysis = () => {
       console.log("Response status:", response.status);
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error response:", errorText);
-        throw new Error(`Server responded with ${response.status}: ${errorText}`);
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Error response:", errorData);
+        throw new Error(`Server responded with ${response.status}: ${errorData.error || errorData.details || 'Unknown error'}`);
       }
 
       const data = await response.json();
@@ -59,7 +59,7 @@ const FormAnalysis = () => {
       console.error("Analysis error:", error);
       setError(error.message || "Failed to analyze your workout form");
       toast.error("Analysis failed", {
-        description: "Failed to analyze form. Please try again with a different image."
+        description: error.message || "Failed to analyze form. Please try again with a different image."
       });
     } finally {
       setAnalyzing(false);
