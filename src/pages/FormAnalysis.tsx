@@ -3,8 +3,9 @@ import { useState, useRef } from 'react';
 import { Layout } from '@/components/Layout';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
-import { Camera, Upload, Image as ImageIcon, RotateCcw, Copy, CheckCircle } from 'lucide-react';
+import { Camera, Upload, Image as ImageIcon, RotateCcw, Copy, CheckCircle, AlertTriangle, Info } from 'lucide-react';
 import { toast } from "sonner";
+import { Card } from '@/components/ui/card';
 
 const FormAnalysis = () => {
   const [analyzing, setAnalyzing] = useState(false);
@@ -168,53 +169,54 @@ const FormAnalysis = () => {
     <Layout>
       <div className="max-w-3xl mx-auto px-4 pb-12">
         <Header 
-          title="AI Workout Form Analysis" 
-          subtitle="Get professional feedback on your exercise form using Gemini AI" 
+          title="AI Form Analysis" 
+          subtitle="Get instant feedback on your exercise form powered by Gemini AI" 
         />
         
-        <div className="mt-6 space-y-6">
+        <Card className="mt-6 border border-fitness-primary/20">
           <div 
-            className={`bg-white p-6 rounded-2xl shadow-sm transition-all duration-300 ${analyzing ? 'opacity-70' : ''}`}
+            className={`p-8 transition-all duration-300 ${analyzing ? 'opacity-70' : ''}`}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
           >
-            <div className="text-center space-y-4">
-              <div className="w-20 h-20 bg-fitness-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <Camera className="w-10 h-10 text-fitness-primary" />
+            <div className="text-center space-y-6">
+              <div className="w-24 h-24 bg-fitness-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <Camera className="w-12 h-12 text-fitness-primary" />
               </div>
+              
               <div>
-                <h3 className="text-xl font-semibold text-gray-800">Analyze Your Workout Form</h3>
-                <p className="text-gray-500 mt-2">
-                  Upload a photo of your workout form and our Gemini AI will provide personalized feedback
+                <h3 className="text-2xl font-semibold text-gray-800">Analyze Your Form</h3>
+                <p className="text-gray-500 mt-2 max-w-md mx-auto">
+                  Upload a photo of your exercise form and get instant professional feedback
                 </p>
               </div>
               
               {previewUrl ? (
-                <div className="relative mt-4 rounded-xl overflow-hidden border-2 border-fitness-primary/30">
-                  <img src={previewUrl} alt="Workout form preview" className="w-full h-64 object-contain bg-gray-100" />
+                <div className="relative mt-4 rounded-xl overflow-hidden border-2 border-fitness-primary/30 bg-black/5">
+                  <img src={previewUrl} alt="Workout form preview" className="w-full h-72 object-contain" />
                   {analyzing && (
-                    <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
                       <div className="flex flex-col items-center">
-                        <div className="animate-spin w-10 h-10 border-4 border-fitness-primary/20 border-t-fitness-primary rounded-full mb-3"></div>
-                        <div className="font-medium text-fitness-primary">Analyzing your form...</div>
+                        <div className="animate-spin w-12 h-12 border-4 border-fitness-primary/20 border-t-fitness-primary rounded-full mb-4"></div>
+                        <div className="font-medium text-fitness-primary text-lg">Analyzing your form...</div>
                       </div>
                     </div>
                   )}
                 </div>
               ) : (
                 <div 
-                  className="mt-4 border-2 border-dashed border-gray-300 rounded-xl p-8 cursor-pointer hover:border-fitness-primary/60 transition-all"
+                  className="mt-4 border-2 border-dashed border-gray-300 rounded-xl p-10 cursor-pointer hover:border-fitness-primary/60 transition-all bg-gray-50/50"
                   onClick={handleCameraClick}
                 >
                   <div className="text-center">
-                    <ImageIcon className="w-10 h-10 mx-auto text-gray-400" />
-                    <p className="mt-2 text-sm text-gray-500">Drag and drop or click to upload</p>
-                    <p className="text-xs text-gray-400 mt-1">Supports JPG, PNG, GIF (max 5MB)</p>
+                    <ImageIcon className="w-12 h-12 mx-auto text-gray-400" />
+                    <p className="mt-4 text-base text-gray-600">Drag and drop or click to upload</p>
+                    <p className="text-sm text-gray-400 mt-2">Supports JPG, PNG, GIF (max 5MB)</p>
                   </div>
                 </div>
               )}
               
-              <div className="flex gap-3">
+              <div className="flex gap-3 justify-center">
                 <input
                   type="file"
                   accept="image/*"
@@ -226,47 +228,57 @@ const FormAnalysis = () => {
                 />
                 
                 {previewUrl ? (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={handleReset}
-                      disabled={analyzing}
-                      className="w-full"
-                    >
-                      <RotateCcw className="w-4 h-4 mr-2" />
-                      Upload New Image
-                    </Button>
-                  </>
+                  <Button
+                    variant="outline"
+                    onClick={handleReset}
+                    disabled={analyzing}
+                    className="min-w-[200px]"
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" />
+                    Upload New Image
+                  </Button>
                 ) : (
                   <Button
-                    className="w-full flex gap-2 bg-fitness-primary hover:bg-fitness-primary/90"
+                    className="min-w-[200px] bg-fitness-primary hover:bg-fitness-primary/90"
                     onClick={handleCameraClick}
                     disabled={analyzing}
                   >
-                    <Upload className="w-4 h-4" />
+                    <Upload className="w-4 h-4 mr-2" />
                     {analyzing ? 'Analyzing...' : 'Upload Image'}
                   </Button>
                 )}
               </div>
-              
-              {error && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm">
-                  <p className="font-medium mb-1">Analysis Error</p>
-                  <p>{error}</p>
-                  <p className="mt-2 text-xs">Our AI will try to analyze any image, but if you continue to have issues, try a different angle or lighting</p>
-                </div>
-              )}
             </div>
           </div>
+        </Card>
 
-          {feedback && (
-            <div className="bg-white p-6 rounded-2xl shadow-sm animate-fade-up space-y-4">
+        {error && (
+          <Card className="mt-6 border-red-200 bg-red-50/50">
+            <div className="p-6 flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-1" />
+              <div>
+                <h4 className="font-medium text-red-800">Analysis Error</h4>
+                <p className="text-red-600 text-sm mt-1">{error}</p>
+                <p className="text-red-500/70 text-xs mt-2">
+                  Try uploading a different image or adjusting the lighting/angle
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {feedback && (
+          <Card className="mt-6 border-fitness-primary/20">
+            <div className="p-6 space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-fitness-primary">Gemini AI Form Analysis</h3>
+                <div className="flex items-center gap-2">
+                  <Info className="w-5 h-5 text-fitness-primary" />
+                  <h3 className="text-lg font-semibold text-fitness-primary">Form Analysis</h3>
+                </div>
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-sm flex gap-1.5 items-center"
+                  className="text-sm flex gap-1.5 items-center hover:bg-fitness-primary/10"
                   onClick={handleCopyFeedback}
                 >
                   {copied ? (
@@ -283,16 +295,19 @@ const FormAnalysis = () => {
                 </Button>
               </div>
               
-              <div className="p-4 bg-fitness-primary/5 rounded-xl">
-                <p className="text-gray-700 whitespace-pre-line">{feedback}</p>
+              <div className="p-4 bg-gray-50 rounded-xl">
+                <p className="text-gray-700 whitespace-pre-line leading-relaxed">{feedback}</p>
               </div>
               
-              <div className="pt-2 text-sm text-gray-500 italic">
-                <p>This analysis is provided by Gemini AI and should not replace professional advice from a certified trainer.</p>
+              <div className="flex items-center gap-2 pt-2 text-sm text-gray-500">
+                <Info className="w-4 h-4" />
+                <p className="italic">
+                  This analysis is provided by AI and should not replace professional advice.
+                </p>
               </div>
             </div>
-          )}
-        </div>
+          </Card>
+        )}
       </div>
     </Layout>
   );

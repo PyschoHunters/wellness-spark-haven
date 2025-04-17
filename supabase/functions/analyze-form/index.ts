@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
@@ -37,16 +36,13 @@ serve(async (req) => {
           {
             parts: [
               {
-                text: "You are an expert fitness trainer specialized in analyzing workout form. Provide detailed, constructive feedback on exercise form from images/videos. Focus on form improvements, safety concerns, and practical tips to enhance performance. Your feedback should be organized in clear sections with bullet points where appropriate. BE GENEROUS with your analysis - if the image is low quality or unclear, make reasonable assumptions and provide general advice that would be helpful for most people doing that exercise. NEVER refuse to analyze an image due to quality issues."
+                text: "You are an expert fitness trainer analyzing workout form. Provide a concise, easy-to-read analysis with these sections:\n\n1. Overall Form (1-2 sentences)\n2. Key Improvements (2-3 bullet points)\n3. Safety Tips (1-2 bullet points)\n4. Quick Tips (1-2 practical suggestions)\n\nKeep it brief and actionable. If image quality is low, provide general guidance that would help most people doing this exercise. Focus on being helpful rather than critical."
               },
               {
                 inlineData: {
                   mimeType: "image/jpeg",
-                  data: image.split(',')[1] // Remove the data:image/jpeg;base64, part
+                  data: image.split(',')[1]
                 }
-              },
-              {
-                text: "Please analyze this workout form and provide specific feedback on: 1. Overall form quality 2. Key areas for improvement 3. Safety concerns if any 4. Tips for better form. Be thorough but concise. If the image is not perfectly clear, make your best assessment and provide general guidance."
               }
             ]
           }
@@ -80,7 +76,6 @@ serve(async (req) => {
       );
     }
     
-    // Extract the feedback from Gemini response
     let feedback = '';
     if (data.candidates && 
         data.candidates[0] && 
