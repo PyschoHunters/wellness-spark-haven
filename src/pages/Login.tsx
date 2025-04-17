@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -8,32 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Github } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
-import { supabase } from '@/integrations/supabase/client'
 
 const Login = () => {
-  const { signIn, signUp, signInWithGithub, loading, user } = useAuth()
+  const { signIn, signUp, signInWithGithub, loading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [activeTab, setActiveTab] = useState('login')
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-
-    const checkOAuthResponse = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (data?.session && !error) {
-        console.log('OAuth login detected:', data.session);
-        navigate('/');
-      } else if (error) {
-        console.error('OAuth error:', error);
-      }
-    };
-
-    checkOAuthResponse();
-  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,7 +25,6 @@ const Login = () => {
   }
 
   const handleGithubLogin = async () => {
-    console.log('GitHub login button clicked');
     await signInWithGithub()
   }
 
