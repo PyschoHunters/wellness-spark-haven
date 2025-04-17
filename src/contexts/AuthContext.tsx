@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -46,11 +45,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         if (session) {
           const { user } = session;
-          console.log('Session user:', user);
           setUser({
             id: user.id,
             email: user.email || '',
-            avatar_url: user.user_metadata?.avatar_url,
+            avatar_url: (user as any).user_metadata?.avatar_url,
           });
         }
       } catch (error) {
@@ -64,12 +62,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session);
         if (session && session.user) {
           setUser({
             id: session.user.id,
             email: session.user.email || '',
-            avatar_url: session.user.user_metadata?.avatar_url,
+            avatar_url: (session.user as any).user_metadata?.avatar_url,
           });
         } else {
           setUser(null);
@@ -148,24 +145,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signInWithGithub = async () => {
     try {
       setLoading(true);
-      console.log('Starting GitHub login process...');
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
-        options: {
-          redirectTo: 'https://wellness-spark-haven.vercel.app/login',
-        }
       });
       
       if (error) {
         throw error;
       }
       
-      console.log('GitHub OAuth initiated:', data);
-      // The user will be redirected to GitHub for authentication
+      // Note: No need to navigate here as the OAuth redirect will handle it
     } catch (error: any) {
-      console.error('Error with GitHub login:', error);
       showActionToast(error.message || 'Error signing in with GitHub');
+      console.error('Error signing in with GitHub:', error);
     } finally {
       setLoading(false);
     }
