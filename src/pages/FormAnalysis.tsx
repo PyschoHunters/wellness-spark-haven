@@ -1,11 +1,19 @@
-
 import { useState, useRef } from 'react';
 import { Layout } from '@/components/Layout';
 import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
-import { Camera, Upload, Image as ImageIcon, RotateCcw, Copy, CheckCircle, AlertTriangle, Info } from 'lucide-react';
-import { toast } from "sonner";
 import { Card } from '@/components/ui/card';
+import { 
+  Camera, 
+  Upload, 
+  Image as ImageIcon, 
+  RotateCcw, 
+  Copy, 
+  CheckCircle, 
+  AlertTriangle, 
+  Info 
+} from 'lucide-react';
+import { toast } from "sonner";
 
 const FormAnalysis = () => {
   const [analyzing, setAnalyzing] = useState(false);
@@ -79,7 +87,6 @@ const FormAnalysis = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Check file size (limit to 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("File too large", {
           description: "Please upload an image smaller than 5MB"
@@ -87,7 +94,6 @@ const FormAnalysis = () => {
         return;
       }
       
-      // Check file type
       if (!file.type.startsWith('image/')) {
         toast.error("Invalid file type", {
           description: "Please upload an image file (JPG, PNG, etc.)"
@@ -111,7 +117,6 @@ const FormAnalysis = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       
-      // Check file size (limit to 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("File too large", {
           description: "Please upload an image smaller than 5MB"
@@ -119,7 +124,6 @@ const FormAnalysis = () => {
         return;
       }
       
-      // Check file type
       if (!file.type.startsWith('image/')) {
         toast.error("Invalid file type", {
           description: "Please upload an image file (JPG, PNG, etc.)"
@@ -165,12 +169,19 @@ const FormAnalysis = () => {
     });
   };
 
+  const renderFeedbackSection = (title: string, content: string) => (
+    <div className="mb-4">
+      <h4 className="text-fitness-primary font-semibold text-lg mb-2">{title}</h4>
+      <p className="text-gray-700 leading-relaxed">{content}</p>
+    </div>
+  );
+
   return (
     <Layout>
       <div className="max-w-3xl mx-auto px-4 pb-12">
         <Header 
           title="AI Form Analysis" 
-          subtitle="Get instant feedback on your exercise form powered by Gemini AI" 
+          subtitle="Get instant, professional feedback on your exercise technique" 
         />
         
         <Card className="mt-6 border border-fitness-primary/20">
@@ -268,17 +279,19 @@ const FormAnalysis = () => {
         )}
 
         {feedback && (
-          <Card className="mt-6 border-fitness-primary/20">
-            <div className="p-6 space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <Info className="w-5 h-5 text-fitness-primary" />
-                  <h3 className="text-lg font-semibold text-fitness-primary">Form Analysis</h3>
+          <Card className="mt-6 bg-white shadow-sm border border-fitness-primary/10">
+            <div className="p-6 space-y-5">
+              <div className="flex justify-between items-center border-b pb-3 border-fitness-primary/10">
+                <div className="flex items-center gap-3">
+                  <Info className="w-6 h-6 text-fitness-primary" />
+                  <h3 className="text-xl font-bold text-fitness-primary">
+                    Professional Form Analysis
+                  </h3>
                 </div>
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-sm flex gap-1.5 items-center hover:bg-fitness-primary/10"
+                  className="text-sm flex gap-2 items-center hover:bg-fitness-primary/10"
                   onClick={handleCopyFeedback}
                 >
                   {copied ? (
@@ -289,20 +302,22 @@ const FormAnalysis = () => {
                   ) : (
                     <>
                       <Copy className="w-4 h-4" />
-                      <span>Copy</span>
+                      <span>Copy Feedback</span>
                     </>
                   )}
                 </Button>
               </div>
               
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-700 whitespace-pre-line leading-relaxed">{feedback}</p>
+              <div className="bg-gray-50 rounded-xl p-5 space-y-4">
+                <p className="text-gray-800 leading-relaxed font-medium text-base">
+                  {feedback}
+                </p>
               </div>
               
-              <div className="flex items-center gap-2 pt-2 text-sm text-gray-500">
-                <Info className="w-4 h-4" />
+              <div className="flex items-center gap-3 text-sm text-gray-500 border-t pt-3 border-fitness-primary/10">
+                <Info className="w-4 h-4 text-fitness-primary/70" />
                 <p className="italic">
-                  This analysis is provided by AI and should not replace professional advice.
+                  AI-generated analysis. Consult a fitness professional for personalized guidance.
                 </p>
               </div>
             </div>
