@@ -12,6 +12,7 @@ interface StatsCardProps {
   };
   className?: string;
   style?: React.CSSProperties;
+  indicatorClassName?: string;
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ 
@@ -20,12 +21,13 @@ const StatsCard: React.FC<StatsCardProps> = ({
   icon, 
   trend,
   className,
-  style
+  style,
+  indicatorClassName
 }) => {
   return (
     <div 
       className={cn(
-        "flex items-start p-4 bg-white rounded-2xl animate-fade-up", 
+        "flex items-start p-4 bg-white rounded-2xl animate-fade-up shadow-sm hover:shadow-md transition-shadow", 
         className
       )}
       style={style}
@@ -37,7 +39,8 @@ const StatsCard: React.FC<StatsCardProps> = ({
           {trend && (
             <span className={cn(
               "text-xs font-medium",
-              trend.isPositive ? "text-green-500" : "text-fitness-secondary"
+              trend.isPositive ? "text-green-500" : "text-fitness-secondary",
+              indicatorClassName
             )}>
               {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
             </span>

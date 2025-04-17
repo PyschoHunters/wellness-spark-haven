@@ -50,11 +50,11 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col animate-scale-up">
+    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 animate-fade-in backdrop-blur-sm">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col animate-scale-up shadow-xl">
         <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gradient-to-r from-fitness-primary/10 to-white">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-fitness-gray-light flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-fitness-gray-light flex items-center justify-center shadow-sm">
               {getActivityIcon(type)}
             </div>
             <div>
@@ -88,6 +88,12 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
                 style={{ width: `${Math.min(100, (calories / 600) * 100)}%` }}
               ></div>
             </div>
+            
+            <div className="flex justify-end mt-2">
+              <span className="text-xs text-fitness-gray">
+                {Math.min(100, Math.round((calories / 600) * 100))}% of daily goal
+              </span>
+            </div>
           </div>
           
           {stats.length > 0 && (
@@ -98,7 +104,7 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {stats.map((stat, index) => (
-                  <div key={index} className="bg-fitness-gray-light/50 p-3 rounded-xl hover:shadow-sm transition-all">
+                  <div key={index} className="bg-fitness-gray-light/50 p-3 rounded-xl hover:shadow-sm transition-all border border-gray-100">
                     <p className="text-xs text-fitness-gray">{stat.label}</p>
                     <p className="font-medium">{stat.value}</p>
                   </div>
@@ -112,7 +118,7 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
               <CheckCircle size={16} className="mr-2 text-fitness-primary" />
               Achievements
             </h3>
-            <div className="bg-white border border-fitness-gray-light/50 rounded-xl p-3 flex items-center justify-between mb-3">
+            <div className="bg-white border border-fitness-gray-light/50 rounded-xl p-3 flex items-center justify-between mb-3 hover:border-fitness-primary/30 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-fitness-primary/10 flex items-center justify-center">
                   <Flame size={18} className="text-fitness-primary" />
@@ -128,7 +134,7 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
             </div>
             
             {type === 'running' && (
-              <div className="bg-white border border-fitness-gray-light/50 rounded-xl p-3 flex items-center justify-between">
+              <div className="bg-white border border-fitness-gray-light/50 rounded-xl p-3 flex items-center justify-between hover:border-fitness-secondary/30 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-fitness-secondary/10 flex items-center justify-center">
                     <Calendar size={18} className="text-fitness-secondary" />
@@ -143,6 +149,20 @@ const ActivityDetail: React.FC<ActivityDetailProps> = ({
                 </Badge>
               </div>
             )}
+            
+            <div className="mt-4 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+              <div className="flex items-start gap-2">
+                <div className="min-w-5 mt-0.5">
+                  <Coins className="h-4 w-4 text-indigo-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-indigo-700">FitToken Rewards</p>
+                  <p className="text-xs text-indigo-600">
+                    You've earned 30 FTK from this activity! Rewards have been added to your wallet.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
