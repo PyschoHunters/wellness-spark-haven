@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +15,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithGithub: () => Promise<void>;
   updateUserAvatar: (avatarUrl: string) => void;
 }
 
@@ -142,6 +142,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const signInWithGithub = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      // Note: No need to navigate here as the OAuth redirect will handle it
+    } catch (error: any) {
+      showActionToast(error.message || 'Error signing in with GitHub');
+      console.error('Error signing in with GitHub:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const updateUserAvatar = (avatarUrl: string) => {
     if (user) {
       setUser({
@@ -159,6 +179,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signIn,
     signUp,
     signOut,
+    signInWithGithub,
     updateUserAvatar
   };
 
