@@ -4,7 +4,7 @@ import { X, ChefHat, Loader2, Utensils, Timer, Users, ArrowLeft, Plus, AlertCirc
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { showActionToast } from '@/utils/toast-utils';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Recipe {
   title: string;
@@ -28,7 +28,8 @@ const HealthyRecipeGenerator = ({ isOpen, onClose }: { isOpen: boolean; onClose:
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [popularIngredients] = useState([
-    'Chicken', 'Eggs', 'Spinach', 'Tofu', 'Quinoa', 'Avocado', 'Sweet Potato'
+    'Chicken', 'Eggs', 'Spinach', 'Tofu', 'Quinoa', 'Avocado', 'Sweet Potato',
+    'Salmon', 'Brown Rice', 'Broccoli', 'Lentils', 'Greek Yogurt'
   ]);
 
   // Clear any error when component opens
@@ -72,14 +73,18 @@ const HealthyRecipeGenerator = ({ isOpen, onClose }: { isOpen: boolean; onClose:
     try {
       const { data, error: supabaseError } = await supabase.functions.invoke('gemini-ai', {
         body: {
-          prompt: `Generate a healthy recipe using these ingredients: ${ingredients.join(', ')}. Include title, description, cooking time, servings (2-4), detailed ingredients list with measurements, numbered instructions, and nutritional information (calories, protein, carbs, fats). Format as JSON with this exact structure: 
+          prompt: `Generate a healthy recipe using these ingredients: ${ingredients.join(', ')}. 
+          The recipe MUST be provided ONLY as a valid JSON object with NO additional text or markdown formatting.
+          Include title, description, cooking time, servings (2-4), detailed ingredients list with measurements, numbered instructions, and nutritional information (calories, protein, carbs, fats).
+          
+          Format exactly as this JSON structure with no other text:
           {
             "title": "Recipe Title",
             "description": "Brief description",
             "cookingTime": "30 min",
             "servings": 4,
-            "ingredients": ["1 cup ingredient 1", "2 tbsp ingredient 2", ...],
-            "instructions": ["Step 1 instruction", "Step 2 instruction", ...],
+            "ingredients": ["1 cup ingredient 1", "2 tbsp ingredient 2"],
+            "instructions": ["Step 1 instruction", "Step 2 instruction"],
             "nutritionalInfo": {
               "calories": 350,
               "protein": "15g",
@@ -112,6 +117,7 @@ const HealthyRecipeGenerator = ({ isOpen, onClose }: { isOpen: boolean; onClose:
         }
         
         setRecipe(parsedRecipe);
+        showActionToast("Recipe generated successfully!");
       } catch (parseError) {
         console.error('Error parsing JSON:', parseError, data.recommendation);
         throw new Error('Failed to parse recipe data. The AI response was not in the expected format.');

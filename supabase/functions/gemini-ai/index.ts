@@ -8,25 +8,43 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Function to extract JSON from Gemini response
+const extractJsonFromText = (text) => {
+  // Try to find JSON content within backticks, braces, or plaintext
+  let jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+  if (jsonMatch) return jsonMatch[1];
+  
+  // Try to find JSON between curly braces if no backticks found
+  jsonMatch = text.match(/(\{[\s\S]*\})/);
+  if (jsonMatch) return jsonMatch[1];
+  
+  return text; // Return original text if no pattern matched
+};
+
 // Function to clean up Gemini responses
-const cleanupResponse = (text: string): string => {
-  // Remove markdown formatting (asterisks for bold/italic)
-  let cleaned = text.replace(/\*\*([^*]+)\*\*/g, '$1'); // Remove bold formatting **text**
-  cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');      // Remove italic formatting *text*
+const cleanupResponse = (text) => {
+  // For recipe requests, try to extract valid JSON
+  if (text.includes("title") && text.includes("ingredients")) {
+    const jsonText = extractJsonFromText(text);
+    try {
+      // Try to parse as JSON
+      const jsonObj = JSON.parse(jsonText);
+      return JSON.stringify(jsonObj);
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      // Return cleaned text instead
+    }
+  }
   
-  // Remove any markdown headers (# Header)
+  // Regular text cleanup for non-JSON responses
+  let cleaned = text.replace(/\*\*([^*]+)\*\*/g, '$1'); 
+  cleaned = cleaned.replace(/\*([^*]+)\*/g, '$1');
   cleaned = cleaned.replace(/#{1,6}\s+([^\n]+)/g, '$1');
-  
-  // Clean up bullet points and numbered lists for better display
-  cleaned = cleaned.replace(/^\s*[-*•]\s+/gm, '• ');    // Standardize bullet points
-  cleaned = cleaned.replace(/^\s*\d+\.\s+/gm, '');      // Remove numbered list markers
-  
-  // Remove double line breaks and standardize spacing
+  cleaned = cleaned.replace(/^\s*[-*•]\s+/gm, '• ');
+  cleaned = cleaned.replace(/^\s*\d+\.\s+/gm, '');
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
-  
-  // Remove any remaining markdown artifacts
-  cleaned = cleaned.replace(/`([^`]+)`/g, '$1');        // Remove code ticks
-  cleaned = cleaned.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // Remove markdown links
+  cleaned = cleaned.replace(/`([^`]+)`/g, '$1');
+  cleaned = cleaned.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
   
   return cleaned.trim();
 };
@@ -69,8 +87,8 @@ serve(async (req) => {
           }
         ],
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 500,
+          temperature: 0.4, // Lower temperature for more structured responses
+          maxOutputTokens: 800, // Increased token limit for recipes
         }
       })
     });
