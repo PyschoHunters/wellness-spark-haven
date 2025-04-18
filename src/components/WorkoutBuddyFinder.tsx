@@ -49,7 +49,7 @@ const WorkoutBuddyFinder: React.FC = () => {
     {
       id: 1,
       name: "Ananya Gupta",
-      avatar: "https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      avatar: "/lovable-uploads/a26c2a99-d523-4a37-a2dd-2f76e5088aae.png",
       location: "Downtown",
       distance: "1.2 km",
       fitnessLevel: "Intermediate",
