@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { X, ChefHat, Loader2, Utensils, Timer, Users, ArrowLeft, Plus, Delete } from 'lucide-react';
+import { X, ChefHat, Loader2, Utensils, Timer, Users, ArrowLeft, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { showActionToast } from '@/utils/toast-utils';
+import { createClient } from '@supabase/supabase-js';
 
 interface Recipe {
   title: string;
@@ -44,31 +45,29 @@ const HealthyRecipeGenerator = ({ isOpen, onClose }: { isOpen: boolean; onClose:
     }
 
     setIsLoading(true);
-    // Simulate API call - In a real app, this would call your backend
-    setTimeout(() => {
-      const mockRecipe: Recipe = {
-        title: "Healthy Mediterranean Quinoa Bowl",
-        description: "A nutritious and delicious bowl packed with proteins and fresh vegetables.",
-        cookingTime: "25 minutes",
-        servings: 2,
-        ingredients: ingredients,
-        instructions: [
-          "Cook quinoa according to package instructions",
-          "Chop all vegetables into bite-sized pieces",
-          "Mix ingredients in a large bowl",
-          "Add olive oil and season to taste",
-          "Garnish with fresh herbs"
-        ],
-        nutritionalInfo: {
-          calories: 420,
-          protein: "15g",
-          carbs: "45g",
-          fats: "12g"
+    try {
+      const supabase = createClient(
+        process.env.VITE_SUPABASE_URL!,
+        process.env.VITE_SUPABASE_ANON_KEY!
+      );
+
+      const { data, error } = await supabase.functions.invoke('gemini-ai', {
+        body: {
+          prompt: `Generate a healthy recipe using these ingredients: ${ingredients.join(', ')}. Include title, description, cooking time, servings (2-4), detailed instructions, and nutritional information (calories, protein, carbs, fats). Format as JSON.`,
+          type: 'nutrition'
         }
-      };
-      setRecipe(mockRecipe);
+      });
+
+      if (error) throw error;
+
+      const parsedRecipe = JSON.parse(data.recommendation);
+      setRecipe(parsedRecipe);
+    } catch (error) {
+      console.error('Error generating recipe:', error);
+      showActionToast('Failed to generate recipe. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 2000);
+    }
   };
 
   if (!isOpen) return null;
