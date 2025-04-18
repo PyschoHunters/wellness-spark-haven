@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Users, 
@@ -7,10 +8,15 @@ import {
   MessageSquare,
   Filter,
   ArrowLeft,
-  Search
+  Search,
+  Star
 } from 'lucide-react';
 import { showActionToast } from '@/utils/toast-utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import WorkoutBuddyChat from './WorkoutBuddyChat';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 
 interface WorkoutBuddy {
   id: number;
@@ -22,6 +28,8 @@ interface WorkoutBuddy {
   preferredWorkouts: string[];
   availability: string[];
   matchPercentage: number;
+  connectionStatus?: 'none' | 'pending' | 'connected';
+  chatStreak?: number;
 }
 
 const WorkoutBuddyFinder: React.FC = () => {
@@ -34,6 +42,8 @@ const WorkoutBuddyFinder: React.FC = () => {
     fitnessLevel: 'all',
     workoutType: 'all',
   });
+  const [showChatDialog, setShowChatDialog] = useState(false);
+  const [connectedBuddies, setConnectedBuddies] = useState<WorkoutBuddy[]>([]);
 
   const buddies: WorkoutBuddy[] = [
     {
@@ -45,7 +55,9 @@ const WorkoutBuddyFinder: React.FC = () => {
       fitnessLevel: "Intermediate",
       preferredWorkouts: ["HIIT", "Yoga", "Running"],
       availability: ["Mon-Wed (Evening)", "Sat (Morning)"],
-      matchPercentage: 87
+      matchPercentage: 87,
+      connectionStatus: 'none',
+      chatStreak: 0
     },
     {
       id: 2,
@@ -56,7 +68,9 @@ const WorkoutBuddyFinder: React.FC = () => {
       fitnessLevel: "Advanced",
       preferredWorkouts: ["Weightlifting", "CrossFit", "Swimming"],
       availability: ["Tue-Thu (Morning)", "Sun (Afternoon)"],
-      matchPercentage: 75
+      matchPercentage: 75,
+      connectionStatus: 'connected',
+      chatStreak: 3
     },
     {
       id: 3,
@@ -67,7 +81,9 @@ const WorkoutBuddyFinder: React.FC = () => {
       fitnessLevel: "Beginner",
       preferredWorkouts: ["Walking", "Light Cardio", "Yoga"],
       availability: ["Mon-Fri (Afternoon)", "Weekend (Flexible)"],
-      matchPercentage: 92
+      matchPercentage: 92,
+      connectionStatus: 'pending',
+      chatStreak: 0
     },
     {
       id: 4,
@@ -78,7 +94,9 @@ const WorkoutBuddyFinder: React.FC = () => {
       fitnessLevel: "Intermediate",
       preferredWorkouts: ["Running", "Group Classes", "Tennis"],
       availability: ["Weekends", "Wed (Evening)"],
-      matchPercentage: 68
+      matchPercentage: 68,
+      connectionStatus: 'none',
+      chatStreak: 0
     },
     {
       id: 5,
@@ -89,9 +107,17 @@ const WorkoutBuddyFinder: React.FC = () => {
       fitnessLevel: "Advanced",
       preferredWorkouts: ["Kickboxing", "Martial Arts", "Pilates"],
       availability: ["Mon-Fri (Morning)", "Sat (Evening)"],
-      matchPercentage: 81
+      matchPercentage: 81,
+      connectionStatus: 'connected',
+      chatStreak: 5
     }
   ];
+
+  useEffect(() => {
+    // Initialize connected buddies
+    const connected = buddies.filter(buddy => buddy.connectionStatus === 'connected');
+    setConnectedBuddies(connected);
+  }, []);
 
   const filteredBuddies = buddies.filter(buddy => {
     if (searchTerm && !buddy.name.toLowerCase().includes(searchTerm.toLowerCase())) {
@@ -134,8 +160,50 @@ const WorkoutBuddyFinder: React.FC = () => {
   };
 
   const handleContactBuddy = () => {
-    showActionToast("Message sent to workout buddy!");
+    if (selectedBuddy) {
+      if (selectedBuddy.connectionStatus === 'connected') {
+        // Open chat
+        setShowChatDialog(true);
+      } else if (selectedBuddy.connectionStatus === 'pending') {
+        // Accept connection
+        handleAcceptConnection(selectedBuddy.id);
+      } else {
+        // Send connection request
+        handleSendConnectionRequest(selectedBuddy.id);
+      }
+    }
+  };
+
+  const handleSendConnectionRequest = (buddyId: number) => {
+    // Update buddy connection status to pending
+    const updatedBuddies = buddies.map(b => 
+      b.id === buddyId ? { ...b, connectionStatus: 'pending' as const } : b
+    );
+    
+    setSelectedBuddy(updatedBuddies.find(b => b.id === buddyId) || null);
+    showActionToast("Connection request sent!");
     handleCloseDialog();
+  };
+
+  const handleAcceptConnection = (buddyId: number) => {
+    // Update buddy connection status to connected
+    const updatedBuddies = buddies.map(b => 
+      b.id === buddyId ? { ...b, connectionStatus: 'connected' as const } : b
+    );
+    
+    const connectedBuddy = updatedBuddies.find(b => b.id === buddyId);
+    if (connectedBuddy) {
+      setConnectedBuddies([...connectedBuddies, connectedBuddy]);
+    }
+    
+    setSelectedBuddy(connectedBuddy || null);
+    showActionToast("Connection accepted! You can now chat with this buddy.");
+    handleCloseDialog();
+  };
+
+  const handleOpenChat = (buddy: WorkoutBuddy) => {
+    setSelectedBuddy(buddy);
+    setShowChatDialog(true);
   };
 
   const handleApplyFilters = () => {
@@ -143,15 +211,75 @@ const WorkoutBuddyFinder: React.FC = () => {
     showActionToast("Filters applied");
   };
 
+  const getConnectionButtonText = (status?: 'none' | 'pending' | 'connected') => {
+    switch (status) {
+      case 'connected':
+        return "Chat Now";
+      case 'pending':
+        return "Accept Request";
+      default:
+        return "Connect";
+    }
+  };
+
   return (
     <>
       <button
-        className="fixed bottom-24 right-4 z-20 bg-fitness-primary text-white rounded-full p-3 shadow-lg flex items-center gap-2"
+        className="fixed bottom-24 right-4 z-20 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full p-3 shadow-lg flex items-center gap-2 hover:from-indigo-600 hover:to-purple-700 transition-all"
         onClick={handleOpenDialog}
       >
         <Users size={20} />
         <span className="font-medium">Find Buddy</span>
       </button>
+
+      {/* Connected Buddies Display */}
+      {connectedBuddies.length > 0 && (
+        <div className="fixed bottom-40 right-4 z-20 bg-white rounded-lg shadow-lg p-3 w-64 border border-gray-100">
+          <h3 className="text-sm font-medium mb-2 flex items-center">
+            <Users size={14} className="mr-2 text-fitness-primary" />
+            Connected Buddies
+          </h3>
+          <div className="max-h-[180px] overflow-y-auto space-y-2">
+            {connectedBuddies.map(buddy => (
+              <div 
+                key={buddy.id}
+                className="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
+                onClick={() => handleOpenChat(buddy)}
+              >
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                  <img 
+                    src={buddy.avatar} 
+                    alt={buddy.name} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium">{buddy.name}</h4>
+                  <div className="flex items-center text-xs text-gray-500">
+                    {buddy.chatStreak && buddy.chatStreak > 0 ? (
+                      <div className="flex items-center">
+                        <Star size={10} className="text-amber-500 mr-1" />
+                        <span>{buddy.chatStreak} day streak</span>
+                      </div>
+                    ) : (
+                      <span>Start chatting!</span>
+                    )}
+                  </div>
+                </div>
+                <button 
+                  className="ml-2 p-1.5 bg-fitness-primary text-white rounded-full hover:bg-fitness-primary/90"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenChat(buddy);
+                  }}
+                >
+                  <MessageSquare size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md">
@@ -206,15 +334,23 @@ const WorkoutBuddyFinder: React.FC = () => {
                       className="p-3 border border-gray-100 rounded-xl flex gap-3 items-center cursor-pointer hover:bg-gray-50 transition-colors"
                       onClick={() => handleBuddySelect(buddy)}
                     >
-                      <div className="w-12 h-12 rounded-full overflow-hidden">
-                        <img 
-                          src={buddy.avatar} 
-                          alt={buddy.name} 
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/48?text=User';
-                          }}
-                        />
+                      <div className="relative">
+                        <div className="w-12 h-12 rounded-full overflow-hidden">
+                          <img 
+                            src={buddy.avatar} 
+                            alt={buddy.name} 
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://via.placeholder.com/48?text=User';
+                            }}
+                          />
+                        </div>
+                        {buddy.connectionStatus === 'connected' && (
+                          <div className="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
+                        )}
+                        {buddy.connectionStatus === 'pending' && (
+                          <div className="absolute -bottom-1 -right-1 bg-amber-500 w-4 h-4 rounded-full border-2 border-white"></div>
+                        )}
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between">
@@ -239,7 +375,39 @@ const WorkoutBuddyFinder: React.FC = () => {
                             </span>
                           )}
                         </div>
+                        
+                        {buddy.connectionStatus === 'connected' && buddy.chatStreak && buddy.chatStreak > 0 && (
+                          <div className="mt-1.5 flex items-center gap-1 text-xs text-amber-600">
+                            <Star size={10} />
+                            <span>{buddy.chatStreak} day chat streak</span>
+                          </div>
+                        )}
                       </div>
+                      
+                      <Button
+                        size="sm"
+                        variant={buddy.connectionStatus === 'connected' ? 'default' : 
+                                buddy.connectionStatus === 'pending' ? 'secondary' : 'outline'}
+                        className="ml-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (buddy.connectionStatus === 'connected') {
+                            handleOpenChat(buddy);
+                          } else if (buddy.connectionStatus === 'pending') {
+                            handleAcceptConnection(buddy.id);
+                          } else {
+                            handleSendConnectionRequest(buddy.id);
+                          }
+                        }}
+                      >
+                        {buddy.connectionStatus === 'connected' ? (
+                          <><MessageSquare size={14} className="mr-1" /> Chat</>
+                        ) : buddy.connectionStatus === 'pending' ? (
+                          <>Accept</>
+                        ) : (
+                          <>Connect</>
+                        )}
+                      </Button>
                     </div>
                   ))
                 ) : (
@@ -344,6 +512,13 @@ const WorkoutBuddyFinder: React.FC = () => {
                 <div className="bg-fitness-primary/10 text-fitness-primary text-sm font-medium px-3 py-1 rounded-full mt-2">
                   {selectedBuddy.matchPercentage}% Match
                 </div>
+                
+                {selectedBuddy.connectionStatus === 'connected' && selectedBuddy.chatStreak && selectedBuddy.chatStreak > 0 && (
+                  <div className="flex items-center gap-1 mt-2 text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                    <Star size={14} />
+                    <span>{selectedBuddy.chatStreak} day chat streak</span>
+                  </div>
+                )}
               </div>
               
               <div className="space-y-3">
@@ -381,19 +556,70 @@ const WorkoutBuddyFinder: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-fitness-gray mb-1">Compatibility</h3>
+                  <div className="bg-gray-100 p-2 rounded-lg">
+                    <div className="mb-1 flex justify-between text-xs">
+                      <span>Match Score</span>
+                      <span>{selectedBuddy.matchPercentage}%</span>
+                    </div>
+                    <Progress value={selectedBuddy.matchPercentage} className="h-2" />
+                    
+                    <div className="mt-2 text-xs text-gray-600">
+                      {selectedBuddy.matchPercentage > 80 
+                        ? "Perfect match! You have very similar fitness goals and preferences."
+                        : selectedBuddy.matchPercentage > 60
+                        ? "Good match! You share several fitness interests."
+                        : "You have some common fitness interests and could learn from each other."}
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <button 
                 className="w-full bg-fitness-primary text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2"
                 onClick={handleContactBuddy}
               >
-                <MessageSquare size={18} />
-                <span>Contact Buddy</span>
+                {selectedBuddy.connectionStatus === 'connected' ? (
+                  <>
+                    <MessageSquare size={18} />
+                    <span>Chat Now</span>
+                  </>
+                ) : selectedBuddy.connectionStatus === 'pending' ? (
+                  <>
+                    <Users size={18} />
+                    <span>Accept Connection</span>
+                  </>
+                ) : (
+                  <>
+                    <Users size={18} />
+                    <span>Connect with Buddy</span>
+                  </>
+                )}
               </button>
             </div>
           )}
         </DialogContent>
       </Dialog>
+      
+      {/* Chat Dialog */}
+      {selectedBuddy && (
+        <WorkoutBuddyChat 
+          buddy={{
+            id: selectedBuddy.id,
+            name: selectedBuddy.name,
+            avatar: selectedBuddy.avatar,
+            interests: selectedBuddy.preferredWorkouts,
+            level: selectedBuddy.fitnessLevel
+          }}
+          isOpen={showChatDialog}
+          onClose={() => {
+            setShowChatDialog(false);
+            setSelectedBuddy(null);
+          }}
+        />
+      )}
     </>
   );
 };

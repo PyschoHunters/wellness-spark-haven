@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, MapPin, Calendar, Shield, Check, X, Heart, UserCheck, Dumbbell, Flame, Trophy, Users } from 'lucide-react';
+import { Search, Filter, MapPin, Calendar, Shield, Check, X, Heart, UserCheck, Dumbbell, Flame, Trophy, Users, MessageSquare, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { showActionToast } from '@/utils/toast-utils';
 import { 
@@ -16,6 +15,8 @@ import {
   DialogFooter 
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
+import WorkoutBuddyFinder from '@/components/WorkoutBuddyFinder';
+import WorkoutBuddyChat from '@/components/WorkoutBuddyChat';
 
 const workoutBuddies = [
   {
@@ -124,6 +125,7 @@ const BuddyFinder = () => {
   const [pendingRequests, setPendingRequests] = useState(0);
 
   const [advancedSearch, setAdvancedSearch] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   useEffect(() => {
     const pendingCount = buddies.filter(b => b.connectionStatus === 'pending').length;
@@ -219,6 +221,11 @@ const BuddyFinder = () => {
       default:
         return { text: 'Connect', variant: 'default' as const };
     }
+  };
+
+  const handleOpenChat = (buddy) => {
+    setSelectedBuddy(buddy);
+    setShowChat(true);
   };
 
   return (
@@ -424,21 +431,34 @@ const BuddyFinder = () => {
                       <span>{buddy.availability}</span>
                     </div>
                     
-                    <Button 
-                      size="sm" 
-                      variant={getConnectionStatus(buddy.connectionStatus).variant}
-                      onClick={() => handleConnect(buddy.id)}
-                      className="h-8"
-                    >
-                      {buddy.connectionStatus === 'pending' ? (
-                        <Check size={16} className="mr-1" />
-                      ) : buddy.connectionStatus === 'connected' ? (
-                        <UserCheck size={16} className="mr-1" />
-                      ) : (
-                        <Heart size={16} className="mr-1" />
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant={getConnectionStatus(buddy.connectionStatus).variant}
+                        onClick={() => handleConnect(buddy.id)}
+                        className="h-8"
+                      >
+                        {buddy.connectionStatus === 'pending' ? (
+                          <Check size={16} className="mr-1" />
+                        ) : buddy.connectionStatus === 'connected' ? (
+                          <UserCheck size={16} className="mr-1" />
+                        ) : (
+                          <Heart size={16} className="mr-1" />
+                        )}
+                        {getConnectionStatus(buddy.connectionStatus).text}
+                      </Button>
+                      
+                      {buddy.connectionStatus === 'connected' && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleOpenChat(buddy)}
+                        >
+                          <MessageSquare size={16} className="mr-1" />
+                          Chat
+                        </Button>
                       )}
-                      {getConnectionStatus(buddy.connectionStatus).text}
-                    </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -735,27 +755,61 @@ const BuddyFinder = () => {
             </div>
             
             <DialogFooter>
-              <Button
-                variant={getConnectionStatus(selectedBuddy.connectionStatus).variant}
-                onClick={() => {
-                  handleConnect(selectedBuddy.id);
-                  setShowBuddyDetail(false);
-                }}
-                className="w-full"
-              >
-                {selectedBuddy.connectionStatus === 'pending' ? (
-                  <Check size={16} className="mr-1" />
-                ) : selectedBuddy.connectionStatus === 'connected' ? (
-                  <UserCheck size={16} className="mr-1" />
-                ) : (
-                  <Heart size={16} className="mr-1" />
+              <div className="w-full flex gap-2">
+                <Button
+                  variant={getConnectionStatus(selectedBuddy.connectionStatus).variant}
+                  onClick={() => {
+                    handleConnect(selectedBuddy.id);
+                    setShowBuddyDetail(false);
+                  }}
+                  className="flex-1"
+                >
+                  {selectedBuddy.connectionStatus === 'pending' ? (
+                    <Check size={16} className="mr-1" />
+                  ) : selectedBuddy.connectionStatus === 'connected' ? (
+                    <UserCheck size={16} className="mr-1" />
+                  ) : (
+                    <Heart size={16} className="mr-1" />
+                  )}
+                  {getConnectionStatus(selectedBuddy.connectionStatus).text}
+                </Button>
+                
+                {selectedBuddy.connectionStatus === 'connected' && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowBuddyDetail(false);
+                      setShowChat(true);
+                    }}
+                  >
+                    <MessageSquare size={16} className="mr-1" />
+                    Chat
+                  </Button>
                 )}
-                {getConnectionStatus(selectedBuddy.connectionStatus).text}
-              </Button>
+              </div>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
+      
+      {selectedBuddy && (
+        <WorkoutBuddyChat
+          buddy={{
+            id: selectedBuddy.id,
+            name: selectedBuddy.name,
+            avatar: selectedBuddy.image,
+            interests: selectedBuddy.interests,
+            level: selectedBuddy.level
+          }}
+          isOpen={showChat}
+          onClose={() => {
+            setShowChat(false);
+            setSelectedBuddy(null);
+          }}
+        />
+      )}
+      
+      <WorkoutBuddyFinder />
       
       <Navigation />
     </div>
