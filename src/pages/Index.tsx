@@ -15,6 +15,7 @@ import WorkoutPlanGenerator from '@/components/WorkoutPlanGenerator';
 import ExpertAdvice from '@/components/ExpertAdvice';
 import WellnessHub from '@/components/WellnessHub';
 import FormAnalysisButton from '@/components/FormAnalysisButton';
+import BuddyFinderButton from '@/components/BuddyFinderButton';
 
 const weeklyActivity = [
   { name: 'Mon', calories: 320 },
@@ -232,6 +233,10 @@ const Home = () => {
           </button>
         </div>
         <ActivityChart data={weeklyActivity} />
+      </section>
+      
+      <section className="mb-6">
+        <BuddyFinderButton />
       </section>
       
       <section className="mb-6">
