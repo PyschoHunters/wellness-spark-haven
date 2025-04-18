@@ -1,15 +1,16 @@
-
 import React, { useState, useMemo } from 'react';
-import { CalendarDays, Clock, Dumbbell, TrendingUp, BarChart2, Flame, Heart, Award, Zap } from 'lucide-react';
+import { CalendarDays, Clock, Dumbbell, TrendingUp, BarChart2, Flame, Heart, Award, Zap, ChefHat } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import ActivityDetail from '@/components/ActivityDetail';
 import ActivityChart from '@/components/ActivityChart';
 import StatsCard from '@/components/StatsCard';
-import FitnessBadges from '@/components/FitnessBadges'; 
+import FitnessBadges from '@/components/FitnessBadges';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { showActionToast } from '@/utils/toast-utils';
+import HealthyRecipeGenerator from '@/components/HealthyRecipeGenerator';
 
 const activityTypes = [
   { name: 'All', icon: TrendingUp, active: true, count: 5 },
@@ -91,7 +92,6 @@ const activityHistory = [
   },
 ];
 
-// Weekly activity data for the chart
 const weeklyActivityData = [
   { name: 'Mon', calories: 280 },
   { name: 'Tue', calories: 350 },
@@ -102,7 +102,6 @@ const weeklyActivityData = [
   { name: 'Sun', calories: 380 },
 ];
 
-// Activity stats summary
 const activityStats = [
   {
     title: 'Total Calories',
@@ -147,8 +146,8 @@ const ActivityPage = () => {
   const [selectedActivity, setSelectedActivity] = useState<number | null>(null);
   const [showWeeklyChart, setShowWeeklyChart] = useState(true);
   const [showBadges, setShowBadges] = useState(false);
+  const [showRecipeGenerator, setShowRecipeGenerator] = useState(false);
 
-  // Calculate total calories for the week
   const totalWeeklyCalories = useMemo(() => {
     return weeklyActivityData.reduce((sum, day) => sum + day.calories, 0);
   }, [weeklyActivityData]);
@@ -209,7 +208,6 @@ const ActivityPage = () => {
         }
       />
       
-      {/* Stats Section */}
       <section className="mb-6">
         <div className="grid grid-cols-2 gap-3">
           {activityStats.map((stat, index) => (
@@ -226,7 +224,16 @@ const ActivityPage = () => {
         </div>
       </section>
 
-      {/* Weekly Activity Chart */}
+      <section className="mb-6">
+        <Button
+          onClick={() => setShowRecipeGenerator(true)}
+          className="w-full bg-gradient-to-r from-fitness-primary to-fitness-secondary text-white shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          <ChefHat className="mr-2 h-5 w-5" />
+          Generate Healthy Recipe
+        </Button>
+      </section>
+
       <section className={cn("mb-6", showWeeklyChart ? "block" : "hidden")}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Weekly Activity</h2>
@@ -256,7 +263,6 @@ const ActivityPage = () => {
         </div>
       </section>
       
-      {/* Activity Filters */}
       <div className="flex gap-3 overflow-x-auto pb-2 mb-6 no-scrollbar">
         {activityTypes.map((type, index) => (
           <button
@@ -286,7 +292,6 @@ const ActivityPage = () => {
         ))}
       </div>
       
-      {/* Activity History */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">History</h2>
@@ -357,7 +362,6 @@ const ActivityPage = () => {
         )}
       </div>
       
-      {/* Fitness Badges Section */}
       <section className={cn("mb-6", showBadges ? "block" : "hidden")}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold flex items-center">
@@ -374,7 +378,6 @@ const ActivityPage = () => {
         <FitnessBadges />
       </section>
       
-      {/* Show/Hide Badges Button */}
       {!showBadges && (
         <button 
           className="w-full bg-white rounded-2xl p-4 mb-6 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all animate-fade-up"
@@ -393,6 +396,11 @@ const ActivityPage = () => {
       )}
       
       <Navigation />
+      
+      <HealthyRecipeGenerator 
+        isOpen={showRecipeGenerator}
+        onClose={() => setShowRecipeGenerator(false)}
+      />
     </div>
   );
 };
