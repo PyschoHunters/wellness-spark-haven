@@ -57,7 +57,7 @@ const workoutBuddies = [
     interests: ['Swimming', 'Pilates'],
     availability: 'Weekends',
     availabilityDays: ['Saturday', 'Sunday'],
-    image: 'https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD3PjtcB-W5KNBduwG6OLLyip5Is2m69gOcg&s',
     level: 'Beginner',
     bio: 'Just starting my fitness journey. Looking for supportive workout friends to learn with.',
     matchPercentage: 91,
