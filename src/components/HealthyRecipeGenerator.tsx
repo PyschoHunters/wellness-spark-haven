@@ -4,7 +4,7 @@ import { X, ChefHat, Loader2, Utensils, Timer, Users, ArrowLeft, Plus } from 'lu
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { showActionToast } from '@/utils/toast-utils';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/supabase';
 
 interface Recipe {
   title: string;
@@ -46,11 +46,6 @@ const HealthyRecipeGenerator = ({ isOpen, onClose }: { isOpen: boolean; onClose:
 
     setIsLoading(true);
     try {
-      const supabase = createClient(
-        process.env.VITE_SUPABASE_URL!,
-        process.env.VITE_SUPABASE_ANON_KEY!
-      );
-
       const { data, error } = await supabase.functions.invoke('gemini-ai', {
         body: {
           prompt: `Generate a healthy recipe using these ingredients: ${ingredients.join(', ')}. Include title, description, cooking time, servings (2-4), detailed instructions, and nutritional information (calories, protein, carbs, fats). Format as JSON.`,
