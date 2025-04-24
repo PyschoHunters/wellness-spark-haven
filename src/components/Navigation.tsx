@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, BarChart2, Calendar, User, Users, Award } from 'lucide-react';
+import { Home, BarChart2, Calendar, User, Award, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -12,7 +12,7 @@ const Navigation = () => {
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
     { path: '/activity', icon: BarChart2, label: 'Activity' },
-    { path: '/schedule', icon: Calendar, label: 'Schedule' },
+    { path: '/meditation', icon: Heart, label: 'Meditate' },
     { path: '/fitchain', icon: Award, label: 'FitChain' },
     { path: '/profile', icon: User, label: 'Profile' }
   ];
