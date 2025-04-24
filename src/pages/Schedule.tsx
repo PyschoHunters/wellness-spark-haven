@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, Check, Headphones } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Check, Trophy } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import EmailForm from '@/components/EmailForm';
@@ -103,9 +103,9 @@ const SchedulePage = () => {
     setShowEmailForm(false);
   };
 
-  const navigateToMeditation = () => {
-    navigate('/meditation');
-    showActionToast("Opening full meditation experience");
+  const navigateToFitnessChallenges = () => {
+    navigate('/fitness-challenges');
+    showActionToast("Opening fitness challenges");
   };
 
   return (
@@ -150,13 +150,13 @@ const SchedulePage = () => {
       
       <div className="mb-6 animate-fade-up">
         <Button 
-          onClick={navigateToMeditation}
-          className="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 flex items-center justify-center py-6 rounded-xl border border-indigo-200"
+          onClick={navigateToFitnessChallenges}
+          className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center justify-center py-6 rounded-xl border border-amber-200"
         >
-          <Headphones className="mr-2 h-6 w-6" />
+          <Trophy className="mr-2 h-6 w-6" />
           <div className="text-left">
-            <div className="font-medium">Voice Guided Meditation</div>
-            <div className="text-xs opacity-80">Open full meditation experience</div>
+            <div className="font-medium">Fitness Challenges</div>
+            <div className="text-xs opacity-80">Compete and earn rewards</div>
           </div>
         </Button>
       </div>
