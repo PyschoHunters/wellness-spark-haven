@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
 import { showActionToast } from '@/utils/toast-utils';
+import { useNavigate } from 'react-router-dom';
 
 interface MeditationSession {
   id: number;
@@ -19,19 +20,19 @@ const meditationSessions: MeditationSession[] = [
     id: 1,
     title: "Morning Calm",
     duration: 180, // 3 minutes
-    audioUrl: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_cb2cf4f7e7.mp3"
+    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-silence-appears-547.mp3"
   },
   {
     id: 2,
     title: "Stress Relief",
     duration: 240, // 4 minutes
-    audioUrl: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d16d7196d0.mp3"
+    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3"
   },
   {
     id: 3,
     title: "Deep Focus",
     duration: 300, // 5 minutes
-    audioUrl: "https://cdn.pixabay.com/download/audio/2022/03/09/audio_861b4fe3a5.mp3"
+    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3"
   }
 ];
 
@@ -48,6 +49,7 @@ const MeditationWidget: React.FC = () => {
   const [volume, setVolume] = useState(80);
   const [isMuted, setIsMuted] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -56,6 +58,12 @@ const MeditationWidget: React.FC = () => {
     // Initialize audio element
     audioRef.current = new Audio(selectedSession.audioUrl);
     audioRef.current.volume = volume / 100;
+    audioRef.current.addEventListener('loadeddata', () => {
+      console.log("Audio loaded successfully:", selectedSession.audioUrl);
+    });
+    audioRef.current.addEventListener('error', (e) => {
+      console.error("Error loading audio:", e);
+    });
     
     // Clean up on component unmount
     return () => {
@@ -179,6 +187,10 @@ const MeditationWidget: React.FC = () => {
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
+  
+  const navigateToFullMeditation = () => {
+    navigate('/meditation');
+  };
 
   const progress = (currentTime / selectedSession.duration) * 100;
 
@@ -189,12 +201,22 @@ const MeditationWidget: React.FC = () => {
           <Heart size={18} className="text-red-500" />
           Voice-Guided Meditation
         </h2>
-        <button 
-          className="text-sm font-medium text-fitness-primary"
-          onClick={toggleExpanded}
-        >
-          {expanded ? "Collapse" : "Expand"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button 
+            className="text-sm font-medium text-fitness-primary"
+            onClick={toggleExpanded}
+          >
+            {expanded ? "Collapse" : "Expand"}
+          </button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1 border-dashed border-fitness-primary text-fitness-primary"
+            onClick={navigateToFullMeditation}
+          >
+            Full Experience
+          </Button>
+        </div>
       </div>
       
       <Card>

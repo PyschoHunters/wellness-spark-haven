@@ -17,6 +17,7 @@ import ExpertAdvicePage, { BlogPostDetail } from "./pages/ExpertAdvicePage";
 import NariShakti from "./pages/NariShakti";
 import FitChain from "./pages/FitChain";
 import FormAnalysis from "./pages/FormAnalysis";
+import MeditationPage from "./pages/MeditationPage";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
               <Route path="/nari-shakti" element={<NariShakti />} />
               <Route path="/fitchain" element={<FitChain />} />
               <Route path="/form-analysis" element={<FormAnalysis />} />
+              <Route path="/meditation" element={<MeditationPage />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
