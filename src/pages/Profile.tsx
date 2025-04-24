@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Flame, Clock, Heart, Activity, Camera, Medal, Award, Trophy, Plus, PlusCircle, RefreshCw, User, Users, Baby, UserRound } from 'lucide-react';
 import Navigation from '@/components/Navigation';
@@ -7,7 +8,7 @@ import BodyProgress from '@/components/BodyProgress';
 import PersonalRecommendations from '@/components/PersonalRecommendations';
 import WaterTracker from '@/components/WaterTracker';
 import SleepTracker from '@/components/SleepTracker';
-import MindfulnessWidget from '@/components/MindfulnessWidget';
+import { MindfulnessWidget } from '@/components/MindfulnessWidget';
 import YogaCard from '@/components/YogaCard';
 import MoodWorkout from '@/components/MoodWorkout';
 import EcoFitRewards from '@/components/EcoFitRewards';
