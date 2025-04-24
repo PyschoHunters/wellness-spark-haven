@@ -1,17 +1,16 @@
-
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, Check } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Check, Headphones } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import EmailForm from '@/components/EmailForm';
 import AddWorkout from '@/components/AddWorkout';
-import MeditationWidget from '@/components/MeditationWidget';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { showActionToast, sendEmailReminder } from '@/utils/toast-utils';
+import { useNavigate } from 'react-router-dom';
 
 const initialWorkouts = [
   {
@@ -43,6 +42,7 @@ const SchedulePage = () => {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState<typeof initialWorkouts[0] | null>(null);
   const [showAddWorkout, setShowAddWorkout] = useState(false);
+  const navigate = useNavigate();
 
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
@@ -103,6 +103,11 @@ const SchedulePage = () => {
     setShowEmailForm(false);
   };
 
+  const navigateToMeditation = () => {
+    navigate('/meditation');
+    showActionToast("Opening full meditation experience");
+  };
+
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
       <Header 
@@ -143,9 +148,17 @@ const SchedulePage = () => {
         </Popover>
       </div>
       
-      {/* New Meditation Widget */}
-      <div className="mb-6">
-        <MeditationWidget />
+      <div className="mb-6 animate-fade-up">
+        <Button 
+          onClick={navigateToMeditation}
+          className="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-800 flex items-center justify-center py-6 rounded-xl border border-indigo-200"
+        >
+          <Headphones className="mr-2 h-6 w-6" />
+          <div className="text-left">
+            <div className="font-medium">Voice Guided Meditation</div>
+            <div className="text-xs opacity-80">Open full meditation experience</div>
+          </div>
+        </Button>
       </div>
       
       <div className="mb-6">

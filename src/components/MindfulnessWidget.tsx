@@ -15,7 +15,7 @@ const meditationSessions = [
     duration: 300, // 5 minutes in seconds
     description: "Start your day with clarity",
     level: "Beginner",
-    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-silence-appears-547.mp3"
+    audioUrl: "https://audio.jukehost.co.uk/oRST2nTnzYfXBEL4WFGZl4OdJbJZDCa0"
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const meditationSessions = [
     duration: 600, // 10 minutes
     description: "Release tension and find balance",
     level: "Intermediate",
-    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3"
+    audioUrl: "https://audio.jukehost.co.uk/xdBITvgna6CHGjsMDl8x4CDdhTSjxOYl"
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const meditationSessions = [
     duration: 900, // 15 minutes
     description: "Enhance concentration",
     level: "All Levels",
-    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3"
+    audioUrl: "https://audio.jukehost.co.uk/a6PFGOnKGpKL0UjECUTJYvhVlVdZwrUw"
   },
   {
     id: 4,
@@ -39,7 +39,7 @@ const meditationSessions = [
     duration: 1200, // 20 minutes
     description: "Calm your mind before sleep",
     level: "Beginner",
-    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3"
+    audioUrl: "https://audio.jukehost.co.uk/8sQvpTJ8yrkSeEuUZcWRf2xe2n5sWORg"
   },
   {
     id: 5,
@@ -47,7 +47,7 @@ const meditationSessions = [
     duration: 720, // 12 minutes
     description: "Connect with your body",
     level: "Intermediate",
-    audioUrl: "https://assets.mixkit.co/music/preview/mixkit-calm-peaceful-atmosphere-122.mp3"
+    audioUrl: "https://audio.jukehost.co.uk/TXKLAKjdWqMBaFQdxneDYKIvnswLJNnC"
   }
 ];
 
