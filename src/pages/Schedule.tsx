@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import EmailForm from '@/components/EmailForm';
 import AddWorkout from '@/components/AddWorkout';
+import MeditationWidget from '@/components/MeditationWidget';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -140,6 +141,11 @@ const SchedulePage = () => {
             />
           </PopoverContent>
         </Popover>
+      </div>
+      
+      {/* New Meditation Widget */}
+      <div className="mb-6">
+        <MeditationWidget />
       </div>
       
       <div className="mb-6">
