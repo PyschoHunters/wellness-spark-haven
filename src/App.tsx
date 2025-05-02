@@ -19,6 +19,7 @@ import FitChain from "./pages/FitChain";
 import FormAnalysis from "./pages/FormAnalysis";
 import MeditationPage from "./pages/MeditationPage";
 import FitnessChallenges from "./pages/FitnessChallenges";
+import PregnancyWorkouts from "./pages/PregnancyWorkouts";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/form-analysis" element={<FormAnalysis />} />
               <Route path="/meditation" element={<MeditationPage />} />
               <Route path="/fitness-challenges" element={<FitnessChallenges />} />
+              <Route path="/pregnancy-workouts" element={<PregnancyWorkouts />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />

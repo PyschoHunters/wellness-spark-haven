@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Calendar as CalendarIcon, Clock, Check, Trophy } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Check, Trophy, Baby } from 'lucide-react';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import EmailForm from '@/components/EmailForm';
@@ -148,15 +149,26 @@ const SchedulePage = () => {
         </Popover>
       </div>
       
-      <div className="mb-6 animate-fade-up">
+      <div className="mb-6 animate-fade-up flex gap-4">
         <Button 
           onClick={navigateToFitnessChallenges}
-          className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center justify-center py-6 rounded-xl border border-amber-200"
+          className="flex-1 bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center justify-center py-6 rounded-xl border border-amber-200"
         >
           <Trophy className="mr-2 h-6 w-6" />
           <div className="text-left">
             <div className="font-medium">Fitness Challenges</div>
             <div className="text-xs opacity-80">Compete and earn rewards</div>
+          </div>
+        </Button>
+        
+        <Button 
+          onClick={() => navigate('/pregnancy-workouts')}
+          className="flex-1 bg-pink-100 hover:bg-pink-200 text-pink-800 flex items-center justify-center py-6 rounded-xl border border-pink-200"
+        >
+          <Baby className="mr-2 h-6 w-6" />
+          <div className="text-left">
+            <div className="font-medium">Pregnancy Workouts</div>
+            <div className="text-xs opacity-80">Trimester-specific exercises</div>
           </div>
         </Button>
       </div>
