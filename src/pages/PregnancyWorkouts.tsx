@@ -55,7 +55,7 @@ const PregnancyWorkouts = () => {
   const navigate = useNavigate();
   const [trimester, setTrimester] = useState<PregnancyStage>('first');
   const [intensity, setIntensity] = useState<WorkoutIntensity>('gentle');
-  const [duration, setDuration] = useState<WorkoutDuration>('20');
+  const [workoutDuration, setWorkoutDuration] = useState<WorkoutDuration>('20');
   const [symptomFocus, setSymptomFocus] = useState<string[]>([]);
   const [workoutData, setWorkoutData] = useState<PregnancyWorkout[]>(sampleWorkoutData);
   const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +92,7 @@ const PregnancyWorkouts = () => {
                           'Third Trimester';
       
       let prompt = `Generate 4-6 pregnancy workout recommendations for a woman in her ${trimesterName} (${getWeeksRange(trimester)}). `;
-      prompt += `She prefers ${intensity} intensity workouts with a duration of about ${duration} minutes. `;
+      prompt += `She prefers ${intensity} intensity workouts with a duration of about ${workoutDuration} minutes. `;
       
       if (symptomFocus.length > 0) {
         prompt += `She is experiencing the following symptoms that need focus: ${symptomFocus.join(', ')}. `;
@@ -147,7 +147,7 @@ const PregnancyWorkouts = () => {
           title: workout.title || `Workout ${index + 1}`,
           description: workout.description || '',
           trimester: [trimester],
-          duration: workout.duration || `${duration} min`,
+          duration: workout.duration || `${workoutDuration} min`,
           intensity: (workout.intensity?.toLowerCase() || intensity) as WorkoutIntensity,
           benefits: Array.isArray(workout.benefits) ? workout.benefits : ['Improves overall health'],
           cautions: Array.isArray(workout.cautions) ? workout.cautions : ['Consult your doctor'],
@@ -182,7 +182,7 @@ const PregnancyWorkouts = () => {
       
       const title = lines[0];
       let description = '';
-      let duration = `${duration} min`;
+      let duration = `${workoutDuration} min`;
       let workoutIntensity = intensity;
       const benefits: string[] = [];
       const cautions: string[] = [];
@@ -385,30 +385,30 @@ const PregnancyWorkouts = () => {
                 <p className="text-sm text-gray-500 mb-2">Workout Duration</p>
                 <div className="flex gap-2">
                   <Button 
-                    variant={duration === '15' ? 'default' : 'outline'}
+                    variant={workoutDuration === '15' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setDuration('15')}
+                    onClick={() => setWorkoutDuration('15')}
                   >
                     15 min
                   </Button>
                   <Button 
-                    variant={duration === '20' ? 'default' : 'outline'}
+                    variant={workoutDuration === '20' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setDuration('20')}
+                    onClick={() => setWorkoutDuration('20')}
                   >
                     20 min
                   </Button>
                   <Button 
-                    variant={duration === '30' ? 'default' : 'outline'}
+                    variant={workoutDuration === '30' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setDuration('30')}
+                    onClick={() => setWorkoutDuration('30')}
                   >
                     30 min
                   </Button>
                   <Button 
-                    variant={duration === '45' ? 'default' : 'outline'}
+                    variant={workoutDuration === '45' ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setDuration('45')}
+                    onClick={() => setWorkoutDuration('45')}
                   >
                     45 min
                   </Button>
