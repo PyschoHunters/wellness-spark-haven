@@ -115,7 +115,7 @@ const ExerciseCounter = () => {
   };
 
   const detectPose = async () => {
-    if (!detector || !videoRef.current || !videoRef.current.readyState === 4 || !canvasRef.current) {
+    if (!detector || !videoRef.current || videoRef.current.readyState !== 4 || !canvasRef.current) {
       requestAnimationRef.current = requestAnimationFrame(detectPose);
       return;
     }
@@ -380,3 +380,4 @@ const ExerciseCounter = () => {
 };
 
 export default ExerciseCounter;
+
