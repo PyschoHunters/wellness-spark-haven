@@ -32,7 +32,15 @@ const Header: React.FC<HeaderProps> = ({
     // Fall back to email (before the @ symbol)
     if (user.email) {
       const emailName = user.email.split('@')[0];
-      // Capitalize the first letter
+      
+      // Format the email name to capitalize first letter of each part
+      // This will transform 'manumohan.ai21' to 'Manumohan'
+      if (emailName.includes('.')) {
+        const nameParts = emailName.split('.');
+        return nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1);
+      }
+      
+      // Capitalize the first letter for simple email names
       return emailName.charAt(0).toUpperCase() + emailName.slice(1);
     }
     
