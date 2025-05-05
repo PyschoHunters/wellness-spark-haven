@@ -14,7 +14,7 @@ const FormAnalysisButton = () => {
       <div className="bg-white/20 p-1.5 rounded-full">
         <Camera className="w-5 h-5" />
       </div>
-      <span className="font-medium">AI Workout Form Analyzer</span>
+      <span className="font-medium">AI Form Analysis & Rep Counter</span>
     </Button>
   );
 };
