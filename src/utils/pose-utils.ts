@@ -169,11 +169,11 @@ export const detectRepCompletion = (
   
   if (currentAngle < downThreshold && status !== 'down') {
     newStatus = 'down';
-    console.log("Status changed to DOWN, angle:", currentAngle);
+    console.log("Status changed to DOWN, angle:", currentAngle.toFixed(1));
   } else if (currentAngle > upThreshold && status === 'down') {
     newStatus = 'up';
     repCompleted = true;
-    console.log("REP COMPLETED! Status changed to UP, angle:", currentAngle);
+    console.log("REP COMPLETED! Status changed to UP, angle:", currentAngle.toFixed(1));
   }
   
   return { newStatus, repCompleted };
