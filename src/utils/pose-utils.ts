@@ -138,6 +138,27 @@ export const calculateVerticalDisplacementPercentage = (
 };
 
 /**
+ * Check if a set of keypoints has acceptable confidence scores for exercise detection
+ * @param keypointMap - Map of keypoints
+ * @param requiredKeypoints - Array of required keypoint names
+ * @param minConfidence - Minimum confidence threshold
+ * @returns Whether keypoints are valid for exercise detection
+ */
+export const hasValidKeypoints = (
+  keypointMap: Record<string, any>,
+  requiredKeypoints: string[],
+  minConfidence: number = 0.3
+): boolean => {
+  for (const keypointName of requiredKeypoints) {
+    const keypoint = keypointMap[keypointName];
+    if (!keypoint || !keypoint.score || keypoint.score < minConfidence) {
+      return false;
+    }
+  }
+  return true;
+};
+
+/**
  * Debug helper: Log visibility scores of keypoints
  * @param keypointMap - Map of keypoints with their scores
  */
@@ -178,3 +199,109 @@ export const detectRepCompletion = (
   
   return { newStatus, repCompleted };
 };
+
+/**
+ * Check if the detected pose is valid for exercise tracking
+ * @param pose - The detected pose
+ * @param exerciseType - Type of exercise being performed
+ * @returns Whether the pose is valid for the given exercise
+ */
+export const isPoseValidForExercise = (pose: any, exerciseType: string): boolean => {
+  if (!pose || !pose.keypoints || pose.keypoints.length === 0) {
+    return false;
+  }
+  
+  // Create keypoint map for easy access
+  const keypointMap = pose.keypoints.reduce((map: Record<string, any>, keypoint: any) => {
+    map[keypoint.name || ''] = keypoint;
+    return map;
+  }, {});
+  
+  // Check for required keypoints based on exercise type
+  const requiredKeypoints = getRequiredKeypointsForExercise(exerciseType);
+  return hasValidKeypoints(keypointMap, requiredKeypoints, 0.2);
+};
+
+/**
+ * Get required keypoints for a specific exercise type
+ * @param exerciseType - Type of exercise
+ * @returns Array of required keypoint names
+ */
+export const getRequiredKeypointsForExercise = (exerciseType: string): string[] => {
+  // Basic set of keypoints for most exercises
+  const basicKeypoints = ['left_shoulder', 'right_shoulder', 'left_hip', 'right_hip'];
+  
+  switch (exerciseType) {
+    case 'squat':
+      return [...basicKeypoints, 'left_knee', 'left_ankle', 'right_knee', 'right_ankle'];
+    
+    case 'push-up':
+      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+    
+    case 'bicep-curl':
+      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+    
+    case 'lateral-raise':
+      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+    
+    case 'shoulder-press':
+      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+    
+    case 'jumping-jack':
+      return [...basicKeypoints, 'left_ankle', 'right_ankle'];
+    
+    case 'lunges':
+      return [...basicKeypoints, 'left_knee', 'left_ankle', 'right_knee', 'right_ankle'];
+    
+    default:
+      return basicKeypoints;
+  }
+};
+
+/**
+ * Get a clear user-friendly message to explain why pose detection might not be working
+ * @param pose - Detected pose
+ * @param exerciseType - Type of exercise
+ * @returns Message explaining detection issues
+ */
+export const getPoseDetectionFeedback = (pose: any, exerciseType: string): string => {
+  if (!pose || !pose.keypoints || pose.keypoints.length === 0) {
+    return "No pose detected - please ensure you are visible in the camera frame.";
+  }
+
+  // Calculate average confidence
+  let totalConfidence = 0;
+  let visiblePoints = 0;
+  const keypointMap: Record<string, any> = {};
+  
+  pose.keypoints.forEach((keypoint: any) => {
+    if (keypoint.score && keypoint.name) {
+      keypointMap[keypoint.name] = keypoint;
+      totalConfidence += keypoint.score;
+      visiblePoints++;
+    }
+  });
+
+  const avgConfidence = visiblePoints > 0 ? totalConfidence / visiblePoints : 0;
+  
+  // Provide appropriate feedback based on pose quality
+  if (avgConfidence < 0.2) {
+    return "Low detection confidence - please ensure good lighting and that your full body is visible.";
+  }
+  
+  const requiredKeypoints = getRequiredKeypointsForExercise(exerciseType);
+  const missingKeypoints: string[] = [];
+  
+  for (const keypointName of requiredKeypoints) {
+    const keypoint = keypointMap[keypointName];
+    if (!keypoint || !keypoint.score || keypoint.score < 0.2) {
+      missingKeypoints.push(keypointName.replace('_', ' '));
+    }
+  }
+  
+  if (missingKeypoints.length > 0) {
+    return `Cannot detect your ${missingKeypoints.join(', ')}. Please ensure your entire body is visible.`;
+  }
+  
+  return "";
+}
