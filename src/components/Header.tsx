@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Bell, LogOut } from 'lucide-react';
+import { Bell, LogOut, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { showActionToast } from '@/utils/toast-utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   title?: string;
@@ -19,6 +20,7 @@ const Header: React.FC<HeaderProps> = ({
   className 
 }) => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   
   // Get the user's name for the greeting
   const getUserDisplayName = () => {
@@ -56,6 +58,10 @@ const Header: React.FC<HeaderProps> = ({
     showActionToast("You've been logged out successfully");
   };
 
+  const handleExerciseCounterClick = () => {
+    navigate('/exercise-counter');
+  };
+
   // If no title is provided, create a personalized greeting
   const displayTitle = title || `Hi, ${getUserDisplayName()}`;
 
@@ -68,12 +74,21 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         <div className="flex items-center gap-3">
           {action || (
-            <button 
-              className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
-              onClick={handleBellClick}
-            >
-              <Bell size={20} className="text-fitness-dark" />
-            </button>
+            <>
+              <button 
+                className="flex items-center justify-center px-3 py-2 text-sm bg-fitness-primary text-white rounded-full shadow-sm hover:bg-fitness-primary/90"
+                onClick={handleExerciseCounterClick}
+              >
+                <Activity size={16} className="mr-1" />
+                <span>Exercise Counter</span>
+              </button>
+              <button 
+                className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
+                onClick={handleBellClick}
+              >
+                <Bell size={20} className="text-fitness-dark" />
+              </button>
+            </>
           )}
           <button 
             className="w-10 h-10 flex items-center justify-center bg-red-50 rounded-full shadow-sm"
