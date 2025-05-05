@@ -20,11 +20,16 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const { user, signOut } = useAuth();
   
-  // Get the user's first name or email for the greeting
+  // Get the user's name for the greeting
   const getUserDisplayName = () => {
     if (!user) return "Guest";
     
-    // Try to get name from email (before the @ symbol)
+    // First try to get the username if available
+    if (user.username) {
+      return user.username;
+    }
+    
+    // Fall back to email (before the @ symbol)
     if (user.email) {
       const emailName = user.email.split('@')[0];
       // Capitalize the first letter

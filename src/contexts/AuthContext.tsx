@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -7,13 +8,14 @@ interface User {
   id: string;
   email: string;
   avatar_url?: string;
+  username?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, username?: string) => Promise<void>;
   signOut: () => Promise<void>;
   signInWithGithub: () => Promise<void>;
   updateUserAvatar: (avatarUrl: string) => void;
@@ -49,6 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             id: user.id,
             email: user.email || '',
             avatar_url: (user as any).user_metadata?.avatar_url,
+            username: (user as any).user_metadata?.username,
           });
         }
       } catch (error) {
@@ -67,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             id: session.user.id,
             email: session.user.email || '',
             avatar_url: (session.user as any).user_metadata?.avatar_url,
+            username: (session.user as any).user_metadata?.username,
           });
         } else {
           setUser(null);
@@ -99,14 +103,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, username?: string) => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signUp({ 
         email, 
         password,
         options: {
-          data: {} // Empty data object instead of metadata
+          data: {
+            username: username || email.split('@')[0]
+          }
         }
       });
       

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
@@ -6,13 +7,14 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Github } from 'lucide-react'
+import { Activity, ArrowRight, AtSign, Lock, CheckCircle2, Github, User } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
 const Login = () => {
   const { signIn, signUp, signInWithGithub, loading } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
   const [activeTab, setActiveTab] = useState('login')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,7 +22,7 @@ const Login = () => {
     if (activeTab === 'login') {
       await signIn(email, password)
     } else {
-      await signUp(email, password)
+      await signUp(email, password, username)
     }
   }
 
@@ -160,6 +162,22 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <CardContent className="space-y-6 pt-2">
                   <div className="space-y-2">
+                    <Label htmlFor="register-username" className="text-sm font-medium">Username</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <Input 
+                        id="register-username" 
+                        type="text" 
+                        placeholder="johnsmith" 
+                        value={username} 
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="pl-10 h-12 bg-gray-50 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
                     <Label htmlFor="register-email" className="text-sm font-medium">Email</Label>
                     <div className="relative">
                       <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -174,6 +192,7 @@ const Login = () => {
                       />
                     </div>
                   </div>
+                  
                   <div className="space-y-2">
                     <Label htmlFor="register-password" className="text-sm font-medium">Password</Label>
                     <div className="relative">
