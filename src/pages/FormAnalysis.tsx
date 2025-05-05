@@ -839,3 +839,688 @@ const FormAnalysis = () => {
     if (kneeAngle < downThreshold && status !== 'down') {
       setStatus('down');
       console.log("Squat DOWN detected, angle:", kneeAngle.toFixed(1));
+    } 
+    // Check if we're back to the up position from down (rep completed)
+    else if (kneeAngle > upThreshold && status === 'down') {
+      setStatus('up');
+      setExerciseCount(prev => prev + 1);
+      console.log("Squat UP detected, angle:", kneeAngle.toFixed(1), "REP COUNTED!");
+      toast.success("Rep counted!", { duration: 1000 });
+    }
+  };
+
+  const countPushUps = (keypointMap: Record<string, poseDetection.Keypoint>) => {
+    const leftShoulder = keypointMap['left_shoulder'];
+    const leftElbow = keypointMap['left_elbow'];
+    const leftWrist = keypointMap['left_wrist'];
+    
+    if (!leftShoulder || !leftElbow || !leftWrist || 
+        !leftShoulder.score || leftShoulder.score < 0.3 ||
+        !leftElbow.score || leftElbow.score < 0.3 ||
+        !leftWrist.score || leftWrist.score < 0.3) {
+      if (debugMode) {
+        console.log("Missing keypoints for push-up detection");
+        logKeypointVisibility(keypointMap);
+      }
+      return;
+    }
+    
+    const elbowAngle = calculateAngle(
+      { x: leftShoulder.x, y: leftShoulder.y },
+      { x: leftElbow.x, y: leftElbow.y },
+      { x: leftWrist.x, y: leftWrist.y }
+    );
+    
+    if (debugMode) {
+      console.log("Push-up elbow angle:", elbowAngle.toFixed(1), "Status:", status);
+    }
+    
+    // For push-ups: status changes based on elbow angle
+    // Adjust thresholds based on sensitivity
+    const downThreshold = 90 + sensitivityThreshold;
+    const upThreshold = 160 - sensitivityThreshold;
+    
+    if (elbowAngle < downThreshold && status !== 'down') {
+      setStatus('down');
+      console.log("Push-up DOWN detected, angle:", elbowAngle.toFixed(1));
+    } else if (elbowAngle > upThreshold && status === 'down') {
+      setStatus('up');
+      setExerciseCount(prev => prev + 1);
+      console.log("Push-up UP detected, angle:", elbowAngle.toFixed(1), "REP COUNTED!");
+      toast.success("Rep counted!", { duration: 1000 });
+    }
+  };
+  
+  const countBicepCurls = (keypointMap: Record<string, poseDetection.Keypoint>) => {
+    // Check both arms for bicep curl
+    const sides: ('left' | 'right')[] = ['left', 'right'];
+    
+    for (const side of sides) {
+      const shoulder = keypointMap[`${side}_shoulder`];
+      const elbow = keypointMap[`${side}_elbow`];
+      const wrist = keypointMap[`${side}_wrist`];
+      
+      if (!shoulder || !elbow || !wrist || 
+          !shoulder.score || shoulder.score < 0.3 ||
+          !elbow.score || elbow.score < 0.3 ||
+          !wrist.score || wrist.score < 0.3) {
+        continue;
+      }
+      
+      const elbowAngle = calculateAngle(
+        { x: shoulder.x, y: shoulder.y },
+        { x: elbow.x, y: elbow.y },
+        { x: wrist.x, y: wrist.y }
+      );
+      
+      if (debugMode) {
+        console.log(`${side} bicep curl elbow angle:`, elbowAngle.toFixed(1), "Status:", status);
+      }
+      
+      // Check if arm is in curl position (wrist close to shoulder)
+      const downThreshold = 120 + sensitivityThreshold; // Arm extended
+      const upThreshold = 70 - sensitivityThreshold; // Arm curled
+      
+      if (elbowAngle < upThreshold && status !== 'down') {
+        setStatus('down');
+        console.log(`${side} bicep curl DOWN detected, angle:`, elbowAngle.toFixed(1));
+      } else if (elbowAngle > downThreshold && status === 'down') {
+        setStatus('up');
+        setExerciseCount(prev => prev + 1);
+        console.log(`${side} bicep curl UP detected, angle:`, elbowAngle.toFixed(1), "REP COUNTED!");
+        toast.success("Rep counted!", { duration: 1000 });
+      }
+      
+      // Only need one arm to count
+      if (status === 'down' || status === 'up') {
+        break;
+      }
+    }
+  };
+  
+  const countLateralRaises = (keypointMap: Record<string, poseDetection.Keypoint>) => {
+    const sides: ('left' | 'right')[] = ['left', 'right'];
+    
+    for (const side of sides) {
+      const hip = keypointMap[`${side}_hip`];
+      const shoulder = keypointMap[`${side}_shoulder`];
+      const elbow = keypointMap[`${side}_elbow`];
+      const wrist = keypointMap[`${side}_wrist`];
+      
+      if (!hip || !shoulder || !elbow || !wrist || 
+          !hip.score || hip.score < 0.3 ||
+          !shoulder.score || shoulder.score < 0.3 ||
+          !elbow.score || elbow.score < 0.3 ||
+          !wrist.score || wrist.score < 0.3) {
+        continue;
+      }
+      
+      // Calculate shoulder angle
+      const shoulderAngle = calculateAngle(
+        { x: hip.x, y: hip.y },
+        { x: shoulder.x, y: shoulder.y },
+        { x: elbow.x, y: elbow.y }
+      );
+      
+      if (debugMode) {
+        console.log(`${side} lateral raise shoulder angle:`, shoulderAngle.toFixed(1), "Status:", status);
+      }
+      
+      // For lateral raises: check if arms are raised to shoulder height (90 degrees from torso)
+      const upThreshold = 80 - sensitivityThreshold; // Arms raised
+      const downThreshold = 30 + sensitivityThreshold; // Arms lowered
+      
+      // Use reversed logic for lateral raises since "down" means arms are lowered
+      if (shoulderAngle > upThreshold && status !== 'up') {
+        setStatus('up');
+        console.log(`${side} lateral raise UP detected, angle:`, shoulderAngle.toFixed(1));
+      } else if (shoulderAngle < downThreshold && status === 'up') {
+        setStatus('down');
+        setExerciseCount(prev => prev + 1);
+        console.log(`${side} lateral raise DOWN detected, angle:`, shoulderAngle.toFixed(1), "REP COUNTED!");
+        toast.success("Rep counted!", { duration: 1000 });
+      }
+      
+      // Only need one arm to count
+      if (status === 'up' || status === 'down') {
+        break;
+      }
+    }
+  };
+  
+  const countShoulderPress = (keypointMap: Record<string, poseDetection.Keypoint>) => {
+    const sides: ('left' | 'right')[] = ['left', 'right'];
+    
+    for (const side of sides) {
+      const shoulder = keypointMap[`${side}_shoulder`];
+      const elbow = keypointMap[`${side}_elbow`];
+      const wrist = keypointMap[`${side}_wrist`];
+      
+      if (!shoulder || !elbow || !wrist || 
+          !shoulder.score || shoulder.score < 0.3 ||
+          !elbow.score || elbow.score < 0.3 ||
+          !wrist.score || wrist.score < 0.3) {
+        continue;
+      }
+      
+      // For shoulder press, check if wrist is above elbow and elbow is above shoulder
+      const isWristAboveElbow = wrist.y < elbow.y;
+      const isElbowAboveShoulder = elbow.y < shoulder.y;
+      const isWristExtended = isWristAboveElbow && Math.abs(wrist.y - elbow.y) > 50;
+      
+      if (debugMode) {
+        console.log(`${side} shoulder press position:`, 
+          `wrist above elbow: ${isWristAboveElbow}`, 
+          `elbow above shoulder: ${isElbowAboveShoulder}`,
+          `wrist extended: ${isWristExtended}`,
+          "Status:", status);
+      }
+      
+      // Check for "up" position (arms extended overhead)
+      if (isWristAboveElbow && isElbowAboveShoulder && isWristExtended && status !== 'up') {
+        setStatus('up');
+        console.log(`${side} shoulder press UP detected`);
+      } 
+      // Check for "down" position (arms at shoulder level)
+      else if ((!isWristAboveElbow || !isElbowAboveShoulder || !isWristExtended) && status === 'up') {
+        setStatus('down');
+        setExerciseCount(prev => prev + 1);
+        console.log(`${side} shoulder press DOWN detected, REP COUNTED!`);
+        toast.success("Rep counted!", { duration: 1000 });
+      }
+      
+      // Only need one arm to count
+      if (status === 'up' || status === 'down') {
+        break;
+      }
+    }
+  };
+  
+  const countJumpingJacks = (keypointMap: Record<string, poseDetection.Keypoint>) => {
+    const leftShoulder = keypointMap['left_shoulder'];
+    const rightShoulder = keypointMap['right_shoulder'];
+    const leftHip = keypointMap['left_hip'];
+    const rightHip = keypointMap['right_hip'];
+    const leftAnkle = keypointMap['left_ankle'];
+    const rightAnkle = keypointMap['right_ankle'];
+    
+    if (!leftShoulder || !rightShoulder || !leftHip || !rightHip || !leftAnkle || !rightAnkle ||
+        !leftShoulder.score || leftShoulder.score < 0.3 ||
+        !rightShoulder.score || rightShoulder.score < 0.3 ||
+        !leftHip.score || leftHip.score < 0.3 ||
+        !rightHip.score || rightHip.score < 0.3 ||
+        !leftAnkle.score || leftAnkle.score < 0.3 ||
+        !rightAnkle.score || rightAnkle.score < 0.3) {
+      if (debugMode) {
+        console.log("Missing keypoints for jumping jack detection");
+      }
+      return;
+    }
+    
+    // Check distance between ankles and between shoulders
+    const ankleDistance = calculateDistance(
+      { x: leftAnkle.x, y: leftAnkle.y },
+      { x: rightAnkle.x, y: rightAnkle.y }
+    );
+    
+    const shoulderDistance = calculateDistance(
+      { x: leftShoulder.x, y: leftShoulder.y },
+      { x: rightShoulder.x, y: rightShoulder.y }
+    );
+    
+    // Get hip distance for reference
+    const hipDistance = calculateDistance(
+      { x: leftHip.x, y: leftHip.y },
+      { x: rightHip.x, y: rightHip.y }
+    );
+    
+    // Calculate ratios relative to hip width
+    const ankleRatio = ankleDistance / hipDistance;
+    const shoulderRatio = shoulderDistance / hipDistance;
+    
+    if (debugMode) {
+      console.log("Jumping jack metrics:", 
+        "ankle ratio:", ankleRatio.toFixed(2), 
+        "shoulder ratio:", shoulderRatio.toFixed(2),
+        "Status:", status);
+    }
+    
+    // Define thresholds adjusted by sensitivity
+    const extendedThreshold = 1.5 - sensitivityThreshold * 0.02;
+    const closedThreshold = 0.8 + sensitivityThreshold * 0.02;
+    
+    // Check for "up" position (arms and legs extended)
+    if (ankleRatio > extendedThreshold && shoulderRatio > extendedThreshold && status !== 'up') {
+      setStatus('up');
+      console.log("Jumping jack UP detected");
+    }
+    // Check for "down" position (arms and legs together)
+    else if (ankleRatio < closedThreshold && shoulderRatio < closedThreshold && status === 'up') {
+      setStatus('down');
+      setExerciseCount(prev => prev + 1);
+      console.log("Jumping jack DOWN detected, REP COUNTED!");
+      toast.success("Rep counted!", { duration: 1000 });
+    }
+  };
+  
+  const countLunges = (keypointMap: Record<string, poseDetection.Keypoint>) => {
+    const leftKnee = keypointMap['left_knee'];
+    const leftHip = keypointMap['left_hip'];
+    const leftAnkle = keypointMap['left_ankle'];
+    const rightKnee = keypointMap['right_knee'];
+    const rightHip = keypointMap['right_hip'];
+    const rightAnkle = keypointMap['right_ankle'];
+    
+    if (!leftKnee || !leftHip || !leftAnkle || !rightKnee || !rightHip || !rightAnkle ||
+        !leftKnee.score || leftKnee.score < 0.3 ||
+        !leftHip.score || leftHip.score < 0.3 ||
+        !leftAnkle.score || leftAnkle.score < 0.3 ||
+        !rightKnee.score || rightKnee.score < 0.3 ||
+        !rightHip.score || rightHip.score < 0.3 ||
+        !rightAnkle.score || rightAnkle.score < 0.3) {
+      if (debugMode) {
+        console.log("Missing keypoints for lunge detection");
+      }
+      return;
+    }
+    
+    // Calculate knee angles
+    const leftKneeAngle = calculateAngle(
+      { x: leftHip.x, y: leftHip.y },
+      { x: leftKnee.x, y: leftKnee.y },
+      { x: leftAnkle.x, y: leftAnkle.y }
+    );
+    
+    const rightKneeAngle = calculateAngle(
+      { x: rightHip.x, y: rightHip.y },
+      { x: rightKnee.x, y: rightKnee.y },
+      { x: rightAnkle.x, y: rightAnkle.y }
+    );
+    
+    // For lunges, we need one knee bent and one relatively straight
+    const isBentKneeAngle = Math.min(leftKneeAngle, rightKneeAngle);
+    const isStraightKneeAngle = Math.max(leftKneeAngle, rightKneeAngle);
+    
+    if (debugMode) {
+      console.log("Lunge knee angles:", 
+        "bent knee:", isBentKneeAngle.toFixed(1),
+        "straight knee:", isStraightKneeAngle.toFixed(1),
+        "Status:", status);
+    }
+    
+    // Define thresholds for lunge positions adjusted by sensitivity
+    const bentKneeThreshold = 100 + sensitivityThreshold;
+    const straightKneeThreshold = 150 - sensitivityThreshold;
+    
+    // Check for "down" position (one knee bent, one straight)
+    if (isBentKneeAngle < bentKneeThreshold && 
+        isStraightKneeAngle > straightKneeThreshold && 
+        status !== 'down') {
+      setStatus('down');
+      console.log("Lunge DOWN detected");
+    }
+    // Check for "up" position (both knees relatively straight)
+    else if (isBentKneeAngle > straightKneeThreshold && status === 'down') {
+      setStatus('up');
+      setExerciseCount(prev => prev + 1);
+      console.log("Lunge UP detected, REP COUNTED!");
+      toast.success("Rep counted!", { duration: 1000 });
+    }
+  };
+  
+  const handleExerciseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setExercise(e.target.value);
+    resetCounter();
+  };
+  
+  const handleSensitivityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSensitivityThreshold(parseInt(e.target.value));
+  };
+  
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    
+    // Reset states when switching tabs
+    if (tab === 'image-analysis') {
+      stopCamera();
+      setIsExercising(false);
+    }
+  };
+
+  const toggleDebugMode = () => {
+    setDebugMode(!debugMode);
+    toast.info(debugMode ? "Debug mode disabled" : "Debug mode enabled");
+  };
+
+  // Render functions
+  const renderExerciseControls = () => {
+    return (
+      <div className="flex flex-col space-y-4">
+        {!isExercising ? (
+          <div className="flex gap-2">
+            <Button 
+              onClick={startExercising} 
+              className="flex-1 bg-fitness-primary hover:bg-fitness-primary/90"
+              disabled={isModelLoading || !videoRef.current?.srcObject}
+            >
+              <Play className="w-5 h-5 mr-2" />
+              Start Exercise
+            </Button>
+            <Button 
+              onClick={startCamera} 
+              variant="outline" 
+              className="flex-1"
+              disabled={isModelLoading || Boolean(videoRef.current?.srcObject)}
+            >
+              <Video className="w-5 h-5 mr-2" />
+              Start Camera
+            </Button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Button 
+              onClick={stopExercising} 
+              variant="destructive" 
+              className="flex-1"
+            >
+              <Pause className="w-5 h-5 mr-2" />
+              Stop Exercise
+            </Button>
+            <Button 
+              onClick={resetCounter} 
+              variant="outline" 
+              className="flex-1"
+            >
+              <RotateCcw className="w-5 h-5 mr-2" />
+              Reset Counter
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  };
+  
+  const renderExerciseGuide = () => {
+    const exerciseGuides = {
+      'squat': 'Stand with feet shoulder-width apart, lower your body by bending your knees as if sitting in a chair, then return to standing position.',
+      'push-up': 'Position hands under shoulders in plank position, lower your body until chest nearly touches the floor, then push back up.',
+      'bicep-curl': 'Hold weights with arms extended, bend elbows to bring weights toward shoulders, then lower back down.',
+      'lateral-raise': 'Hold weights at sides, lift arms straight out to sides until parallel with floor, then lower.',
+      'shoulder-press': 'Hold weights at shoulder height, push upward until arms are extended overhead, then lower back to shoulders.',
+      'jumping-jack': 'Stand with feet together and arms at sides, jump while spreading legs and raising arms overhead, return to starting position.',
+      'lunges': 'Stand straight, step forward with one leg, lower until both knees are bent at 90 degrees, return to standing position.'
+    };
+
+    const currentGuide = exerciseGuides[exercise as keyof typeof exerciseGuides] || '';
+    
+    return (
+      <div className="mt-6 bg-gray-50 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <Info className="w-5 h-5 text-fitness-primary shrink-0 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-sm mb-1">Exercise Guide: {exerciseTypes.find(type => type.value === exercise)?.label}</h3>
+            <p className="text-sm text-gray-600">
+              {currentGuide}
+            </p>
+            <p className="text-xs text-gray-500 mt-3">
+              Make sure your entire body is visible to the camera for accurate tracking. 
+              Debug mode shows real-time angles and joint positions.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <Layout>
+      <div className="max-w-3xl mx-auto px-4 pb-12">
+        <Header 
+          title="AI Form Analysis" 
+          subtitle="Get instant feedback on your exercise technique and count your reps" 
+        />
+        
+        <Tabs 
+          value={activeTab} 
+          onValueChange={handleTabChange} 
+          className="w-full mt-6"
+        >
+          <TabsList className="grid grid-cols-2 mb-6">
+            <TabsTrigger value="image-analysis" className="text-sm">
+              <ImageIcon className="w-4 h-4 mr-2" />
+              Image Analysis
+            </TabsTrigger>
+            <TabsTrigger value="rep-counter" className="text-sm">
+              <Activity className="w-4 h-4 mr-2" />
+              Rep Counter
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="image-analysis">
+            <Card className="mt-2">
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Upload Exercise Image</h2>
+                
+                {!previewUrl ? (
+                  <div 
+                    className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors duration-300"
+                    onClick={handleCameraClick}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                  >
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={handleFileUpload} 
+                    />
+                    <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <p className="text-lg font-medium text-gray-800 mb-1">
+                      Upload an exercise photo
+                    </p>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Click or drag and drop an image here
+                    </p>
+                    <Button 
+                      type="button" 
+                      className="bg-fitness-primary hover:bg-fitness-primary/90"
+                      onClick={handleCameraClick}
+                    >
+                      <Camera className="w-5 h-5 mr-2" />
+                      Select Image
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="relative bg-black rounded-lg overflow-hidden">
+                      <img 
+                        src={previewUrl} 
+                        alt="Your workout" 
+                        className="w-full max-h-[400px] object-contain" 
+                      />
+                      {analyzing && (
+                        <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center">
+                          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-fitness-primary mb-4"></div>
+                          <p className="text-white font-medium">Analyzing your form...</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <Button 
+                        variant="outline" 
+                        type="button" 
+                        onClick={handleReset}
+                      >
+                        <RotateCcw className="w-4 h-4 mr-2" />
+                        Try another image
+                      </Button>
+                    </div>
+                  
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 rounded-md p-4 flex gap-3 items-start">
+                        <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium text-red-800 text-sm">Analysis Error</h4>
+                          <p className="text-sm text-red-600 mt-1">{error}</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {feedback && (
+                      <div className="bg-white border rounded-md p-5 space-y-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <h3 className="text-xl font-semibold text-gray-900">Form Analysis Results</h3>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={handleCopyFeedback}
+                          >
+                            {copied ? (
+                              <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                            ) : (
+                              <Copy className="w-4 h-4 mr-2" />
+                            )}
+                            {copied ? 'Copied' : 'Copy'}
+                          </Button>
+                        </div>
+                        
+                        <div className="prose prose-sm max-w-none text-gray-600">
+                          {feedback.split('\n\n').map((section, idx) => {
+                            const parts = section.split(':\n');
+                            if (parts.length === 2) {
+                              return renderFeedbackSection(parts[0], parts[1]);
+                            }
+                            return <p key={idx} className="text-gray-700 leading-relaxed">{section}</p>;
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="rep-counter">
+            <Card className="mt-2">
+              <div className="p-6">
+                <div className="flex flex-col space-y-4 mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      <h2 className="text-xl font-semibold">Exercise Rep Counter</h2>
+                      <select
+                        value={exercise}
+                        onChange={handleExerciseChange}
+                        className="p-2 border border-gray-300 rounded-md text-sm"
+                        disabled={isExercising}
+                      >
+                        {exerciseTypes.map(type => (
+                          <option key={type.value} value={type.value}>{type.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center justify-center gap-1"
+                      onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+                    >
+                      Advanced Options
+                      <ChevronDown className={`w-4 h-4 transition-transform ${showAdvancedOptions ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </div>
+                  
+                  {showAdvancedOptions && (
+                    <div className="bg-gray-50 rounded-lg p-3 space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 flex items-center justify-between">
+                          <span>Detection Sensitivity: {sensitivityThreshold}</span>
+                          <span className="text-xs text-gray-500">
+                            {sensitivityThreshold < 10 ? 'High' : sensitivityThreshold > 20 ? 'Low' : 'Medium'}
+                          </span>
+                        </label>
+                        <input
+                          type="range"
+                          min="5"
+                          max="25"
+                          step="1"
+                          value={sensitivityThreshold}
+                          onChange={handleSensitivityChange}
+                          className="w-full mt-1"
+                          disabled={isExercising}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Adjust if exercises aren't being counted correctly. 
+                          Higher values (to the right) are more lenient.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-700">Debug Mode:</span>
+                        <Button 
+                          variant={debugMode ? "default" : "outline"} 
+                          size="sm" 
+                          onClick={toggleDebugMode}
+                        >
+                          {debugMode ? 'Enabled' : 'Disabled'}
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="relative bg-black rounded-lg overflow-hidden mb-6 aspect-video">
+                  <video 
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    playsInline
+                    muted
+                  />
+                  <canvas 
+                    ref={canvasRef}
+                    className="absolute top-0 left-0 w-full h-full"
+                  />
+                  
+                  {isModelLoading && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="animate-spin w-12 h-12 border-4 border-fitness-primary/20 border-t-fitness-primary rounded-full mx-auto mb-4"></div>
+                        <p className="text-white font-medium">Loading AI model...</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {!videoRef.current?.srcObject && !isModelLoading && (
+                    <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                      <div className="text-center">
+                        <Camera className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                        <p className="text-white font-medium">Click "Start Camera" to begin</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-fitness-primary/10 rounded-lg p-4 text-center">
+                    <h3 className="text-sm text-gray-500 mb-1">Repetitions</h3>
+                    <p className="text-3xl font-bold text-fitness-primary">{exerciseCount}</p>
+                  </div>
+                  <div className="bg-fitness-primary/10 rounded-lg p-4 text-center">
+                    <h3 className="text-sm text-gray-500 mb-1">Status</h3>
+                    <p className="text-xl font-bold text-fitness-primary capitalize">{status}</p>
+                  </div>
+                </div>
+                
+                {renderExerciseControls()}
+                {renderExerciseGuide()}
+              </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </Layout>
+  );
+};
+
+export default FormAnalysis;
