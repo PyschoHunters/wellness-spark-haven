@@ -136,3 +136,45 @@ export const calculateVerticalDisplacementPercentage = (
   const displacement = Math.abs(current.y - baseline.y);
   return Math.min(100, (displacement / maxDisplacement) * 100);
 };
+
+/**
+ * Debug helper: Log visibility scores of keypoints
+ * @param keypointMap - Map of keypoints with their scores
+ */
+export const logKeypointVisibility = (keypointMap: Record<string, any>): void => {
+  console.log("Keypoint visibility:");
+  Object.keys(keypointMap).forEach(key => {
+    if (keypointMap[key] && keypointMap[key].score) {
+      console.log(`${key}: ${keypointMap[key].score.toFixed(2)}`);
+    }
+  });
+};
+
+/**
+ * Detect if an exercise rep has been completed based on angle changes
+ * @param currentAngle - Current angle
+ * @param status - Current status (up/down/ready)
+ * @param downThreshold - Threshold to consider "down" position
+ * @param upThreshold - Threshold to consider "up" position
+ * @returns Object with updated status and whether rep was completed
+ */
+export const detectRepCompletion = (
+  currentAngle: number, 
+  status: string, 
+  downThreshold: number, 
+  upThreshold: number
+): { newStatus: string, repCompleted: boolean } => {
+  let newStatus = status;
+  let repCompleted = false;
+  
+  if (currentAngle < downThreshold && status !== 'down') {
+    newStatus = 'down';
+    console.log("Status changed to DOWN, angle:", currentAngle);
+  } else if (currentAngle > upThreshold && status === 'down') {
+    newStatus = 'up';
+    repCompleted = true;
+    console.log("REP COMPLETED! Status changed to UP, angle:", currentAngle);
+  }
+  
+  return { newStatus, repCompleted };
+};

@@ -22,6 +22,7 @@ import {
 import { toast } from "sonner";
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
+import * as tf from '@tensorflow/tfjs-core';
 import { 
   calculateAngle, 
   calculateDistance, 
@@ -29,7 +30,9 @@ import {
   isWristInCurlPosition,
   isVerticallyAligned,
   isHorizontallyAligned,
-  getRelativePosition
+  getRelativePosition,
+  detectRepCompletion,
+  logKeypointVisibility
 } from '@/utils/pose-utils';
 
 const FormAnalysis = () => {
@@ -52,6 +55,7 @@ const FormAnalysis = () => {
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const [sensitivityThreshold, setSensitivityThreshold] = useState(15);
   const [repStartPositions, setRepStartPositions] = useState<Record<string, any>>({});
+  const [debugMode, setDebugMode] = useState(false);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -74,16 +78,30 @@ const FormAnalysis = () => {
       const loadModel = async () => {
         try {
           setIsModelLoading(true);
+          console.log("Starting to load TensorFlow.js model...");
+          
+          // Important: Force WebGL backend instead of WebGPU
+          console.log("Current backend:", tf.getBackend());
+          console.log("Available backends:", tf.engine().registryFactory);
+          
+          // Set the backend explicitly to WebGL
+          await tf.setBackend('webgl');
+          await tf.ready();
+          console.log("TensorFlow backend initialized:", tf.getBackend());
+          
           // Load the MoveNet model
           const detectorConfig = {
             modelType: poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
             enableSmoothing: true
           };
+          
+          console.log("Creating pose detector with config:", detectorConfig);
           const detector = await poseDetection.createDetector(
             poseDetection.SupportedModels.MoveNet, 
             detectorConfig
           );
           
+          console.log("Detector created successfully:", detector);
           setDetector(detector);
           setIsModelLoading(false);
           toast.success("Exercise detection model loaded successfully!");
@@ -336,23 +354,42 @@ const FormAnalysis = () => {
   };
 
   const detectPose = async () => {
-    if (!detector || !videoRef.current || videoRef.current.readyState !== 4 || !canvasRef.current) {
+    if (!detector || !videoRef.current || !canvasRef.current) {
+      requestAnimationRef.current = requestAnimationFrame(detectPose);
+      return;
+    }
+
+    // Make sure video is ready before trying to detect poses
+    if (videoRef.current.readyState < 2) {
+      console.log("Video not ready yet, readyState:", videoRef.current.readyState);
       requestAnimationRef.current = requestAnimationFrame(detectPose);
       return;
     }
 
     try {
       // Detect poses
+      console.log("Detecting poses...");
       const poses = await detector.estimatePoses(videoRef.current);
       
       if (poses.length > 0) {
         const pose = poses[0];
+        
+        if (debugMode) {
+          console.log("Detected pose:", pose);
+        }
         
         // Draw the pose
         drawPose(pose);
         
         // Count exercises based on pose
         countExercise(pose);
+      } else if (debugMode) {
+        console.log("No poses detected");
+        // Clear canvas when no poses detected
+        const ctx = canvasRef.current.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        }
       }
       
       // Continue detection loop
@@ -361,6 +398,7 @@ const FormAnalysis = () => {
       }
     } catch (error) {
       console.error("Error in pose detection:", error);
+      requestAnimationRef.current = requestAnimationFrame(detectPose);
     }
   };
 
