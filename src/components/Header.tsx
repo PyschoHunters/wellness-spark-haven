@@ -6,7 +6,7 @@ import { showActionToast } from '@/utils/toast-utils';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   action?: React.ReactNode;
   className?: string;
@@ -18,7 +18,21 @@ const Header: React.FC<HeaderProps> = ({
   action,
   className 
 }) => {
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  
+  // Get the user's first name or email for the greeting
+  const getUserDisplayName = () => {
+    if (!user) return "Guest";
+    
+    // Try to get name from email (before the @ symbol)
+    if (user.email) {
+      const emailName = user.email.split('@')[0];
+      // Capitalize the first letter
+      return emailName.charAt(0).toUpperCase() + emailName.slice(1);
+    }
+    
+    return "User";
+  };
   
   const handleBellClick = () => {
     showActionToast("No new notifications");
@@ -29,11 +43,14 @@ const Header: React.FC<HeaderProps> = ({
     showActionToast("You've been logged out successfully");
   };
 
+  // If no title is provided, create a personalized greeting
+  const displayTitle = title || `Hi, ${getUserDisplayName()}`;
+
   return (
     <header className={cn("pt-6 pb-4 animate-fade-in", className)}>
       <div className="flex justify-between items-start mb-2">
         <div>
-          <h1 className="text-2xl font-bold">{title}</h1>
+          <h1 className="text-2xl font-bold">{displayTitle}</h1>
           {subtitle && <p className="text-sm text-fitness-gray mt-1">{subtitle}</p>}
         </div>
         <div className="flex items-center gap-3">

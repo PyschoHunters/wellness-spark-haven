@@ -185,7 +185,6 @@ const Home = () => {
   return (
     <div className="max-w-md mx-auto px-4 pb-20">
       <Header 
-        title="Hi, Manumohan" 
         subtitle="Let's check your activity" 
         action={
           <button 
