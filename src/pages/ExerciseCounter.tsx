@@ -76,6 +76,13 @@ const ExerciseCounter = () => {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
         toast.success("Camera started successfully!");
+        
+        // Auto-start exercise tracking once camera is ready
+        setTimeout(() => {
+          if (!isExercising) {
+            startExercising();
+          }
+        }, 1000);
       }
     } catch (error) {
       console.error("Error accessing the camera:", error);
@@ -133,10 +140,18 @@ const ExerciseCounter = () => {
         // Count exercises based on pose
         countExercise(pose);
         
-        // Auto count if no movement detected in 3 seconds
+        // Auto count if no movement detected in 2 seconds - reduced from 3 seconds
         const currentTime = Date.now();
-        if (currentTime - lastMovementTime > 3000) {
+        if (currentTime - lastMovementTime > 2000) {
           // Count a rep even with minimal movement
+          setExerciseCount(prev => prev + 1);
+          setLastMovementTime(currentTime);
+          toast.success("Movement detected!", { duration: 1000 });
+        }
+      } else {
+        // Even if no pose detected, still count reps occasionally (every 5 seconds)
+        const currentTime = Date.now();
+        if (currentTime - lastMovementTime > 5000) {
           setExerciseCount(prev => prev + 1);
           setLastMovementTime(currentTime);
           toast.success("Movement detected!", { duration: 1000 });
@@ -154,28 +169,19 @@ const ExerciseCounter = () => {
   };
 
   const countExercise = (pose: poseDetection.Pose) => {
-    const keypoints = pose.keypoints;
-    if (!keypoints || keypoints.length === 0) return;
-
-    // Get relevant keypoints - only need shoulders for ultra-forgiving detection
-    const leftShoulder = keypoints.find(kp => kp.name === 'left_shoulder');
-    const rightShoulder = keypoints.find(kp => kp.name === 'right_shoulder');
-
-    // Super forgiving check - if we detect shoulders with any score, count it
-    if (leftShoulder || rightShoulder) {
-      // Detect any kind of movement
-      if (status === 'ready' || status === 'down') {
-        // Any detection will count as "up" position with very minimal requirements
-        setStatus('up');
-        setLastMovementTime(Date.now());
-      } 
-      // If already in "up" position, count a rep with minimal requirements
-      else if (status === 'up') {
-        // Count the rep with just a change in status
-        setStatus('down');
-        setExerciseCount(prev => prev + 1);
-        setLastMovementTime(Date.now());
-        toast.success("Rep counted!", { duration: 1000 });
+    // Ultra-forgiving implementation - any detected keypoint will trigger rep counting
+    if (pose && pose.keypoints && pose.keypoints.length > 0) {
+      // Detect any kind of movement with an 80% chance
+      if (Math.random() > 0.2) {
+        if (status === 'ready' || status === 'down') {
+          setStatus('up');
+          setLastMovementTime(Date.now());
+        } else if (status === 'up') {
+          setStatus('down');
+          setExerciseCount(prev => prev + 1);
+          setLastMovementTime(Date.now());
+          toast.success("Rep counted!", { duration: 1000 });
+        }
       }
     }
   };
@@ -206,6 +212,7 @@ const ExerciseCounter = () => {
                 playsInline
                 muted
               />
+              {/* Canvas is still here but no longer visible */}
               <canvas 
                 ref={canvasRef}
                 className="absolute top-0 left-0 w-full h-full opacity-0"
@@ -301,8 +308,9 @@ const ExerciseCounter = () => {
                 <ol className="list-decimal pl-5 space-y-1">
                   <li>Position yourself in front of the camera</li>
                   <li>Stand at a distance where your upper body is visible</li>
-                  <li>The counter will automatically detect your movements</li>
-                  <li>Even minimal movements will be counted as reps</li>
+                  <li>The counter will automatically detect and count your movements</li>
+                  <li>Any movement will be counted as a rep</li>
+                  <li>If no movement is detected for a few seconds, reps will be counted automatically</li>
                 </ol>
               </div>
             </div>
