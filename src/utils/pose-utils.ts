@@ -113,13 +113,15 @@ export const getRelativePosition = (pointA: Point2D, pointB: Point2D): {
  */
 export const isWristInCurlPosition = (wrist: Point2D, elbow: Point2D, shoulder: Point2D): boolean => {
   // For bicep curl, wrist should be above elbow when curled
-  const isWristAboveElbow = wrist.y < elbow.y;
+  // Using more forgiving thresholds
+  const isWristAboveElbow = wrist.y < elbow.y + 20; // More forgiving threshold
   
   // Also check if wrist is closer to shoulder than elbow is
   const wristToShoulderDist = calculateDistance(wrist, shoulder);
   const elbowToShoulderDist = calculateDistance(elbow, shoulder);
   
-  return isWristAboveElbow && (wristToShoulderDist < elbowToShoulderDist);
+  // More forgiving check
+  return isWristAboveElbow || (wristToShoulderDist < elbowToShoulderDist * 1.2);
 };
 
 /**
@@ -147,15 +149,19 @@ export const calculateVerticalDisplacementPercentage = (
 export const hasValidKeypoints = (
   keypointMap: Record<string, any>,
   requiredKeypoints: string[],
-  minConfidence: number = 0.3
+  minConfidence: number = 0.2 // Reduced threshold for better detection
 ): boolean => {
+  // More forgiving implementation - require only 60% of keypoints to be visible
+  let visibleCount = 0;
+  
   for (const keypointName of requiredKeypoints) {
     const keypoint = keypointMap[keypointName];
-    if (!keypoint || !keypoint.score || keypoint.score < minConfidence) {
-      return false;
+    if (keypoint && keypoint.score && keypoint.score >= minConfidence) {
+      visibleCount++;
     }
   }
-  return true;
+  
+  return visibleCount >= Math.ceil(requiredKeypoints.length * 0.6);
 };
 
 /**
@@ -188,10 +194,14 @@ export const detectRepCompletion = (
   let newStatus = status;
   let repCompleted = false;
   
-  if (currentAngle < downThreshold && status !== 'down') {
+  // More forgiving thresholds
+  const adjustedDownThreshold = downThreshold + 10;
+  const adjustedUpThreshold = upThreshold - 10;
+  
+  if (currentAngle < adjustedDownThreshold && status !== 'down') {
     newStatus = 'down';
     console.log("Status changed to DOWN, angle:", currentAngle.toFixed(1));
-  } else if (currentAngle > upThreshold && status === 'down') {
+  } else if (currentAngle > adjustedUpThreshold && status === 'down') {
     newStatus = 'up';
     repCompleted = true;
     console.log("REP COMPLETED! Status changed to UP, angle:", currentAngle.toFixed(1));
@@ -217,9 +227,17 @@ export const isPoseValidForExercise = (pose: any, exerciseType: string): boolean
     return map;
   }, {});
   
-  // Check for required keypoints based on exercise type
-  const requiredKeypoints = getRequiredKeypointsForExercise(exerciseType);
-  return hasValidKeypoints(keypointMap, requiredKeypoints, 0.2);
+  // More forgiving check - only require basic keypoints like shoulders
+  const minimalRequiredKeypoints = ['left_shoulder', 'right_shoulder'];
+  
+  for (const keypointName of minimalRequiredKeypoints) {
+    const keypoint = keypointMap[keypointName];
+    if (!keypoint || !keypoint.score || keypoint.score < 0.2) {
+      return false;
+    }
+  }
+  
+  return true;
 };
 
 /**
@@ -228,30 +246,30 @@ export const isPoseValidForExercise = (pose: any, exerciseType: string): boolean
  * @returns Array of required keypoint names
  */
 export const getRequiredKeypointsForExercise = (exerciseType: string): string[] => {
-  // Basic set of keypoints for most exercises
-  const basicKeypoints = ['left_shoulder', 'right_shoulder', 'left_hip', 'right_hip'];
+  // Simplified set of keypoints for most exercises - focus on the upper body
+  const basicKeypoints = ['left_shoulder', 'right_shoulder'];
   
   switch (exerciseType) {
     case 'squat':
-      return [...basicKeypoints, 'left_knee', 'left_ankle', 'right_knee', 'right_ankle'];
+      return [...basicKeypoints, 'left_hip', 'right_hip']; // Simplified
     
     case 'push-up':
-      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+      return basicKeypoints;
     
     case 'bicep-curl':
-      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+      return basicKeypoints;
     
     case 'lateral-raise':
-      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+      return basicKeypoints;
     
     case 'shoulder-press':
-      return [...basicKeypoints, 'left_elbow', 'left_wrist', 'right_elbow', 'right_wrist'];
+      return basicKeypoints;
     
     case 'jumping-jack':
-      return [...basicKeypoints, 'left_ankle', 'right_ankle'];
+      return basicKeypoints;
     
     case 'lunges':
-      return [...basicKeypoints, 'left_knee', 'left_ankle', 'right_knee', 'right_ankle'];
+      return basicKeypoints;
     
     default:
       return basicKeypoints;
@@ -269,14 +287,12 @@ export const getPoseDetectionFeedback = (pose: any, exerciseType: string): strin
     return "No pose detected - please ensure you are visible in the camera frame.";
   }
 
-  // Calculate average confidence
+  // Calculate average confidence of visible keypoints
   let totalConfidence = 0;
   let visiblePoints = 0;
-  const keypointMap: Record<string, any> = {};
   
   pose.keypoints.forEach((keypoint: any) => {
     if (keypoint.score && keypoint.name) {
-      keypointMap[keypoint.name] = keypoint;
       totalConfidence += keypoint.score;
       visiblePoints++;
     }
@@ -284,24 +300,10 @@ export const getPoseDetectionFeedback = (pose: any, exerciseType: string): strin
 
   const avgConfidence = visiblePoints > 0 ? totalConfidence / visiblePoints : 0;
   
-  // Provide appropriate feedback based on pose quality
-  if (avgConfidence < 0.2) {
-    return "Low detection confidence - please ensure good lighting and that your full body is visible.";
+  // More forgiving feedback
+  if (avgConfidence < 0.15) {
+    return "Try moving closer to the camera or improving the lighting.";
   }
   
-  const requiredKeypoints = getRequiredKeypointsForExercise(exerciseType);
-  const missingKeypoints: string[] = [];
-  
-  for (const keypointName of requiredKeypoints) {
-    const keypoint = keypointMap[keypointName];
-    if (!keypoint || !keypoint.score || keypoint.score < 0.2) {
-      missingKeypoints.push(keypointName.replace('_', ' '));
-    }
-  }
-  
-  if (missingKeypoints.length > 0) {
-    return `Cannot detect your ${missingKeypoints.join(', ')}. Please ensure your entire body is visible.`;
-  }
-  
-  return "";
-}
+  return ""; // No issues detected
+};

@@ -127,7 +127,7 @@ const ExerciseCounter = () => {
       if (poses.length > 0) {
         const pose = poses[0];
         
-        // Draw the pose
+        // Draw the pose (only keypoints, no lines)
         drawPose(pose);
         
         // Count exercises based on pose
@@ -153,13 +153,12 @@ const ExerciseCounter = () => {
     // Draw keypoints
     const keypoints = pose.keypoints;
     
-    // Draw connections for better visualization
     if (keypoints) {
       // Draw each keypoint
       for (const keypoint of keypoints) {
         if (keypoint.score && keypoint.score > 0.3) {
           ctx.beginPath();
-          ctx.arc(keypoint.x, keypoint.y, 5, 0, 2 * Math.PI);
+          ctx.arc(keypoint.x, keypoint.y, 8, 0, 2 * Math.PI);
           ctx.fillStyle = 'aqua';
           ctx.fill();
           ctx.strokeStyle = 'rgb(255, 255, 255)';
@@ -167,45 +166,7 @@ const ExerciseCounter = () => {
           ctx.stroke();
         }
       }
-
-      // Connect keypoints to form a skeleton
-      drawConnections(ctx, keypoints);
-    }
-  };
-
-  const drawConnections = (ctx: CanvasRenderingContext2D, keypoints: poseDetection.Keypoint[]) => {
-    const connections = [
-      ['nose', 'left_eye'], ['left_eye', 'left_ear'], ['nose', 'right_eye'],
-      ['right_eye', 'right_ear'], ['left_shoulder', 'right_shoulder'],
-      ['left_shoulder', 'left_elbow'], ['left_elbow', 'left_wrist'],
-      ['right_shoulder', 'right_elbow'], ['right_elbow', 'right_wrist'],
-      ['left_shoulder', 'left_hip'], ['right_shoulder', 'right_hip'],
-      ['left_hip', 'right_hip'], ['left_hip', 'left_knee'],
-      ['left_knee', 'left_ankle'], ['right_hip', 'right_knee'],
-      ['right_knee', 'right_ankle']
-    ];
-
-    const keypointMap = keypoints.reduce((map, keypoint) => {
-      map[keypoint.name || ''] = keypoint;
-      return map;
-    }, {} as Record<string, poseDetection.Keypoint>);
-
-    // Draw connections
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#00FFFF';
-
-    for (const [start, end] of connections) {
-      const startPoint = keypointMap[start];
-      const endPoint = keypointMap[end];
-
-      if (startPoint && endPoint && 
-          startPoint.score && startPoint.score > 0.3 &&
-          endPoint.score && endPoint.score > 0.3) {
-        ctx.beginPath();
-        ctx.moveTo(startPoint.x, startPoint.y);
-        ctx.lineTo(endPoint.x, endPoint.y);
-        ctx.stroke();
-      }
+      // Note: We're no longer drawing connections between keypoints
     }
   };
 
@@ -221,27 +182,59 @@ const ExerciseCounter = () => {
     const leftHip = keypoints.find(kp => kp.name === 'left_hip');
     const rightHip = keypoints.find(kp => kp.name === 'right_hip');
 
-    if (!leftWrist || !rightWrist || !leftShoulder || !rightShoulder || !leftHip || !rightHip ||
-        !leftWrist.y || !rightWrist.y || !leftShoulder.y || !rightShoulder.y || !leftHip.y || !rightHip.y) {
+    // More forgiving check - only require shoulders to be visible
+    if (!leftShoulder || !rightShoulder) {
       return;
     }
 
-    // For pull-ups, check the relative position of wrists to shoulders
-    // In a pull-up, wrists are above shoulders in the 'up' position
-    const wristsY = (leftWrist.y + rightWrist.y) / 2;
+    // For pull-ups, check the relative position of wrists to shoulders with more forgiving thresholds
+    // Use any visible wrist, or approximate based on shoulders if wrists aren't visible
+    let wristsY = 0;
+    let wristsVisible = false;
+    
+    if (leftWrist && leftWrist.score && leftWrist.score > 0.2) {
+      wristsY = leftWrist.y;
+      wristsVisible = true;
+    } else if (rightWrist && rightWrist.score && rightWrist.score > 0.2) {
+      wristsY = rightWrist.y;
+      wristsVisible = true;
+    }
+    
     const shouldersY = (leftShoulder.y + rightShoulder.y) / 2;
-    const hipsY = (leftHip.y + rightHip.y) / 2;
-
+    
     if (exercise === 'pull-up') {
-      // Check if arms are extended (wrists above shoulders)
-      if (wristsY < shouldersY - 50 && status !== 'up') {
-        setStatus('up');
-      } 
-      // Check if arms are lowered (wrists below shoulders)
-      else if (wristsY > shouldersY + 20 && status === 'up') {
-        setStatus('down');
-        setExerciseCount(prev => prev + 1);
-        toast.success("Rep counted!", { duration: 1000 });
+      // If wrists aren't visible, we'll use estimated shoulder position changes
+      if (!wristsVisible) {
+        // For pull-ups without visible wrists, detect based on shoulder movement
+        // A significant upward movement of shoulders can count as a pull-up
+        const shoulderThreshold = 20; // More forgiving threshold
+        
+        if (status === 'ready' || status === 'down') {
+          // If shoulders move up significantly, count as 'up' position
+          if (shouldersY < leftShoulder.y - shoulderThreshold) {
+            setStatus('up');
+          }
+        } 
+        // If in 'up' position and shoulders move down, count a rep
+        else if (status === 'up' && shouldersY > leftShoulder.y - 5) {
+          setStatus('down');
+          setExerciseCount(prev => prev + 1);
+          toast.success("Rep counted!", { duration: 1000 });
+        }
+      }
+      // If wrists are visible, use wrist position relative to shoulders
+      else {
+        // Very forgiving check for pull-up motion
+        // Check if arms are somewhat elevated (wrists somewhat above or near shoulders)
+        if (wristsY < shouldersY + 30 && status !== 'up') {
+          setStatus('up');
+        } 
+        // Check if arms are lowered
+        else if (wristsY > shouldersY + 40 && status === 'up') {
+          setStatus('down');
+          setExerciseCount(prev => prev + 1);
+          toast.success("Rep counted!", { duration: 1000 });
+        }
       }
     }
   };
@@ -365,10 +358,10 @@ const ExerciseCounter = () => {
               <div className="text-sm text-amber-700">
                 <p className="font-medium mb-1">How to use:</p>
                 <ol className="list-decimal pl-5 space-y-1">
-                  <li>Position yourself so your full body is visible</li>
-                  <li>For pull-ups, ensure your arms go fully extended and contracted</li>
-                  <li>The AI will automatically count your reps when properly performed</li>
-                  <li>Make sure you have good lighting for best detection results</li>
+                  <li>Position yourself in the frame (full body not required)</li>
+                  <li>For pull-ups, try to keep your shoulders visible</li>
+                  <li>The AI will track your movement patterns and count reps</li>
+                  <li>Even partial movements will be counted for better tracking</li>
                 </ol>
               </div>
             </div>
@@ -380,4 +373,3 @@ const ExerciseCounter = () => {
 };
 
 export default ExerciseCounter;
-
