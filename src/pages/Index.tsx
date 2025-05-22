@@ -24,18 +24,24 @@ const Index = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        <StatsCard />
-        <ActivityChart />
-        <WorkoutStats />
+        <StatsCard title="Weekly Workouts" value="5" icon="activity" />
+        <ActivityChart data={[]} />
+        <WorkoutStats onClose={() => {}} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <PersonalRecommendations />
-        <WorkoutCard />
+        <PersonalRecommendations userData={{}} />
+        <WorkoutCard 
+          title="Morning HIIT"
+          subtitle="High intensity interval training"
+          image="/placeholder.svg"
+          difficulty="Intermediate"
+          duration={20}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        <AddWorkout />
+        <AddWorkout onClose={() => {}} onSave={() => {}} />
         <DailyTips />
         <BuddyFinderButton />
       </div>

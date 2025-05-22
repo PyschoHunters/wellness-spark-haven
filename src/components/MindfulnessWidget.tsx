@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Play, Clock, VolumeX, Volume2, SkipBack, SkipForward, Pause } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -64,7 +63,7 @@ const formatTime = (seconds: number) => {
   return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
 };
 
-export const MindfulnessWidget: React.FC = () => {
+const MindfulnessWidget: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState(meditationSessions[0]);
   const [selectedPattern, setSelectedPattern] = useState(breathingPatterns[0]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -436,3 +435,5 @@ export const MindfulnessWidget: React.FC = () => {
     </div>
   );
 };
+
+export default MindfulnessWidget;

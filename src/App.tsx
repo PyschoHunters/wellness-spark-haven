@@ -53,17 +53,17 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-      <Route path="/" element={<ProtectedRoute>{<Index />}</ProtectedRoute>} />
-      <Route path="/activity" element={<ProtectedRoute>{<Activity />}</ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute>{<Profile />}</ProtectedRoute>} />
-      <Route path="/schedule" element={<ProtectedRoute>{<Schedule />}</ProtectedRoute>} />
-      <Route path="/challenges" element={<ProtectedRoute>{<FitnessChallenges />}</ProtectedRoute>} />
-      <Route path="/buddy-finder" element={<ProtectedRoute>{<BuddyFinder />}</ProtectedRoute>} />
-      <Route path="/fitchain" element={<ProtectedRoute>{<FitChain />}</ProtectedRoute>} />
-      <Route path="/meditation" element={<ProtectedRoute>{<MeditationPage />}</ProtectedRoute>} />
-      <Route path="/nari-shakti" element={<ProtectedRoute>{<NariShakti />}</ProtectedRoute>} />
-      <Route path="/pregnancy-workouts" element={<ProtectedRoute>{<PregnancyWorkouts />}</ProtectedRoute>} />
-      <Route path="/expert-advice" element={<ProtectedRoute>{<ExpertAdvicePage />}</ProtectedRoute>} />
+      <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+      <Route path="/activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
+      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/schedule" element={<ProtectedRoute><Schedule /></ProtectedRoute>} />
+      <Route path="/challenges" element={<ProtectedRoute><FitnessChallenges /></ProtectedRoute>} />
+      <Route path="/buddy-finder" element={<ProtectedRoute><BuddyFinder /></ProtectedRoute>} />
+      <Route path="/fitchain" element={<ProtectedRoute><FitChain /></ProtectedRoute>} />
+      <Route path="/meditation" element={<ProtectedRoute><MeditationPage /></ProtectedRoute>} />
+      <Route path="/nari-shakti" element={<ProtectedRoute><NariShakti /></ProtectedRoute>} />
+      <Route path="/pregnancy-workouts" element={<ProtectedRoute><PregnancyWorkouts /></ProtectedRoute>} />
+      <Route path="/expert-advice" element={<ProtectedRoute><ExpertAdvicePage /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
